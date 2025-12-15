@@ -25,10 +25,19 @@ const AboutKaagaz: React.FC = () => {
             <p className="text-lg leading-relaxed mb-8">
               This book offers a profound exploration of the complexities of
               heartbreak, delving deep into the emotional and psychological
-              stages one experiences during such a turbulent time. It serves as
-              a gentle guide for readers to rediscover their strength, rebuild
-              their identity, and embrace the possibility of growth and renewal
-              after heartbreak.
+              stages one experiences during such a turbulent time. The journey
+              begins with the rawness of heartbreak, addressing the shock,
+              denial, and grief that follow. It progresses through the
+              recognition of mental health challenges that often accompany this
+              period, such as anxiety, depression, and feelings of isolation.
+              The book also sheds light on the dynamics and transactions within
+              relationships—both the emotional investments and the
+              often-overlooked imbalances that can shape the bond. Ultimately,
+              the book serves as a gentle guide for readers to rediscover their
+              strength, rebuild their identity, and embrace the possibility of
+              growth and renewal after heartbreak. It is a heartfelt companion
+              for anyone seeking solace, understanding, and hope during their
+              healing journey.
             </p>
             <button
               type="button"

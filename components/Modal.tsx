@@ -30,7 +30,7 @@ const Modal: React.FC = () => {
         if (e.key === "Escape") ModalManager.close();
       }}
       tabIndex={-1}
-      className="fixed inset-0 bg-black/30 z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
       aria-modal="true"
       role="dialog"
     >

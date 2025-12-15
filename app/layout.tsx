@@ -5,6 +5,7 @@ import "./ui.scss";
 // Toasts
 import { ToastContainer } from "react-toastify";
 import ConditionalLayout from "##/components/ConditionalLayout";
+import { WhatsAppButton } from "##/components/common/WhatsAppButton";
 import Modal from "##/components/Modal";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -37,6 +38,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ConditionalLayout>{children}</ConditionalLayout>
+        <WhatsAppButton />
         <Modal />
         <ToastContainer
           position="top-right"

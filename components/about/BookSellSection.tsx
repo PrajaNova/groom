@@ -1,5 +1,6 @@
 import type React from "react";
 import AppImage from "../AppImage";
+import BuyBookButton from "./BuyBookButton";
 
 const BookSellSection: React.FC = () => {
   return (
@@ -10,8 +11,9 @@ const BookSellSection: React.FC = () => {
             Transform Your Mental Health Journey
           </h3>
           <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-            Discover practical insights and personalized strategies in Satwikk's
-            comprehensive guide to mental wellness
+            This book offers a profound exploration of the complexities of
+            heartbreak, delving deep into the emotional and psychological stages
+            one experiences during such a turbulent time.
           </p>
         </div>
 
@@ -44,31 +46,25 @@ const BookSellSection: React.FC = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <span className="text-[#8C2D3A] font-bold text-lg">✓</span>
-                <p className="text-gray-700">
-                  Practical frameworks for understanding your mental health
-                  patterns
-                </p>
-              </div>
-              <div className="flex items-start space-x-3">
-                <span className="text-[#8C2D3A] font-bold text-lg">✓</span>
-                <p className="text-gray-700">
-                  Step-by-step exercises for building emotional resilience
-                </p>
-              </div>
-              <div className="flex items-start space-x-3">
-                <span className="text-[#8C2D3A] font-bold text-lg">✓</span>
-                <p className="text-gray-700">
-                  Real client stories and breakthrough moments
-                </p>
-              </div>
-              <div className="flex items-start space-x-3">
-                <span className="text-[#8C2D3A] font-bold text-lg">✓</span>
-                <p className="text-gray-700">
-                  Tools for creating your personalized mental wellness plan
-                </p>
-              </div>
+              <p className="text-gray-700 leading-relaxed">
+                The journey begins with the rawness of heartbreak, addressing
+                the shock, denial, and grief that follow. It progresses through
+                the recognition of mental health challenges that often accompany
+                this period, such as anxiety, depression, and feelings of
+                isolation.
+              </p>
+              <p className="text-gray-700 leading-relaxed">
+                The book also sheds light on the dynamics and transactions
+                within relationships—both the emotional investments and the
+                often-overlooked imbalances that can shape the bond.
+              </p>
+              <p className="text-gray-700 leading-relaxed">
+                Ultimately, the book serves as a gentle guide for readers to
+                rediscover their strength, rebuild their identity, and embrace
+                the possibility of growth and renewal after heartbreak. It is a
+                heartfelt companion for anyone seeking solace, understanding,
+                and hope during their healing journey.
+              </p>
             </div>
 
             <div className="bg-white/50 p-6 rounded-lg border-l-4 border-[#006442]">
@@ -83,25 +79,7 @@ const BookSellSection: React.FC = () => {
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                type="button"
-                className="flex-1 bg-[#006442] text-white font-bold py-4 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-[1.02] hover:shadow-xl hover:bg-[#004d32] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#006442]"
-              >
-                Pre-Order Now - $24.99
-              </button>
-              <button
-                type="button"
-                className="flex-1 border-2 border-[#006442] text-[#006442] font-bold py-4 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-[1.02] hover:shadow-xl hover:bg-[#006442] hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#006442]"
-              >
-                Read Sample Chapter
-              </button>
-            </div>
-
-            <div className="text-center text-sm text-gray-600">
-              <p>Expected release: Spring 2026</p>
-              <p>Available in paperback, hardcover, and digital formats</p>
-            </div>
+            <BuyBookButton />
           </div>
         </div>
       </div>

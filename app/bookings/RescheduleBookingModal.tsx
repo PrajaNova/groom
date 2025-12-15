@@ -9,26 +9,47 @@ interface Booking {
   date: string;
   time: string;
   service: string;
+  isoDate: string;
 }
 
 interface Props {
   booking: Booking;
+  onSuccess?: () => void;
 }
 
 const RescheduleBookingModal: React.FC<Props> = ({ booking }) => {
-  const [newDate, setNewDate] = useState(booking.date);
-  const [newTime, setNewTime] = useState(booking.time);
+  // Convert ISO string (2024-12-15T14:00:00.000Z) to local datetime-local format (2024-12-15T14:00)
+  const formatForInput = (isoString: string) => {
+    try {
+      if (!isoString) return "";
+      // Create date object and adjust for timezone offset to show correct local time in input
+      const date = new Date(isoString);
+      const offset = date.getTimezoneOffset() * 60000;
+      const localISOTime = new Date(date.getTime() - offset)
+        .toISOString()
+        .slice(0, 16);
+      return localISOTime;
+    } catch (e) {
+      console.error("Invalid date format", e);
+      return "";
+    }
+  };
+
+  const [dateTime, setDateTime] = useState(formatForInput(booking.isoDate));
   const [loading, setLoading] = useState(false);
 
   const handleReschedule = async () => {
-    if (!newDate || !newTime) {
-      showAlert("Please select both date and time.");
+    if (!dateTime) {
+      showAlert("Please select a new date and time.");
       return;
     }
 
     setLoading(true);
     try {
-      const when = new Date(`${newDate}T${newTime}`).toISOString();
+      // datetime-local returns "2024-12-15T14:30" which is local time
+      // We convert it back to ISO string for the backend
+      const when = new Date(dateTime).toISOString();
+
       const res = await fetch(`/api/booking/${booking.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -37,9 +58,7 @@ const RescheduleBookingModal: React.FC<Props> = ({ booking }) => {
 
       if (!res.ok) throw new Error("Failed to reschedule booking");
 
-      showAlert("Booking rescheduled successfully!", () => {
-        window.location.reload();
-      });
+      onSuccess?.();
       ModalManager.close();
     } catch (err) {
       console.error(err);
@@ -51,71 +70,33 @@ const RescheduleBookingModal: React.FC<Props> = ({ booking }) => {
 
   return (
     <div className="p-2">
-      <h2 className="text-2xl font-bold text-[#2C3531] mb-4">
-        Reschedule Booking
+      <h2 className="text-2xl font-bold text-[#2C3531] mb-1">
+        Reschedule Session
       </h2>
-      <div className="bg-gray-50 rounded-lg p-4 mb-6">
-        <h3 className="text-lg font-semibold text-[#B48B7F] mb-2">
+      <p className="text-gray-500 mb-6 text-sm">
+        Choose a new time for your session.
+      </p>
+
+      <div className="bg-gray-50 rounded-lg p-4 mb-6 border border-gray-100">
+        <h3 className="text-lg font-semibold text-[#006442] mb-1">
           {booking.service}
         </h3>
-        <p className="text-gray-600 mb-4">
-          Select a new date and time for your session
+        <p className="text-gray-600 text-sm">
+          Currently scheduled for: {booking.date} at {booking.time}
         </p>
 
-        <div className="space-y-4">
+        <div className="mt-6">
           <label className="block">
-            <span className="text-sm font-medium text-gray-700 mb-1 block">
-              New Date
+            <span className="text-sm font-medium text-gray-700 mb-2 block">
+              New Date & Time
             </span>
             <div className="relative">
               <input
-                type="date"
-                value={newDate}
-                onChange={(e) => setNewDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-[#B48B7F] focus:border-transparent transition-all duration-200"
+                type="datetime-local"
+                value={dateTime}
+                onChange={(e) => setDateTime(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#006442] focus:border-transparent transition-all duration-200 outline-none"
               />
-              <svg
-                className="w-5 h-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <title>Calendar icon</title>
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
-          </label>
-
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700 mb-1 block">
-              New Time
-            </span>
-            <div className="relative">
-              <input
-                type="time"
-                value={newTime}
-                onChange={(e) => setNewTime(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-[#B48B7F] focus:border-transparent transition-all duration-200"
-              />
-              <svg
-                className="w-5 h-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <title>Clock icon</title>
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
             </div>
           </label>
         </div>
@@ -157,7 +138,7 @@ const RescheduleBookingModal: React.FC<Props> = ({ booking }) => {
               />
             </svg>
           )}
-          {loading ? "Updating..." : "Confirm Changes"}
+          {loading ? "Updating..." : "Confirm Change"}
         </button>
       </div>
     </div>

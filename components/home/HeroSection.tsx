@@ -38,7 +38,7 @@ const HeroSection: React.FC = () => {
               height={100}
               width={100}
             />
-            Introspect, Identify, Heal
+            Transform Today, Lead Tomorrow
           </p>
           <h2
             className={`text-5xl md:text-6xl font-extrabold text-[#2C3531] leading-tight ${getAnimationClasses(
