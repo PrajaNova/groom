@@ -93,7 +93,7 @@ export default function MeetingPage() {
           onApiReady={(externalApi: {
             addEventListener: (
               event: string,
-              cb: (...args: any[]) => void,
+              cb: (...args: unknown[]) => void,
             ) => void;
           }) => {
             console.log("Jitsi Meet API ready", externalApi);
