@@ -1,6 +1,6 @@
-"use client";
+-"use client";
 
-import { JitsiMeeting } from "@jitsi/react-sdk";
+import { JaaSMeeting } from "@jitsi/react-sdk";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -9,12 +9,37 @@ export default function MeetingPage() {
   const router = useRouter();
   const meetingId = params.meetingID as string;
   const [isReady, setIsReady] = useState(false);
+  const [jwtToken, setJwtToken] = useState<string | null>(null);
+  const [isLoadingToken, setIsLoadingToken] = useState(true);
 
   useEffect(() => {
-    // Small delay to ensure DOM is ready
+    const fetchToken = async () => {
+      try {
+        const response = await fetch("/api/jaas-token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ meetingId }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Token API Error:", errorData);
+          throw new Error(errorData.error || "Failed to fetch token");
+        }
+
+        const data = await response.json();
+        setJwtToken(data.token);
+      } catch (error) {
+        console.error("Error fetching JaaS token:", error);
+      } finally {
+        setIsLoadingToken(false);
+      }
+    };
+
+    fetchToken();
     const timer = setTimeout(() => setIsReady(true), 100);
     return () => clearTimeout(timer);
-  }, []);
+  }, [meetingId]);
 
   if (!meetingId) {
     return (
@@ -35,10 +60,11 @@ export default function MeetingPage() {
 
   return (
     <div className="h-screen w-screen bg-[#2C3531]">
-      {isReady && (
-        <JitsiMeeting
-          domain="meet.jit.si"
+      {isReady && !isLoadingToken && jwtToken && (
+        <JaaSMeeting
+          appId={process.env.NEXT_PUBLIC_JITSI_APP_ID || ""}
           roomName={`Groom_${meetingId}`}
+          jwt={jwtToken}
           configOverwrite={{
             startWithAudioMuted: true,
             disableModeratorIndicator: true,
@@ -64,13 +90,7 @@ export default function MeetingPage() {
             HIDE_INVITE_MORE_HEADER: true,
             TOOLBAR_ALWAYS_VISIBLE: false,
           }}
-          userInfo={{
-            displayName: "Participant",
-            email: "",
-          }}
-          // Add JWT to bypass lobby (empty string means no auth required)
-          jwt=""
-          onApiReady={(externalApi) => {
+          onApiReady={(externalApi: any) => {
             console.log("Jitsi Meet API ready", externalApi);
 
             // Handle meeting end - redirect users to home, admins stay

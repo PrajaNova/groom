@@ -13,11 +13,18 @@ interface Booking {
 }
 
 interface Props {
-  booking: Booking;
+  booking?: Booking | null;
+  mode?: "reschedule" | "suggest";
+  onSuggest?: (datetime: string) => void;
   onSuccess?: () => void;
 }
 
-const RescheduleBookingModal: React.FC<Props> = ({ booking }) => {
+const RescheduleBookingModal: React.FC<Props> = ({
+  booking = null,
+  mode = "reschedule",
+  onSuggest,
+  onSuccess,
+}) => {
   // Convert ISO string (2024-12-15T14:00:00.000Z) to local datetime-local format (2024-12-15T14:00)
   const formatForInput = (isoString: string) => {
     try {
@@ -35,22 +42,30 @@ const RescheduleBookingModal: React.FC<Props> = ({ booking }) => {
     }
   };
 
-  const [dateTime, setDateTime] = useState(formatForInput(booking.isoDate));
+  const [dateTime, setDateTime] = useState(
+    booking?.isoDate ? formatForInput(booking.isoDate) : "",
+  );
   const [loading, setLoading] = useState(false);
-
-  const handleReschedule = async () => {
+  const handleConfirm = async () => {
     if (!dateTime) {
       showAlert("Please select a new date and time.");
       return;
     }
 
+    // Suggest mode: invoke callback and close modal (caller handles API)
+    if (mode === "suggest") {
+      ModalManager.close();
+      setTimeout(() => {
+        onSuggest?.(dateTime);
+      }, 200);
+      return;
+    }
     setLoading(true);
     try {
-      // datetime-local returns "2024-12-15T14:30" which is local time
-      // We convert it back to ISO string for the backend
       const when = new Date(dateTime).toISOString();
 
-      const res = await fetch(`/api/booking/${booking.id}`, {
+      // booking should exist in reschedule mode
+      const res = await fetch(`/api/booking/${booking?.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ when }),
@@ -71,19 +86,25 @@ const RescheduleBookingModal: React.FC<Props> = ({ booking }) => {
   return (
     <div className="p-2">
       <h2 className="text-2xl font-bold text-[#2C3531] mb-1">
-        Reschedule Session
+        {mode === "suggest" ? "Suggest New Time" : "Reschedule Session"}
       </h2>
       <p className="text-gray-500 mb-6 text-sm">
-        Choose a new time for your session.
+        {mode === "suggest"
+          ? "Propose a new time for this session. This will send the suggested time to be reviewed."
+          : "Choose a new time for your session."}
       </p>
 
       <div className="bg-gray-50 rounded-lg p-4 mb-6 border border-gray-100">
-        <h3 className="text-lg font-semibold text-[#006442] mb-1">
-          {booking.service}
-        </h3>
-        <p className="text-gray-600 text-sm">
-          Currently scheduled for: {booking.date} at {booking.time}
-        </p>
+        {booking && (
+          <>
+            <h3 className="text-lg font-semibold text-[#006442] mb-1">
+              {booking.service}
+            </h3>
+            <p className="text-gray-600 text-sm">
+              Currently scheduled for: {booking.date} at {booking.time}
+            </p>
+          </>
+        )}
 
         <div className="mt-6">
           <label className="block">
@@ -113,7 +134,7 @@ const RescheduleBookingModal: React.FC<Props> = ({ booking }) => {
         <button
           type="button"
           disabled={loading}
-          onClick={handleReschedule}
+          onClick={handleConfirm}
           className="flex items-center px-4 py-2 bg-[#2C3531] text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading && (
@@ -138,7 +159,11 @@ const RescheduleBookingModal: React.FC<Props> = ({ booking }) => {
               />
             </svg>
           )}
-          {loading ? "Updating..." : "Confirm Change"}
+          {mode === "suggest"
+            ? "Send Suggestion"
+            : loading
+              ? "Updating..."
+              : "Confirm Change"}
         </button>
       </div>
     </div>
