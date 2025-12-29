@@ -90,7 +90,12 @@ export default function MeetingPage() {
             HIDE_INVITE_MORE_HEADER: true,
             TOOLBAR_ALWAYS_VISIBLE: false,
           }}
-          onApiReady={(externalApi: any) => {
+          onApiReady={(externalApi: {
+            addEventListener: (
+              event: string,
+              cb: (...args: any[]) => void,
+            ) => void;
+          }) => {
             console.log("Jitsi Meet API ready", externalApi);
 
             // Handle meeting end - redirect users to home, admins stay
