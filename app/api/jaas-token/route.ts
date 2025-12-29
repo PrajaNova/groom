@@ -34,19 +34,19 @@ export async function POST(req: NextRequest) {
     const session = await getSession();
     const userContext = session
       ? {
-        id: session.userId,
-        name: session.username,
-        email: (session.email as string) || "",
-        avatar: (session.avatar as string) || "",
-        moderator: session.role === "admin" || session.role === "superadmin",
-      }
+          id: session.userId,
+          name: session.username,
+          email: (session.email as string) || "",
+          avatar: (session.avatar as string) || "",
+          moderator: session.role === "admin" || session.role === "superadmin",
+        }
       : {
-        id: uuid(),
-        name: "Participant",
-        email: "",
-        avatar: "",
-        moderator: false,
-      };
+          id: uuid(),
+          name: "Participant",
+          email: "",
+          avatar: "",
+          moderator: false,
+        };
 
     const now = Math.floor(Date.now() / 1000);
     const exp = now + 60 * 60 * 12; // Extended to 12 hours to cover potential TZ offset
