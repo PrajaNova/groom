@@ -1,6 +1,5 @@
 import AboutKaagaz from "##/components/home/AboutKaagaz";
 import FAQ from "##/components/home/FAQ";
-import Founder from "##/components/home/Founder";
 import MythsAndFacts from "##/components/home/MythsAndFacts";
 import SignsOfStruggles from "##/components/home/SignsOfStruggles";
 import WhatIsMentalHealth from "##/components/home/WhatIsMentalHealth";
@@ -24,7 +23,6 @@ const Home: React.FC = () => {
       <TestimonialsSection />
       <BlogsPreviewSection />
       <ConfessionsPreviewSection />
-      <Founder />
       <AboutKaagaz />
       <FAQ />
       <FinalCTASection />
