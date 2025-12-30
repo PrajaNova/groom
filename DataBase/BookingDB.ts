@@ -70,9 +70,27 @@ const getBookingById = (id: string) => {
   });
 };
 
-const getBookings = () => {
+const getBookings = (filters?: {
+  status?: string[];
+  fromDate?: Date;
+  sort?: "asc" | "desc";
+}) => {
   return safeDbTransaction(async () => {
-    return prisma.booking.findMany();
+    // biome-ignore lint/suspicious/noExplicitAny: can not add type for booking where input
+    const where: any = {};
+
+    if (filters?.status) {
+      where.status = { in: filters.status };
+    }
+
+    if (filters?.fromDate) {
+      where.when = { gte: filters.fromDate };
+    }
+
+    return prisma.booking.findMany({
+      where,
+      orderBy: { when: filters?.sort ?? "asc" },
+    });
   });
 };
 

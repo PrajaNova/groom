@@ -26,7 +26,32 @@ export async function GET(request: Request) {
       return NextResponse.json(bookings, { status: 200 });
     }
 
-    const bookings = await BookingDB.getBookings();
+    const statusParam = url.searchParams.get("status");
+    const fromDateParam = url.searchParams.get("fromDate");
+
+    const filters: {
+      status?: string[];
+      fromDate?: Date;
+      sort?: "asc" | "desc";
+    } = {};
+
+    if (statusParam) {
+      filters.status = statusParam.split(",");
+    }
+
+    if (fromDateParam) {
+      const date = new Date(fromDateParam);
+      if (!Number.isNaN(date.getTime())) {
+        filters.fromDate = date;
+      }
+    }
+
+    const sortParam = url.searchParams.get("sort");
+    if (sortParam === "asc" || sortParam === "desc") {
+      filters.sort = sortParam;
+    }
+
+    const bookings = await BookingDB.getBookings(filters);
     return NextResponse.json(bookings, { status: 200 });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

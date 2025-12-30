@@ -7,9 +7,15 @@ import ConfessionDB from "##/DataBase/ConfessionDB";
 export const revalidate = 60;
 
 export default async function AdminDashboard() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const [blogs, bookings, confessions] = await Promise.all([
     BlogDB.getBlogs(),
-    BookingDB.getBookings(),
+    BookingDB.getBookings({
+      status: ["confirmed", "pending"],
+      fromDate: today,
+    }),
     ConfessionDB.getAllConfessions(),
   ]);
 

@@ -5,7 +5,9 @@ import BookingDB from "##/DataBase/BookingDB";
 import {
   generateJitsiUrl,
   generateMeetingId,
+  sendBookingCancellationEmail,
   sendBookingConfirmationEmail,
+  sendBookingUpdateEmail,
 } from "##/utils/email";
 
 export async function GET(
@@ -47,18 +49,15 @@ export async function PUT(
 
     const body = (await request.json()) as Record<string, unknown>;
 
+    // Get the existing booking
+    const existingBooking = await BookingDB.getBookingById(id);
+
+    if (!existingBooking) {
+      return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+    }
+
     // Check if this is a confirmation request
     if (body.status === "confirmed") {
-      // Get the booking first to access email and other details
-      const existingBooking = await BookingDB.getBookingById(id);
-
-      if (!existingBooking) {
-        return NextResponse.json(
-          { error: "Booking not found" },
-          { status: 404 },
-        );
-      }
-
       // Generate meeting ID if not already present
       const meetingId =
         existingBooking.meetingId || generateMeetingId(existingBooking.email);
@@ -93,7 +92,24 @@ export async function PUT(
       );
     }
 
-    // For other updates (not confirmation)
+    // Check for rescheduling (when date changes)
+    if (body.when && body.when !== existingBooking.when.toISOString()) {
+      const newTime = new Date(body.when as string);
+
+      // Send rescheduling email
+      try {
+        await sendBookingUpdateEmail({
+          to: existingBooking.email,
+          name: existingBooking.name,
+          newTime,
+          meetingId: existingBooking.meetingId || undefined,
+        });
+      } catch (emailError) {
+        console.error("Failed to send rescheduling email:", emailError);
+      }
+    }
+
+    // For other updates
     const updatedBooking = await BookingDB.updateBooking({ id, ...body });
     return NextResponse.json(updatedBooking, { status: 200 });
   } catch (error) {
@@ -117,10 +133,35 @@ export async function DELETE(
       );
     }
 
-    await BookingDB.deleteBooking(id);
+    // Get details before "cancelling"
+    const booking = await BookingDB.getBookingById(id);
+    if (!booking) {
+      return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+    }
+
+    // Update status to cancelled instead of deleting
+    await BookingDB.updateBooking({
+      id,
+      status: "cancelled",
+    });
+
+    // Send cancellation email
+    try {
+      await sendBookingCancellationEmail({
+        to: booking.email,
+        name: booking.name,
+        originalTime: booking.when,
+      });
+    } catch (emailError) {
+      console.error("Failed to send cancellation email:", emailError);
+    }
+
     revalidatePath("/bookings");
     revalidatePath("/admin/bookings");
-    return NextResponse.json({ message: "Booking deleted" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Booking cancelled successfully" },
+      { status: 200 },
+    );
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json({ error: message }, { status: 400 });

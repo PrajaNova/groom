@@ -5,7 +5,13 @@ import BookingDB from "##/DataBase/BookingDB";
 export const revalidate = 60;
 
 export default async function AdminBookingsPage() {
-  const bookings = await BookingDB.getBookings();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const bookings = await BookingDB.getBookings({
+    status: ["confirmed", "pending"],
+    fromDate: today,
+  });
 
   const bookingRows = bookings.map((bk: unknown) => {
     const row = bk as Record<string, unknown>;

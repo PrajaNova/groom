@@ -1,6 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import Modal from "##/components/Modal";
 import BookingList from "./BookingList";
@@ -30,13 +29,11 @@ interface BackendBooking {
 function BookingPageContent() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
-  const searchParams = useSearchParams();
-  const newBooking = searchParams.get("newBooking") === "true";
 
   const fetchBookings = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/booking");
+      const res = await fetch("/api/booking?status=pending,confirmed");
       const data: BackendBooking[] = await res.json();
 
       const formatted: Booking[] = data.map((b) => {
@@ -79,32 +76,6 @@ function BookingPageContent() {
         <p className="mt-4 text-[#2C3531] font-medium text-lg">
           Loading your sessions...
         </p>
-      </div>
-    );
-  }
-
-  if (newBooking && bookings.length === 0) {
-    return (
-      <div className="min-h-screen bg-[#F0F2EF] flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center border-t-4 border-[#006442]">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="text-4xl">🎉</span>
-          </div>
-          <h1 className="text-3xl font-bold text-[#2C3531] mb-4">
-            Booking Confirmed!
-          </h1>
-          <p className="text-gray-600 mb-8 leading-relaxed">
-            Your session has been successfully booked. We’ve sent a confirmation
-            to your email with all the details.
-          </p>
-          <button
-            type="button"
-            onClick={() => window.location.replace("/bookings")}
-            className="w-full bg-[#006442] hover:bg-[#004d32] text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-all duration-300 transform hover:scale-[1.02]"
-          >
-            Go to My Bookings
-          </button>
-        </div>
       </div>
     );
   }
