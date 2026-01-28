@@ -8,6 +8,7 @@
         "dev:web": "pnpm --filter groom-web dev",
         "dev:user-ms": "pnpm --filter user-ms dev",
         "dev:booking": "pnpm --filter booking-ms dev",
+        "dev:groom-ms": "pnpm --filter groom-ms dev",
         "build": "pnpm -r build",
         "test": "pnpm -r test",
         "lint": "biome check .",
