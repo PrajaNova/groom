@@ -1,0 +1,62 @@
+{
+  "name": "user-ms",
+  "version": "1.0.0",
+  "description": "User Authentication and Profile Microservice with Multi-Provider OAuth Support",
+  "main": "dist/app.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node dist/app.js",
+    "build": "tsc",
+    "watch:tsc": "tsc -w",
+    "dev": "tsx watch --clear-screen=false src/server.ts",
+    "dev:debug": "tsx watch --inspect --clear-screen=false src/app.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "generate:openapi": "tsx src/scripts/generate-openapi.ts",
+    "generate:postman": "npx openapi-to-postmanv2 -s docs/openapi.yaml -o docs/postman_collection.json -p",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
+  },
+  "keywords": [
+    "auth",
+    "oauth",
+    "microservice",
+    "fastify",
+    "user-management"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@asteasolutions/zod-to-openapi": "catalog:",
+    "@fastify/autoload": "catalog:",
+    "@fastify/cookie": "catalog:",
+    "@fastify/cors": "catalog:",
+    "@fastify/helmet": "catalog:",
+    "@fastify/jwt": "catalog:",
+    "@fastify/oauth2": "catalog:",
+    "@fastify/rate-limit": "catalog:",
+    "@fastify/sensible": "catalog:",
+    "@prisma/client": "catalog:",
+    "bcrypt": "catalog:",
+    "dotenv": "catalog:",
+    "fastify": "catalog:",
+    "fastify-plugin": "catalog:",
+    "nanoid": "catalog:",
+    "pino-pretty": "catalog:",
+    "pkce-challenge": "catalog:",
+    "yaml": "catalog:",
+    "zod": "catalog:",
+    "zod-to-json-schema": "catalog:"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "catalog:",
+    "@types/node": "catalog:",
+    "prisma": "catalog:",
+    "tsconfig-paths": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

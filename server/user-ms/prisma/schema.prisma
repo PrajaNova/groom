@@ -1,0 +1,146 @@
+// Prisma schema for User Microservice with Neon PostgreSQL
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// User model - Core user information
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  avatar    String?
+  password  String? // For local authentication (hashed)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  providerAccounts ProviderAccount[]
+  sessions         Session[]
+  tokens           Token[]
+  auditLogs        AuditLog[]
+  addresses        Address[]
+  roles            Role[]
+
+  @@index([email])
+  @@map("users")
+}
+
+// Role model - Dynamic Role-Based Access Control
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique // e.g., "ADMIN", "SELLER", "DEVELOPER"
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  users       User[]
+
+  @@map("roles")
+}
+
+// Address model - User shipping addresses
+model Address {
+  id        String   @id @default(cuid())
+  userId    String
+  street    String
+  city      String
+  state     String
+  zipCode   String
+  country   String
+  phone     String
+  type      String   @default("Home") // Home, Work, etc.
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("addresses")
+}
+
+// ProviderAccount model - OAuth provider linkages
+model ProviderAccount {
+  id             String   @id @default(cuid())
+  userId         String
+  provider       String // 'google', 'github', 'facebook', 'discord', 'linkedin', 'custom'
+  providerUserId String // ID from the provider
+  metadata       Json? // Provider-specific metadata
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerUserId])
+  @@index([userId])
+  @@index([provider])
+  @@map("provider_accounts")
+}
+
+// Session model - User sessions
+model Session {
+  id         String    @id @default(cuid())
+  sessionId  String    @unique
+  userId     String
+  expiresAt  DateTime
+  device     String?
+  userAgent  String?
+  ipAddress  String?
+  createdAt  DateTime  @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+// Token model - OAuth provider tokens (stored securely)
+model Token {
+  id           String    @id @default(cuid())
+  userId       String
+  provider     String
+  accessToken  String // Hashed
+  refreshToken String? // Hashed
+  expiresAt    DateTime?
+  createdAt    DateTime  @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider])
+  @@index([userId])
+  @@index([provider])
+  @@map("tokens")
+}
+
+// AuditLog model - Security and compliance logging
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  event     String // 'login', 'logout', 'register', etc.
+  metadata  Json? // Event-specific data
+  ipAddress String?
+  userAgent String?
+  timestamp DateTime @default(now())
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([event])
+  @@index([timestamp])
+  @@map("audit_logs")
+}

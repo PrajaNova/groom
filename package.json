@@ -1,0 +1,19 @@
+{
+    "name": "groom",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "force": "pnpx codemod pnpm/catalog"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@biomejs/biome": "catalog:",
+        "@types/node": "catalog:",
+        "concurrently": "catalog:",
+        "dotenv": "catalog:",
+        "tsx": "catalog:",
+        "typescript": "catalog:"
+    }
+}
