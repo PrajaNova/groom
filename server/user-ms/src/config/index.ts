@@ -60,6 +60,7 @@ export const loadConfig = (): AppConfig => {
       jwtSecret: getEnv("JWT_SECRET", "your-super-secret-jwt-key-min-32-chars"),
       sessionExpiryHours: getNumberEnv("SESSION_EXPIRY_HOURS", 24),
       allowedOrigins: parseOrigins(process.env.ALLOWED_ORIGINS),
+      frontendUrl: getEnv("FRONTEND_URL", "http://localhost:3000"),
     },
     branding: {
       name: getEnv("BRAND_NAME", "E-Cart"),

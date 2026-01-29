@@ -26,6 +26,7 @@
       "##/data/*": ["./data/*"],
       "##/api/*": ["./app/api/*"],
       "##/services/*": ["./services/*"],
+      "##/context/*": ["./context/*"],
       "##/DataBase/*": ["./DataBase/*"]
     }
   },

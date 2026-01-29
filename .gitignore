@@ -6,3 +6,8 @@ coverage
 build
 .env
 generated
+**/**/.env
+
+server/booking-ms/.env
+server/groom-ms/.env
+server/user-ms/.env

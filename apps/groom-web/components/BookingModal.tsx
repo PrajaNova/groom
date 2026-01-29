@@ -37,12 +37,20 @@ const BookingModal: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/booking", {
+      const userStr = localStorage.getItem("user"); // fallback if context not avail here easily, but better to use Context
+      let userId = undefined;
+      if (userStr) {
+        try {
+          userId = JSON.parse(userStr).id;
+        } catch (e) {}
+      }
+
+      const response = await fetch("/api/bookings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, userId }),
       });
       if (!response.ok) {
         throw new Error("Network response was not ok");

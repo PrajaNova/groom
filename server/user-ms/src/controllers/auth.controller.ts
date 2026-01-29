@@ -219,12 +219,9 @@ export class AuthController {
         this.getUserAgent(request.headers),
       );
 
-      // Redirect to success page or return user info
-      return reply.send({
-        success: true,
-        user,
-        message: SUCCESS_MESSAGES.AUTH_SUCCESS,
-      });
+      // Redirect to frontend with success parameter
+      const frontendUrl = this.fastify.config.security.frontendUrl;
+      return reply.redirect(`${frontendUrl}/?auth=success`);
     } catch (error: any) {
       this.fastify.log.error(
         {
@@ -585,5 +582,18 @@ export class AuthController {
     );
 
     return { success: true, message: SUCCESS_MESSAGES.LOGOUT_SUCCESS };
+  }
+
+  // GET /auth/me - Get current authenticated user
+  async handleMe(request: FastifyRequest, reply: FastifyReply) {
+    if (!request.user) {
+      return reply.unauthorized(ERROR_MESSAGES.UNAUTHORIZED);
+    }
+
+    return reply.send({
+      success: true,
+      user: request.user,
+      sessionToken: "cookie-based",
+    });
   }
 }

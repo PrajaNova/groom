@@ -33,6 +33,7 @@ export class BookingController {
         status: req.query.status ? (req.query.status.split(',') as BookingStatus[]) : undefined,
         fromDate: req.query.fromDate ? new Date(req.query.fromDate) : undefined,
         sort: req.query.sort,
+        userId: req.query.userId,
       };
 
       const bookings = await this.service.getBookings(filters);

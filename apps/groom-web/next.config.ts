@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-// Trigger restart
+// Trigger restart 2
 
 const nextConfig: NextConfig = {
   sassOptions: {
@@ -25,8 +25,8 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: "/api/booking/:path*",
-        destination: "http://localhost:3003/booking/:path*", // booking-ms (check if routes are prefixed with /booking or not)
+        source: "/api/bookings/:path*",
+        destination: "http://localhost:3003/api/bookings/:path*", // booking-ms
       },
       {
         source: "/api/blogs/:path*",
@@ -41,8 +41,12 @@ const nextConfig: NextConfig = {
         destination: "http://localhost:3004/jaas-token", // groom-ms
       },
       {
+        source: "/api/user/:path*",
+        destination: "http://localhost:3002/api/user/:path*", // user-ms
+      },
+      {
         source: "/api/auth/:path*",
-        destination: "http://localhost:3002/auth/:path*", // user-ms
+        destination: "http://localhost:3002/api/auth/:path*", // user-ms
       },
     ];
   },

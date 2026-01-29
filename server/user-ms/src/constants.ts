@@ -47,6 +47,7 @@ export const ROUTES = {
   AUTH_REGISTER: "/auth/register",
   AUTH_LOGIN: "/auth/login",
   AUTH_LOGOUT: "/auth/logout",
+  AUTH_ME: "/auth/me",
 
   // OAuth callbacks
   GOOGLE_CALLBACK: "/auth/google/callback",
@@ -254,11 +255,11 @@ export const OAUTH_PLUGIN_NAMES = {
 
 // OAuth Start Redirect Paths
 export const OAUTH_START_PATHS = {
-  GOOGLE: "/auth/google/start",
-  FACEBOOK: "/auth/facebook/start",
-  GITHUB: "/auth/github/start",
-  DISCORD: "/auth/discord/start",
-  LINKEDIN: "/auth/linkedin/start",
+  GOOGLE: "/api/auth/google/start",
+  FACEBOOK: "/api/auth/facebook/start",
+  GITHUB: "/api/auth/github/start",
+  DISCORD: "/api/auth/discord/start",
+  LINKEDIN: "/api/auth/linkedin/start",
 } as const;
 
 // Discord OAuth Configuration

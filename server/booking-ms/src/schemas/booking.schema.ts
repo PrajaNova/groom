@@ -17,6 +17,7 @@ export const BookingSchema = z
     email: z.string().email(),
     when: z.string().datetime().or(z.date().transform(d => d.toISOString())),
     reason: z.string(),
+    userId: z.string().nullable().optional(),
     status: BookingStatusSchema,
     meetingId: z.string().nullable().optional(),
     createdAt: z.string().datetime().or(z.date()),
@@ -30,6 +31,7 @@ export const CreateBookingRequestSchema = z
     email: z.string().email(),
     when: z.string().datetime(),
     reason: z.string().optional(),
+    userId: z.string().optional(),
     status: BookingStatusSchema.optional(),
     meetingId: z.string().optional(),
   })
@@ -48,6 +50,7 @@ export const UpdateBookingRequestSchema = z
 export const BookingQuerySchema = z
   .object({
     email: z.string().email().optional(),
+    userId: z.string().optional(),
     status: z.string().optional(), // Can be comma separated
     fromDate: z.string().datetime().optional(),
     sort: z.enum(["asc", "desc"]).optional(),

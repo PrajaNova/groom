@@ -38,6 +38,7 @@ export interface AppConfig {
     jwtSecret: string;
     sessionExpiryHours: number;
     allowedOrigins: string[];
+    frontendUrl: string;
   };
   branding: {
     name: string;

@@ -12,6 +12,7 @@ model Booking {
   id        String        @id @default(uuid())
   name      String
   email     String
+  userId    String?       // Optional for now to support existing bookings or guest bookings if needed
   when      DateTime
   reason    String
   status    BookingStatus @default(pending)

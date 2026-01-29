@@ -4,7 +4,7 @@ import { sendBookingConfirmationEmail, sendBookingCancellationEmail, sendBooking
 export class BookingService {
   constructor(private prisma: PrismaClient) {}
 
-  async createBooking(data: { name: string; email: string; when: string | Date; reason: string; status?: BookingStatus; meetingId?: string }) {
+  async createBooking(data: { name: string; email: string; when: string | Date; reason: string; userId?: string; status?: BookingStatus; meetingId?: string }) {
     if (!data.email || !data.when || !data.name) {
       throw new Error("Email, Name, and When are required fields");
     }
@@ -29,6 +29,7 @@ export class BookingService {
         email: data.email,
         when: new Date(data.when),
         reason: data.reason ?? "No reason provided",
+        userId: data.userId,
         status: data.status ?? "pending",
         meetingId: data.meetingId,
       },
@@ -48,12 +49,16 @@ export class BookingService {
     });
   }
 
-  async getBookings(filters?: { status?: BookingStatus[]; fromDate?: Date; sort?: 'asc' | 'desc' }) {
+  async getBookings(filters?: { status?: BookingStatus[]; fromDate?: Date; sort?: 'asc' | 'desc'; userId?: string }) {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const where: any = {};
 
     if (filters?.status) {
       where.status = { in: filters.status };
+    }
+
+    if (filters?.userId) {
+      where.userId = filters.userId;
     }
 
     if (filters?.fromDate) {

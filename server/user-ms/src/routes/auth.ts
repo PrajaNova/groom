@@ -85,6 +85,23 @@ export default async function authRoutes(fastify: FastifyInstance) {
     },
   );
 
+  // GET /auth/me - Get current user from session
+  fastify.get(
+    ROUTES.AUTH_ME,
+    {
+      preHandler: authGuard,
+      schema: createRouteSchema({
+        response: {
+          200: AuthResponseSchema,
+          401: ErrorSchema,
+        },
+      }),
+    },
+    async (request, reply) => {
+      return authController.handleMe(request, reply);
+    },
+  );
+
   // GET /auth/google/callback
   fastify.get<{ Querystring: OAuthCallbackQuery }>(
     ROUTES.GOOGLE_CALLBACK,
