@@ -1,10 +1,23 @@
-import { PrismaClient, Booking, BookingStatus } from '@generated/client';
-import { sendBookingConfirmationEmail, sendBookingCancellationEmail, sendBookingUpdateEmail, generateMeetingId } from '../utils/email';
+import { PrismaClient, Booking, BookingStatus } from "@generated/client";
+import {
+  sendBookingConfirmationEmail,
+  sendBookingCancellationEmail,
+  sendBookingUpdateEmail,
+  generateMeetingId,
+} from "../utils/email";
 
 export class BookingService {
   constructor(private prisma: PrismaClient) {}
 
-  async createBooking(data: { name: string; email: string; when: string | Date; reason: string; userId?: string; status?: BookingStatus; meetingId?: string }) {
+  async createBooking(data: {
+    name: string;
+    email: string;
+    when: string | Date;
+    reason: string;
+    userId?: string;
+    status?: BookingStatus;
+    meetingId?: string;
+  }) {
     if (!data.email || !data.when || !data.name) {
       throw new Error("Email, Name, and When are required fields");
     }
@@ -45,11 +58,16 @@ export class BookingService {
   async getBookingsByEmail(email: string) {
     return await this.prisma.booking.findMany({
       where: { email },
-      orderBy: { when: 'desc' },
+      orderBy: { when: "desc" },
     });
   }
 
-  async getBookings(filters?: { status?: BookingStatus[]; fromDate?: Date; sort?: 'asc' | 'desc'; userId?: string }) {
+  async getBookings(filters?: {
+    status?: BookingStatus[];
+    fromDate?: Date;
+    sort?: "asc" | "desc";
+    userId?: string;
+  }) {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const where: any = {};
 
@@ -67,7 +85,7 @@ export class BookingService {
 
     return await this.prisma.booking.findMany({
       where,
-      orderBy: { when: filters?.sort ?? 'asc' },
+      orderBy: { when: filters?.sort ?? "asc" },
     });
   }
 
@@ -79,8 +97,9 @@ export class BookingService {
 
     // Handle Confirmation Logic
     if (data.status === "confirmed" && existingBooking.status !== "confirmed") {
-      const meetingId = existingBooking.meetingId || generateMeetingId(existingBooking.email);
-      
+      const meetingId =
+        existingBooking.meetingId || generateMeetingId(existingBooking.email);
+
       const updated = await this.prisma.booking.update({
         where: { id },
         data: {
@@ -96,21 +115,26 @@ export class BookingService {
         name: existingBooking.name,
         scheduledTime: new Date(existingBooking.when),
         meetingId,
-      }).catch(err => console.error("Failed to send confirmation email", err));
+      }).catch((err) =>
+        console.error("Failed to send confirmation email", err),
+      );
 
       return updated;
     }
 
     // Handle Rescheduling Logic
-    if (data.when && new Date(data.when).getTime() !== new Date(existingBooking.when).getTime()) {
+    if (
+      data.when &&
+      new Date(data.when).getTime() !== new Date(existingBooking.when).getTime()
+    ) {
       const newTime = new Date(data.when);
-      
+
       const updated = await this.prisma.booking.update({
         where: { id },
         data: {
           when: newTime,
           ...data,
-        }
+        },
       });
 
       await sendBookingUpdateEmail({
@@ -118,7 +142,7 @@ export class BookingService {
         name: existingBooking.name,
         newTime,
         meetingId: existingBooking.meetingId || undefined,
-      }).catch(err => console.error("Failed to send reschedule email", err));
+      }).catch((err) => console.error("Failed to send reschedule email", err));
 
       return updated;
     }
@@ -142,11 +166,11 @@ export class BookingService {
     });
 
     await sendBookingCancellationEmail({
-        to: booking.email,
-        name: booking.name,
-        originalTime: booking.when,
-    }).catch(err => console.error("Failed to send cancellation email", err));
-    
+      to: booking.email,
+      name: booking.name,
+      originalTime: booking.when,
+    }).catch((err) => console.error("Failed to send cancellation email", err));
+
     return { message: "Booking cancelled successfully" };
   }
 }

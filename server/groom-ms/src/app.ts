@@ -1,8 +1,10 @@
-import { join } from 'path';
-import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
-import { FastifyPluginAsync, FastifyServerOptions } from 'fastify';
+import { join } from "path";
+import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
+import { FastifyPluginAsync, FastifyServerOptions } from "fastify";
 
-export interface AppOptions extends FastifyServerOptions, Partial<AutoloadPluginOptions> {}
+export interface AppOptions
+  extends FastifyServerOptions,
+    Partial<AutoloadPluginOptions> {}
 
 const options: AppOptions = {
   logger: {
@@ -22,29 +24,29 @@ const options: AppOptions = {
 };
 
 const app: FastifyPluginAsync<AppOptions> = async (
-    fastify,
-    opts
+  fastify,
+  opts,
 ): Promise<void> => {
   // Register Plugins (Prisma, etc) via autoload
   void fastify.register(AutoLoad, {
-    dir: join(__dirname, 'plugins'),
-    options: opts
+    dir: join(__dirname, "plugins"),
+    options: opts,
   });
 
   // Register Routes via autoload
   void fastify.register(AutoLoad, {
-    dir: join(__dirname, 'routes'),
-    options: opts
+    dir: join(__dirname, "routes"),
+    options: { ...opts, prefix: "/api" }, // Add /api prefix
   });
-  
+
   // Register CORS
-  fastify.register(import('@fastify/cors'), { 
-    origin: true // Allow all for now, or match *
+  fastify.register(import("@fastify/cors"), {
+    origin: true, // Allow all for now, or match *
   });
-  
+
   // Register Helmet
-  fastify.register(import('@fastify/helmet'), {
-      global: true
+  fastify.register(import("@fastify/helmet"), {
+    global: true,
   });
 };
 

@@ -5,9 +5,12 @@ import ConfessionsAdminTable from "##/components/admin/ConfessionsAdminTable";
 export const revalidate = 60;
 
 export default async function AdminConfessionsPage() {
-  const res = await fetch("http://localhost:3004/confessions", {
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/confessions`,
+    {
+      cache: "no-store",
+    },
+  );
   const confessions = res.ok ? await res.json() : [];
 
   const confessionRows = confessions.map((c: any) => {

@@ -1,5 +1,6 @@
 import BlogCard from "##/components/blogs/BlogCard";
 import ScrollAnimation from "##/components/common/ScrollAnimation";
+import groomService from "##/services/groomService";
 
 // Local fallback type for renderable blog posts. Replace with shared type if you
 // add `types/Blog` later.
@@ -22,14 +23,12 @@ type RenderBlog = {
 export const revalidate = 60;
 
 async function getBlogs(): Promise<RenderBlog[]> {
-  // Direct fetch to groom-ms via rewrite or direct URL if SSR.
-  // Since this is a Server Component, we can fetch from localhost:3004 directly or use absolute URL.
-  // Using direct MS URL for server-side fetch is often faster/simpler than bouncing through Next.js API layer unless we need auth cookie forwarding.
-  const res = await fetch("http://localhost:3004/blogs", {
-    cache: "no-store",
-  });
-  if (!res.ok) return [];
-  return res.json();
+  try {
+    return await groomService.getBlogs();
+  } catch (error) {
+    console.error("Failed to fetch blogs:", error);
+    return [];
+  }
 }
 
 const Blogs = async () => {

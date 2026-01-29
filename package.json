@@ -1,31 +1,31 @@
 {
-    "name": "groom",
-    "version": "1.0.0",
-    "private": true,
-    "scripts": {
-        "force": "pnpx codemod pnpm/catalog",
-        "dev": "concurrently \"pnpm dev:web\" \"pnpm dev:user-ms\" \"pnpm dev:booking\"",
-        "dev:web": "pnpm --filter groom-web dev",
-        "dev:user-ms": "pnpm --filter user-ms dev",
-        "dev:booking": "pnpm --filter booking-ms dev",
-        "dev:groom-ms": "pnpm --filter groom-ms dev",
-        "build": "pnpm -r build",
-        "test": "pnpm -r test",
-        "lint": "biome check .",
-        "format": "biome format --write .",
-        "postinstall": "pnpm -r db:generate",
-        "db:push-force": "pnpm -r db:push --accept-data-loss",
-        "db:deploy": "bash scripts/db-deploy.sh"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "devDependencies": {
-        "@biomejs/biome": "catalog:",
-        "@types/node": "catalog:",
-        "concurrently": "catalog:",
-        "dotenv": "catalog:",
-        "tsx": "catalog:",
-        "typescript": "catalog:"
-    }
+  "name": "groom",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "force": "pnpx codemod pnpm/catalog",
+    "dev": "concurrently \"pnpm dev:web\" \"pnpm dev:user-ms\" \"pnpm dev:booking\"",
+    "dev:web": "pnpm --filter groom-web dev",
+    "dev:user-ms": "pnpm --filter user-ms dev",
+    "dev:booking": "pnpm --filter booking-ms dev",
+    "dev:groom-ms": "pnpm --filter groom-ms dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "postinstall": "pnpm -r db:generate",
+    "db:push-force": "pnpm -r db:push --accept-data-loss",
+    "db:deploy": "bash scripts/db-deploy.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "@types/node": "catalog:",
+    "concurrently": "catalog:",
+    "dotenv": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
+  }
 }

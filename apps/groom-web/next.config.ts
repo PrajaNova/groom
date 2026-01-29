@@ -21,32 +21,37 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-  },  
+  },
   async rewrites() {
+    const BOOKING_URL =
+      process.env.BOOKING_SERVICE_URL || "http://localhost:3003";
+    const GROOM_URL = process.env.GROOM_SERVICE_URL || "http://localhost:3004";
+    const USER_URL = process.env.USER_SERVICE_URL || "http://localhost:3002";
+
     return [
       {
         source: "/api/bookings/:path*",
-        destination: "http://localhost:3003/api/bookings/:path*", // booking-ms
+        destination: `${BOOKING_URL}/api/bookings/:path*`, // booking-ms
       },
       {
         source: "/api/blogs/:path*",
-        destination: "http://localhost:3004/blogs/:path*", // groom-ms
+        destination: `${GROOM_URL}/api/blogs/:path*`, // groom-ms (now with /api prefix)
       },
       {
         source: "/api/confessions/:path*",
-        destination: "http://localhost:3004/confessions/:path*", // groom-ms
+        destination: `${GROOM_URL}/api/confessions/:path*`, // groom-ms (now with /api prefix)
       },
       {
         source: "/api/jaas-token",
-        destination: "http://localhost:3004/jaas-token", // groom-ms
+        destination: `${GROOM_URL}/api/jaas-token`, // groom-ms (now with /api prefix)
       },
       {
         source: "/api/user/:path*",
-        destination: "http://localhost:3002/api/user/:path*", // user-ms
+        destination: `${USER_URL}/api/user/:path*`, // user-ms
       },
       {
         source: "/api/auth/:path*",
-        destination: "http://localhost:3002/api/auth/:path*", // user-ms
+        destination: `${USER_URL}/api/auth/:path*`, // user-ms
       },
     ];
   },

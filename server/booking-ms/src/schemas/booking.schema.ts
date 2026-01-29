@@ -15,7 +15,10 @@ export const BookingSchema = z
     id: z.string().uuid(),
     name: z.string().min(2),
     email: z.string().email(),
-    when: z.string().datetime().or(z.date().transform(d => d.toISOString())),
+    when: z
+      .string()
+      .datetime()
+      .or(z.date().transform((d) => d.toISOString())),
     reason: z.string(),
     userId: z.string().nullable().optional(),
     status: BookingStatusSchema,

@@ -1,13 +1,22 @@
+# Dependencies
 node_modules
+
+# System files
 .DS_Store
+
+# Build outputs
 dist
 .next
 coverage
 build
-.env
 generated
-**/**/.env
 
-server/booking-ms/.env
-server/groom-ms/.env
-server/user-ms/.env
+# Environment variables - DO NOT COMMIT
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+server/**/.env
+apps/**/.env

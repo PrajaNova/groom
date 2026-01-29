@@ -7,9 +7,12 @@ export const revalidate = 0;
 
 async function getConfessions() {
   try {
-    const res = await fetch("http://localhost:3004/confessions", {
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/confessions`,
+      {
+        cache: "no-store",
+      },
+    );
     if (!res.ok) {
       // Handle error gracefully, maybe return empty array
       console.error("Failed to fetch confessions:", res.status, res.statusText);

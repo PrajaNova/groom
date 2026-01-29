@@ -9,9 +9,12 @@ export const revalidate = 0;
 type Props = { params: Promise<{ slug: string }> };
 
 async function getBlog(slug: string) {
-  const res = await fetch(`http://localhost:3004/blogs/${slug}`, {
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/blogs/${slug}`,
+    {
+      cache: "no-store",
+    },
+  );
   if (!res.ok) return null;
   return res.json();
 }
