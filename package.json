@@ -12,7 +12,10 @@
         "build": "pnpm -r build",
         "test": "pnpm -r test",
         "lint": "biome check .",
-        "format": "biome format --write ."
+        "format": "biome format --write .",
+        "postinstall": "pnpm -r db:generate",
+        "db:push-force": "pnpm -r db:push --accept-data-loss",
+        "db:deploy": "bash scripts/db-deploy.sh"
     },
     "keywords": [],
     "author": "",

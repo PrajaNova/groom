@@ -65,7 +65,7 @@ const RescheduleBookingModal: React.FC<Props> = ({
       const when = new Date(dateTime).toISOString();
 
       // booking should exist in reschedule mode
-      const res = await fetch(`/api/booking/${booking?.id}`, {
+      const res = await fetch(`/api/bookings/${booking?.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ when }),

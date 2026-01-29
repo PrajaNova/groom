@@ -6,6 +6,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["booking_schema"]
 }
 
 model Booking {
@@ -19,6 +20,8 @@ model Booking {
   meetingId String?
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
+
+  @@schema("booking_schema")
 }
 
 enum BookingStatus {
@@ -26,4 +29,6 @@ enum BookingStatus {
   confirmed
   completed
   cancelled
+
+  @@schema("booking_schema")
 }

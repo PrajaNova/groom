@@ -11,7 +11,9 @@
         "dev": "tsx watch --clear-screen=false src/server.ts",
         "typecheck": "tsc --noEmit",
         "db:generate": "prisma generate",
-        "db:push": "prisma db push",
+        "db:diff": "prisma db push --dry-run",
+        "db:push": "prisma db push --skip-generate",
+        "db:push:force": "prisma db push --accept-data-loss",
         "db:migrate": "prisma migrate dev",
         "db:studio": "prisma studio",
         "test": "vitest"

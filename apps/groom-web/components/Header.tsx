@@ -13,6 +13,17 @@ const Header: React.FC = () => {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const { user, logout } = useAuth();
 
+  const getInitials = (name: string) => {
+    return name
+      ? name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 2)
+      : "";
+  };
+
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const NavLinks = () => (
@@ -94,12 +105,18 @@ const Header: React.FC = () => {
                 }}
                 className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none overflow-hidden border border-gray-300"
               >
-                {user?.avatar ? (
-                  <img
-                    src={user.avatar}
-                    alt={user.name}
-                    className="w-full h-full object-cover"
-                  />
+                {user ? (
+                  user.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-sm font-semibold text-gray-700">
+                      {getInitials(user.name)}
+                    </span>
+                  )
                 ) : (
                   <svg
                     className="w-6 h-6 text-gray-500"
@@ -161,12 +178,18 @@ const Header: React.FC = () => {
               }}
               className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 border border-gray-300"
             >
-              {user?.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt={user.name}
-                  className="w-full h-full object-cover"
-                />
+              {user ? (
+                user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-xs font-semibold text-gray-700">
+                    {getInitials(user.name)}
+                  </span>
+                )
               ) : (
                 <svg
                   className="w-5 h-5 text-gray-500"

@@ -8,6 +8,7 @@ datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
+  schemas   = ["user_schema"]
 }
 
 // User model - Core user information
@@ -30,6 +31,7 @@ model User {
 
   @@index([email])
   @@map("users")
+  @@schema("user_schema")
 }
 
 // Role model - Dynamic Role-Based Access Control
@@ -44,6 +46,7 @@ model Role {
   users       User[]
 
   @@map("roles")
+  @@schema("user_schema")
 }
 
 // Address model - User shipping addresses
@@ -66,6 +69,7 @@ model Address {
 
   @@index([userId])
   @@map("addresses")
+  @@schema("user_schema")
 }
 
 // ProviderAccount model - OAuth provider linkages
@@ -85,6 +89,7 @@ model ProviderAccount {
   @@index([userId])
   @@index([provider])
   @@map("provider_accounts")
+  @@schema("user_schema")
 }
 
 // Session model - User sessions
@@ -105,6 +110,7 @@ model Session {
   @@index([sessionId])
   @@index([expiresAt])
   @@map("sessions")
+  @@schema("user_schema")
 }
 
 // Token model - OAuth provider tokens (stored securely)
@@ -124,6 +130,7 @@ model Token {
   @@index([userId])
   @@index([provider])
   @@map("tokens")
+  @@schema("user_schema")
 }
 
 // AuditLog model - Security and compliance logging
@@ -143,4 +150,5 @@ model AuditLog {
   @@index([event])
   @@index([timestamp])
   @@map("audit_logs")
+  @@schema("user_schema")
 }

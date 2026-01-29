@@ -30,7 +30,7 @@ export default function BookingsAdminTable({ bookings }: Props) {
       "Cancel this booking? This will delete the booking.",
       async () => {
         try {
-          const res = await fetch(`/api/booking/${id}`, { method: "DELETE" });
+          const res = await fetch(`/api/bookings/${id}`, { method: "DELETE" });
           if (!res.ok) throw new Error("Failed to cancel booking");
           showAlert("Booking cancelled", () => {
             router.refresh();
@@ -45,7 +45,7 @@ export default function BookingsAdminTable({ bookings }: Props) {
   async function handleConfirm(id: string) {
     showConfirm("Confirm this booking?", async () => {
       try {
-        const res = await fetch(`/api/booking/${id}`, {
+        const res = await fetch(`/api/bookings/${id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ status: "confirmed" }),
@@ -81,7 +81,7 @@ export default function BookingsAdminTable({ bookings }: Props) {
         mode="suggest"
         onSuggest={async (datetime: string) => {
           try {
-            const res = await fetch(`/api/booking/${bk.id}`, {
+            const res = await fetch(`/api/bookings/${bk.id}`, {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ when: new Date(datetime).toISOString() }),

@@ -9,6 +9,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["groom_schema"]
 }
 
 model Blog {
@@ -24,6 +25,8 @@ model Blog {
   readTime    Int?     // In minutes
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@schema("groom_schema")
 }
 
 model Confession {
@@ -33,6 +36,8 @@ model Confession {
   
   // Optional: If we want to capture who submitted it anonymously but still have record if they opted in
   // For now, keeping it simple as per implementation plan
+
+  @@schema("groom_schema")
 }
 
 model Testimonial {
@@ -40,4 +45,6 @@ model Testimonial {
   quote     String
   author    String
   createdAt DateTime @default(now())
+
+  @@schema("groom_schema")
 }

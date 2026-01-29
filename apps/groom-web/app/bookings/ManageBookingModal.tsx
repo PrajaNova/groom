@@ -25,7 +25,7 @@ const ManageBookingModal: React.FC<Props> = ({ booking }) => {
   const handleCancel = () => {
     showConfirm("Are you sure you want to cancel this booking?", async () => {
       try {
-        const res = await fetch(`/api/booking/${booking.id}`, {
+        const res = await fetch(`/api/bookings/${booking.id}`, {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
         });

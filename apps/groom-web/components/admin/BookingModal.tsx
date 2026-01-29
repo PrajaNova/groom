@@ -32,7 +32,7 @@ export default function BookingModal({ booking, onClose }: Props) {
       }
 
       try {
-        const res = await fetch(`/api/booking/${id}`, {
+        const res = await fetch(`/api/bookings/${id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ status: "completed" }),

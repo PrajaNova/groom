@@ -31,7 +31,7 @@ const BookingList: React.FC<Props> = ({ bookings, onRefresh }) => {
 
   const cancelBooking = async (id: string) => {
     try {
-      const res = await fetch(`/api/booking/${id}`, {
+      const res = await fetch(`/api/bookings/${id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
       });

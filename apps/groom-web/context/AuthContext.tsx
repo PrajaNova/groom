@@ -41,7 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         if (res.ok) {
           const data = await res.json();
           console.log("User authenticated:", data);
-          setUser(data);
+          setUser(data.user);
           setSessionToken("cookie-based");
           localStorage.setItem("user", JSON.stringify(data));
           localStorage.setItem("sessionToken", "cookie-based");

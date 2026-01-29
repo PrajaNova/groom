@@ -33,7 +33,7 @@ function BookingPageContent() {
   const fetchBookings = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/booking?status=pending,confirmed");
+      const res = await fetch("/api/bookings?status=pending,confirmed");
       const data: BackendBooking[] = await res.json();
 
       const formatted: Booking[] = data.map((b) => {
