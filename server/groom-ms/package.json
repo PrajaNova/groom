@@ -40,6 +40,7 @@
         "zod-to-json-schema": "catalog:"
     },
     "devDependencies": {
+        "@types/jsonwebtoken": "^9.0.10",
         "@types/node": "catalog:",
         "prisma": "catalog:",
         "tsconfig-paths": "catalog:",

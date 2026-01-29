@@ -2,10 +2,29 @@ import ScrollAnimation from "##/components/common/ScrollAnimation";
 import ConfessionForm from "##/components/confession/ConfessionForm";
 import ConfessionList from "##/components/confession/ConfessionLIst";
 
-// Revalidate every 60 seconds to show new confessions
-export const revalidate = 60;
+// Revalidate every 0 seconds to show new confessions immediately on refresh
+export const revalidate = 0;
 
-const ConfessionPage: React.FC = () => {
+async function getConfessions() {
+  try {
+    const res = await fetch("http://localhost:3004/confessions", {
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      // Handle error gracefully, maybe return empty array
+      console.error("Failed to fetch confessions:", res.status, res.statusText);
+      return [];
+    }
+    return res.json();
+  } catch (error) {
+    console.error("Error fetching confessions:", error);
+    return [];
+  }
+}
+
+const ConfessionPage = async () => {
+  const confessions = await getConfessions();
+
   return (
     <main className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
       <ScrollAnimation>
@@ -34,7 +53,7 @@ const ConfessionPage: React.FC = () => {
           </h3>
         </ScrollAnimation>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <ConfessionList />
+          <ConfessionList confessions={confessions} />
         </div>
       </section>
     </main>

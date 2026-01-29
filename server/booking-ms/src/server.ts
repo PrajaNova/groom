@@ -12,7 +12,11 @@ const start = async () => {
     
     server.log.info("=".repeat(60));
     server.log.info(`🚀 Server (booking-ms) is running!`);
+    server.log.info(`📍 Host: 0.0.0.0`);
     server.log.info(`🔌 Port: ${env.PORT}`);
+    server.log.info(
+      `🌍 URL: http://localhost:${env.PORT}`,
+    );
     server.log.info(`🔧 Environment: ${env.NODE_ENV}`);
     server.log.info("=".repeat(60));
 

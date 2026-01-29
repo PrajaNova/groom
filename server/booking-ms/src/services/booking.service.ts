@@ -1,4 +1,4 @@
-import { PrismaClient, Booking, BookingStatus } from '@prisma/client';
+import { PrismaClient, Booking, BookingStatus } from '@generated/client';
 import { sendBookingConfirmationEmail, sendBookingCancellationEmail, sendBookingUpdateEmail, generateMeetingId } from '../utils/email';
 
 export class BookingService {

@@ -1,10 +1,27 @@
 import type { NextConfig } from "next";
+// Trigger restart
 
 const nextConfig: NextConfig = {
-  /* config options here */
   sassOptions: {
-    includePaths: ["./app"],
+    implementation: "sass-embedded",
   },
+  allowedDevOrigins: ["https://lottie.host/"],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "placehold.co",
+        port: "",
+        pathname: "/**",
+      },
+    ],
+  },  
   async rewrites() {
     return [
       {

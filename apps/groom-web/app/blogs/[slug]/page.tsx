@@ -4,7 +4,7 @@ import Link from "next/link";
 import AppImage from "##/components/AppImage";
 import Markdown from "##/components/Markdown";
 
-export const revalidate = 60;
+export const revalidate = 0;
 
 type Props = { params: Promise<{ slug: string }> };
 

@@ -1,19 +1,32 @@
-import { buildApp } from './app'
-import dotenv from 'dotenv'
+import "dotenv/config";
+import Fastify from 'fastify';
+import app, { options } from './app';
 
-dotenv.config()
+const PORT = Number(process.env.PORT) || 3004;
+const HOST = process.env.HOST || "0.0.0.0";
+
+const server = Fastify(options);
+
+server.register(app);
 
 const start = async () => {
-    const app = await buildApp()
-    
     try {
-        const port = Number(process.env.PORT) || 3003
-        await app.listen({ port, host: '0.0.0.0' })
-        console.log(`Groom MS listening on port ${port}`)
+        await server.listen({ port: PORT, host: HOST });
+        
+        // Log server startup information
+        server.log.info("=".repeat(60));
+        server.log.info(`🚀 Server (groom-ms) is running!`);
+        server.log.info(`📍 Host: ${HOST}`);
+        server.log.info(`🔌 Port: ${PORT}`);
+        server.log.info(
+          `🌍 URL: http://${HOST === "0.0.0.0" ? "localhost" : HOST}:${PORT}`,
+        );
+        server.log.info(`🔧 Environment: ${process.env.NODE_ENV || "development"}`);
+        server.log.info("=".repeat(60));
     } catch (err) {
-        app.log.error(err)
-        process.exit(1)
+        server.log.error(err);
+        process.exit(1);
     }
-}
+};
 
-start()
+start();

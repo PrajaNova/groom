@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { BookingService } from '../services/booking.service';
-import { BookingStatus } from '@prisma/client';
+import { BookingStatus } from '@generated/client';
 import { CreateBookingRequest, UpdateBookingRequest, BookingQuery } from '../schemas/booking.schema';
 import { IdParamSchema } from '../schemas/common'; // Import from common
 import { z } from 'zod';

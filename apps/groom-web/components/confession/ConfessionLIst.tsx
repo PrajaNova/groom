@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import ConfessionCard from "./ConfessionCard";
 
 interface Confession {
@@ -9,17 +6,11 @@ interface Confession {
   createdAt: string;
 }
 
-const ConfessionList: React.FC = () => {
-  const [confessions, setConfessions] = useState<Confession[]>([]);
+interface ConfessionListProps {
+  confessions: Confession[];
+}
 
-  useEffect(() => {
-    // Fetch from proxy route which forwards to groom-ms
-    fetch("/api/confessions")
-      .then((res) => res.json())
-      .then((data) => setConfessions(Array.isArray(data) ? data : []))
-      .catch((err) => console.error("Failed to fetch confessions", err));
-  }, []);
-
+const ConfessionList: React.FC<ConfessionListProps> = ({ confessions }) => {
   return (
     <>
       {confessions.map((confession) => (

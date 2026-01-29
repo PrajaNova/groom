@@ -1,35 +1,52 @@
-import path from 'path'
-import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload'
-import Fastify, { FastifyInstance } from 'fastify'
+import { join } from 'path';
+import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
+import { FastifyPluginAsync, FastifyServerOptions } from 'fastify';
 
-export async function buildApp(opts: Record<string, any> = {}): Promise<FastifyInstance> {
-  const app = Fastify(opts)
+export interface AppOptions extends FastifyServerOptions, Partial<AutoloadPluginOptions> {}
 
-  // Register Plugins (Prisma, etc)
-  // We manually register prisma plugin for type safety in other files if needed, 
-  // or let autoload handle 'plugins' folder.
-  // Given we created src/plugins, autoload is easiest.
+const options: AppOptions = {
+  logger: {
+    level: process.env.LOG_LEVEL || "info",
+    transport:
+      process.env.NODE_ENV === "development"
+        ? {
+            target: "pino-pretty",
+            options: {
+              colorize: true,
+              translateTime: "HH:MM:ss Z",
+              ignore: "pid,hostname",
+            },
+          }
+        : undefined,
+  },
+};
 
-  void app.register(AutoLoad, {
-    dir: path.join(__dirname, 'plugins'),
-    options: Object.assign({}, opts)
-  })
+const app: FastifyPluginAsync<AppOptions> = async (
+    fastify,
+    opts
+): Promise<void> => {
+  // Register Plugins (Prisma, etc) via autoload
+  void fastify.register(AutoLoad, {
+    dir: join(__dirname, 'plugins'),
+    options: opts
+  });
 
-  // Register Routes
-  void app.register(AutoLoad, {
-    dir: path.join(__dirname, 'routes'),
-    options: Object.assign({}, opts)
-  })
+  // Register Routes via autoload
+  void fastify.register(AutoLoad, {
+    dir: join(__dirname, 'routes'),
+    options: opts
+  });
   
   // Register CORS
-  app.register(import('@fastify/cors'), { 
+  fastify.register(import('@fastify/cors'), { 
     origin: true // Allow all for now, or match *
-  })
+  });
   
   // Register Helmet
-  app.register(import('@fastify/helmet'), {
+  fastify.register(import('@fastify/helmet'), {
       global: true
-  })
+  });
+};
 
-  return app
-}
+export default app;
+export { app, options };

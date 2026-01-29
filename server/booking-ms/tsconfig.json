@@ -48,6 +48,9 @@
             ],
             "@utils/*": [
                 "src/utils/*"
+            ],
+            "@generated/*": [
+                "src/generated/*"
             ]
         }
     },
