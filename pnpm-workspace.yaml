@@ -1,10 +1,7 @@
 packages:
   - apps/*
   - server/*
-hoistPattern:
-  - "*"
-  - "!prisma"
-  - "!@prisma/*"
+  
 onlyBuiltDependencies:
   - "@parcel/watcher"
   - "@prisma/client"
