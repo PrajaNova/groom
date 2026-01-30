@@ -161,5 +161,10 @@ export const loadConfig = (): AppConfig => {
       enabled: getBoolEnv("AUDIT_LOG_ENABLED", true),
       events: parseEvents(process.env.AUDIT_LOG_EVENTS),
     },
+    jitsi: {
+      appId: getEnv("JITSI_APP_ID"),
+      apiKey: getEnv("JITSI_API_KEY"),
+      privateKey: getEnv("JITSI_PRIVATE_KEY"),
+    },
   };
 };

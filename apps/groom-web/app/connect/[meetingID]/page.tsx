@@ -12,13 +12,17 @@ export default function MeetingPage() {
   const [isReady, setIsReady] = useState(false);
   const [jwtToken, setJwtToken] = useState<string | null>(null);
   const [isLoadingToken, setIsLoadingToken] = useState(true);
+  const [appId, setAppId] = useState();
 
   useEffect(() => {
     const fetchToken = async () => {
       try {
-        const response = await fetch("/api/jaas-token", {
+        const response = await fetch("/api/jaas/token", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            credentials: "include",
+          },
           body: JSON.stringify({ meetingId }),
         });
 
@@ -30,6 +34,7 @@ export default function MeetingPage() {
 
         const data = await response.json();
         setJwtToken(data.token);
+        setAppId(data.appId);
       } catch (error) {
         console.error("Error fetching JaaS token:", error);
       } finally {
@@ -61,9 +66,9 @@ export default function MeetingPage() {
 
   return (
     <div className="h-screen w-screen bg-[#2C3531]">
-      {isReady && !isLoadingToken && jwtToken && (
+      {isReady && !isLoadingToken && jwtToken && appId && (
         <JaaSMeeting
-          appId={process.env.NEXT_PUBLIC_JITSI_APP_ID || ""}
+          appId={appId}
           roomName={`Groom_${meetingId}`}
           jwt={jwtToken}
           configOverwrite={{

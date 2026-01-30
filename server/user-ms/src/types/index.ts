@@ -60,6 +60,13 @@ export interface AppConfig {
   rateLimit: RateLimitConfig;
   database: DatabaseConfig;
   audit: AuditConfig;
+  jitsi: JitsiConfig;
+}
+
+export interface JitsiConfig {
+  appId: string;
+  apiKey: string;
+  privateKey: string;
 }
 
 export interface ProviderConfig {

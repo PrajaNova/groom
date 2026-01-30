@@ -55,6 +55,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "catalog:",
+    "@types/jsonwebtoken": "catalog:",
     "@types/node": "catalog:",
     "prisma": "catalog:",
     "tsc-alias": "catalog:",

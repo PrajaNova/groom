@@ -21,6 +21,18 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.google.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   async rewrites() {
@@ -43,8 +55,8 @@ const nextConfig: NextConfig = {
         destination: `${GROOM_URL}/api/confessions/:path*`, // groom-ms (now with /api prefix)
       },
       {
-        source: "/api/jaas-token",
-        destination: `${GROOM_URL}/api/jaas-token`, // groom-ms (now with /api prefix)
+        source: "/api/jaas/token",
+        destination: `${USER_URL}/api/jaas/token`, // groom-ms (now with /api prefix)
       },
       {
         source: "/api/user/:path*",
