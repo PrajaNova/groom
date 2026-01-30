@@ -1,39 +1,25 @@
 {
   "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
   "[javascript]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "[typecript]": {
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "[scss]": {
-    "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter"
-  },
-  "[css]": {
-    "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter"
-  },
-  "[jsonc]": {
+  "[json]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "files.associations": {
-    "*.scss": "tailwindcss"
-  },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.biome": "always",
-    "source.organizeImports": "never",
-    "source.removeUnused.ts": "always",
-    "source.fixAll.stylelint": "always"
-  },
-  "tailwindCSS.includeLanguages": {
-    "plaintext": "html",
-    "javascript": "javascript",
-    "typescriptreact": "typescriptreact"
-  },
-  "editor.formatOnSave": true,
-  "files.eol": "\n",
-  "scss.validate": false,
-  "cSpell.words": ["Jitsi", "neondatabase", "turbopack"]
+  "biome.enabled": true,
+  "biome.lsp.bin": "./node_modules/@biomejs/biome/bin/biome"
 }

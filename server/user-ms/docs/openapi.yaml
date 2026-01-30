@@ -1,0 +1,1018 @@
+openapi: 3.1.0
+info:
+  title: user-ms API
+  version: 1.0.0
+  description: User Authentication and Profile Microservice with Multi-Provider
+    OAuth Support
+servers:
+  - url: http://localhost:3000
+    description: Development server
+  - url: https://api.example.com
+    description: Production server
+tags:
+  - name: Auth
+    description: Authentication and authorization endpoints
+  - name: Role
+    description: Role management endpoints
+  - name: Address
+    description: Address management endpoints
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: cuid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          minLength: 2
+        avatar:
+          type: string
+          format: uri
+        createdAt:
+          type:
+            - string
+            - "null"
+          format: date
+        updatedAt:
+          type:
+            - string
+            - "null"
+          format: date
+        roles:
+          type: array
+          items:
+            type: string
+          default: []
+      required:
+        - id
+        - email
+        - name
+        - createdAt
+        - updatedAt
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: cuid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          minLength: 2
+        avatar:
+          type: string
+          format: uri
+        createdAt:
+          type:
+            - string
+            - "null"
+          format: date
+        updatedAt:
+          type:
+            - string
+            - "null"
+          format: date
+        roles:
+          type: array
+          items:
+            type: string
+          default: []
+      required:
+        - id
+        - email
+        - name
+        - createdAt
+        - updatedAt
+    UserWithRoles:
+      allOf:
+        - $ref: "#/components/schemas/UserResponse"
+        - type: object
+          properties:
+            roles:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: cuid
+                  name:
+                    type: string
+                  description:
+                    type: string
+                required:
+                  - id
+                  - name
+          required:
+            - roles
+    Session:
+      type: object
+      properties:
+        sessionId:
+          type: string
+        userId:
+          type: string
+          format: cuid
+        expiresAt:
+          type:
+            - string
+            - "null"
+          format: date
+        device:
+          type: string
+        userAgent:
+          type: string
+        ipAddress:
+          type: string
+        createdAt:
+          type:
+            - string
+            - "null"
+          format: date
+        isCurrent:
+          type: boolean
+          default: false
+      required:
+        - sessionId
+        - userId
+        - expiresAt
+        - createdAt
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: cuid
+        name:
+          type: string
+          minLength: 2
+        description:
+          type: string
+        createdAt:
+          type:
+            - string
+            - "null"
+          format: date
+        updatedAt:
+          type:
+            - string
+            - "null"
+          format: date
+      required:
+        - id
+        - name
+        - createdAt
+        - updatedAt
+    Address:
+      type: object
+      properties:
+        id:
+          type: string
+          format: cuid
+        userId:
+          type: string
+          format: cuid
+        street:
+          type: string
+          minLength: 1
+        city:
+          type: string
+          minLength: 1
+        state:
+          type: string
+          minLength: 1
+        zipCode:
+          type: string
+          minLength: 1
+        country:
+          type: string
+          minLength: 1
+        phone:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          default: Home
+        isDefault:
+          type: boolean
+          default: false
+        createdAt:
+          type:
+            - string
+            - "null"
+          format: date
+        updatedAt:
+          type:
+            - string
+            - "null"
+          format: date
+      required:
+        - id
+        - userId
+        - street
+        - city
+        - state
+        - zipCode
+        - country
+        - phone
+        - createdAt
+        - updatedAt
+    Error:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 400
+        error:
+          type: string
+          example: Bad Request
+        message:
+          type: string
+          example: Validation failed
+      required:
+        - statusCode
+        - error
+        - message
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+        - message
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/UserResponse"
+        sessionToken:
+          type: string
+      required:
+        - user
+        - sessionToken
+    RegisterRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+          maxLength: 100
+        name:
+          type: string
+          minLength: 2
+          maxLength: 100
+        avatar:
+          type: string
+          format: uri
+      required:
+        - email
+        - password
+        - name
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 1
+      required:
+        - email
+        - password
+    Provider:
+      type: object
+      properties:
+        name:
+          type: string
+        displayName:
+          type: string
+        icon:
+          type: string
+        enabled:
+          type: boolean
+      required:
+        - name
+        - displayName
+        - icon
+        - enabled
+    ProviderListResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/Provider"
+    SessionResponse:
+      type: object
+      properties:
+        sessionId:
+          type: string
+        userId:
+          type: string
+          format: cuid
+        expiresAt:
+          type:
+            - string
+            - "null"
+          format: date
+        device:
+          type: string
+        userAgent:
+          type: string
+        ipAddress:
+          type: string
+        createdAt:
+          type:
+            - string
+            - "null"
+          format: date
+        isCurrent:
+          type: boolean
+          default: false
+      required:
+        - sessionId
+        - userId
+        - expiresAt
+        - createdAt
+    UserProfileResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/UserResponse"
+        session:
+          $ref: "#/components/schemas/SessionResponse"
+      required:
+        - user
+        - session
+    SessionListResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/SessionResponse"
+    RoleResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: cuid
+        name:
+          type: string
+          minLength: 2
+        description:
+          type: string
+        createdAt:
+          type:
+            - string
+            - "null"
+          format: date
+        updatedAt:
+          type:
+            - string
+            - "null"
+          format: date
+      required:
+        - id
+        - name
+        - createdAt
+        - updatedAt
+    RoleCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 2
+        description:
+          type: string
+      required:
+        - name
+    RoleListResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/RoleResponse"
+    AssignRole:
+      type: object
+      properties:
+        roleId:
+          type: string
+          format: cuid
+      required:
+        - roleId
+    AddressResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: cuid
+        userId:
+          type: string
+          format: cuid
+        street:
+          type: string
+          minLength: 1
+        city:
+          type: string
+          minLength: 1
+        state:
+          type: string
+          minLength: 1
+        zipCode:
+          type: string
+          minLength: 1
+        country:
+          type: string
+          minLength: 1
+        phone:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          default: Home
+        isDefault:
+          type: boolean
+          default: false
+        createdAt:
+          type:
+            - string
+            - "null"
+          format: date
+        updatedAt:
+          type:
+            - string
+            - "null"
+          format: date
+      required:
+        - id
+        - userId
+        - street
+        - city
+        - state
+        - zipCode
+        - country
+        - phone
+        - createdAt
+        - updatedAt
+    AddressCreate:
+      type: object
+      properties:
+        street:
+          type: string
+          minLength: 1
+        city:
+          type: string
+          minLength: 1
+        state:
+          type: string
+          minLength: 1
+        zipCode:
+          type: string
+          minLength: 1
+        country:
+          type: string
+          minLength: 1
+        phone:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          default: Home
+        isDefault:
+          type: boolean
+          default: false
+      required:
+        - street
+        - city
+        - state
+        - zipCode
+        - country
+        - phone
+    AddressListResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/AddressResponse"
+    AddressUpdate:
+      type: object
+      properties:
+        street:
+          type: string
+          minLength: 1
+        city:
+          type: string
+          minLength: 1
+        state:
+          type: string
+          minLength: 1
+        zipCode:
+          type: string
+          minLength: 1
+        country:
+          type: string
+          minLength: 1
+        phone:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          default: Home
+        isDefault:
+          type: boolean
+          default: false
+  parameters: {}
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://api.example.com/api/auth/authorize
+          tokenUrl: https://api.example.com/api/auth/token
+          scopes:
+            read:user: Read user information
+            write:user: Modify user information
+            read:roles: Read roles
+            write:roles: Manage roles
+            read:addresses: Read addresses
+            write:addresses: Manage addresses
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/auth/providers:
+    get:
+      tags:
+        - Auth
+      summary: Get list of OAuth providers
+      responses:
+        "200":
+          description: List of available OAuth providers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderListResponse"
+  /api/auth/callback/{provider}:
+    get:
+      tags:
+        - Auth
+      summary: OAuth callback endpoint
+      parameters:
+        - schema:
+            type: string
+          required: true
+          name: provider
+          in: path
+      responses:
+        "302":
+          description: Redirect to application
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/user/profile:
+    get:
+      tags:
+        - Auth
+      summary: Get user profile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfileResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/user/sessions:
+    get:
+      tags:
+        - Auth
+      summary: Get user sessions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of user sessions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionListResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/user/sessions/{sessionId}:
+    delete:
+      tags:
+        - Auth
+      summary: Revoke a session
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: string
+          required: true
+          name: sessionId
+          in: path
+      responses:
+        "200":
+          description: Session revoked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/roles:
+    post:
+      tags:
+        - Role
+      summary: Create a new role
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoleCreate"
+      responses:
+        "201":
+          description: Role created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoleResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Role already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      tags:
+        - Role
+      summary: Get all roles
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of roles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoleListResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/users/{id}/roles:
+    post:
+      tags:
+        - Role
+      summary: Assign role to user
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: string
+          required: true
+          name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssignRole"
+      responses:
+        "200":
+          description: Role assigned successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/addresses:
+    post:
+      tags:
+        - Address
+      summary: Create a new address
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddressCreate"
+      responses:
+        "201":
+          description: Address created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddressResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      tags:
+        - Address
+      summary: Get all addresses
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of addresses
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddressListResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/addresses/{id}:
+    get:
+      tags:
+        - Address
+      summary: Get address by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: string
+            format: cuid
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: Address details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddressResponse"
+        "404":
+          description: Address not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - Address
+      summary: Update address
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: string
+            format: cuid
+          required: true
+          name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddressUpdate"
+      responses:
+        "200":
+          description: Address updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddressResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Address not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - Address
+      summary: Delete address
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: string
+            format: cuid
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: Address deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "404":
+          description: Address not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+webhooks: {}

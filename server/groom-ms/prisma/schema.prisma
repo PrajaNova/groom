@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["groom_schema"]
+}
+
+model Blog {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  title       String
+  content     String   // Markdown content
+  excerpt     String?
+  author      String?
+  publishedAt DateTime?
+  category    String?
+  imageSeed   String?
+  readTime    Int?     // In minutes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@schema("groom_schema")
+}
+
+model Confession {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  
+  // Optional: If we want to capture who submitted it anonymously but still have record if they opted in
+  // For now, keeping it simple as per implementation plan
+
+  @@schema("groom_schema")
+}
+
+model Testimonial {
+  id        String   @id @default(uuid())
+  quote     String
+  author    String
+  createdAt DateTime @default(now())
+
+  @@schema("groom_schema")
+}
