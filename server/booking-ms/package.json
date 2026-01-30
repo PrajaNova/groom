@@ -6,7 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "start": "node dist/server.js",
-    "build": "tsc && tsc-alias && cp -r src/generated dist/",
+    "copy-client": "cp -r src/generated dist/",
+    "build": "pnpm run db:generate && tsc && tsc-alias && pnpm run copy-client",
     "watch:tsc": "tsc -w",
     "dev": "tsx watch --clear-screen=false src/server.ts",
     "typecheck": "tsc --noEmit",

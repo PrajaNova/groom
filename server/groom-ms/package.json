@@ -6,7 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "start": "node dist/server.js",
-    "build": "tsc && tsc-alias && cp -r src/generated dist/",
+    "copy-client": "cp -r src/generated dist/",
+    "build": "pnpm run db:generate && tsc && tsc-alias && pnpm run copy-client",
     "watch:tsc": "tsc -w",
     "dev": "tsx watch --clear-screen=false src/server.ts",
     "typecheck": "tsc --noEmit",
@@ -36,13 +37,13 @@
     "dotenv": "catalog:",
     "fastify": "catalog:",
     "fastify-plugin": "catalog:",
-    "jsonwebtoken": "^9.0.3",
-    "uuid-random": "^1.3.2",
+    "jsonwebtoken": "catalog:",
+    "uuid-random": "catalog:",
     "zod": "catalog:",
     "zod-to-json-schema": "catalog:"
   },
   "devDependencies": {
-    "@types/jsonwebtoken": "^9.0.10",
+    "@types/jsonwebtoken": "catalog:",
     "@types/node": "catalog:",
     "prisma": "catalog:",
     "tsc-alias": "catalog:",
