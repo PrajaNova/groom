@@ -20,7 +20,7 @@ type RenderBlog = {
 
 // ... metadata ...
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 async function getBlogs(): Promise<RenderBlog[]> {
   try {
