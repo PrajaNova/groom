@@ -169,7 +169,7 @@ export class SessionService {
     try {
       const decoded = this.fastify.jwt.verify(token);
       return decoded as { sessionId: string; userId: string };
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   }

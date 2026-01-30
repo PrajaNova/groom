@@ -1,16 +1,19 @@
-import { FastifyPluginAsync } from "fastify";
-import z from "zod";
+import type { FastifyPluginAsync } from "fastify";
 import jwt from "jsonwebtoken";
 import uuid from "uuid-random";
+import z from "zod";
 
 const TokenSchema = z.object({
   meetingId: z.string().min(1),
 });
 
-const jaasRoutes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+const jaasRoutes: FastifyPluginAsync = async (
+  fastify,
+  _opts,
+): Promise<void> => {
   fastify.post<{ Body: z.infer<typeof TokenSchema> }>(
     "/",
-    async function (request, reply) {
+    async (request, reply) => {
       const { meetingId } = request.body;
 
       const appId = process.env.JITSI_APP_ID;

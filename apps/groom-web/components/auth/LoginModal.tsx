@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import Image from "next/image";
+import type React from "react";
+import { useState } from "react";
 import { useAuth } from "##/context/AuthContext";
 
 interface LoginModalProps {
@@ -71,6 +73,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
+            <title>Close</title>
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -93,10 +96,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Full Name
               </label>
               <input
+                id="name"
                 type="text"
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#B48B7F]"
@@ -106,10 +113,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             </div>
           )}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Email
             </label>
             <input
+              id="email"
               type="email"
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#B48B7F]"
@@ -118,10 +129,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Password
             </label>
             <input
+              id="password"
               type="password"
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#B48B7F]"
@@ -165,10 +180,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             onClick={handleGoogleLogin}
             className="mt-4 w-full flex items-center justify-center gap-3 border border-gray-300 py-2 rounded-md hover:bg-gray-50 transition duration-300"
           >
-            <img
+            <Image
               src="https://www.google.com/favicon.ico"
               alt="Google"
               className="w-5 h-5"
+              width={20}
+              height={20}
             />
             <span className="text-gray-700 font-medium">Google</span>
           </button>

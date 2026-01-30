@@ -38,11 +38,11 @@ const BookingModal: React.FC = () => {
 
     try {
       const userStr = localStorage.getItem("user"); // fallback if context not avail here easily, but better to use Context
-      let userId = undefined;
+      let userId: string | undefined;
       if (userStr) {
         try {
           userId = JSON.parse(userStr).id;
-        } catch (e) {}
+        } catch (_: unknown) {}
       }
 
       const response = await fetch("/api/bookings", {

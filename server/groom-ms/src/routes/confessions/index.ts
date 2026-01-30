@@ -1,4 +1,4 @@
-import { FastifyPluginAsync } from "fastify";
+import type { FastifyPluginAsync } from "fastify";
 import z from "zod";
 
 const ConfessionSchema = z.object({
@@ -7,10 +7,10 @@ const ConfessionSchema = z.object({
 
 const confessionRoutes: FastifyPluginAsync = async (
   fastify,
-  opts,
+  _opts,
 ): Promise<void> => {
   // GET /confessions
-  fastify.get("/", async function (request, reply) {
+  fastify.get("/", async (_request, _reply) => {
     const confessions = await fastify.prisma.confession.findMany({
       orderBy: { createdAt: "desc" },
       take: 50, // Limit to recent 50
@@ -21,7 +21,7 @@ const confessionRoutes: FastifyPluginAsync = async (
   // POST /confessions
   fastify.post<{ Body: z.infer<typeof ConfessionSchema> }>(
     "/",
-    async function (request, reply) {
+    async (request, reply) => {
       const { content } = request.body;
 
       try {

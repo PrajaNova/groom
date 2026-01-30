@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
+import LoginModal from "##/components/auth/LoginModal";
 import BookingButton from "##/components/BookingButton";
 import { useAuth } from "##/context/AuthContext";
-import LoginModal from "##/components/auth/LoginModal";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -96,6 +97,7 @@ const Header: React.FC = () => {
             {/* User Profile / Login */}
             <div className="relative">
               <button
+                type="button"
                 onClick={() => {
                   if (user) {
                     setIsProfileDropdownOpen(!isProfileDropdownOpen);
@@ -107,10 +109,12 @@ const Header: React.FC = () => {
               >
                 {user ? (
                   user.avatar ? (
-                    <img
+                    <Image
                       src={user.avatar}
                       alt={user.name}
                       className="w-full h-full object-cover"
+                      width={32}
+                      height={32}
                     />
                   ) : (
                     <span className="text-sm font-semibold text-gray-700">
@@ -124,6 +128,7 @@ const Header: React.FC = () => {
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
+                    <title>Profile</title>
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -153,6 +158,7 @@ const Header: React.FC = () => {
                     My Bookings
                   </Link>
                   <button
+                    type="button"
                     onClick={() => {
                       logout();
                       setIsProfileDropdownOpen(false);
@@ -169,6 +175,7 @@ const Header: React.FC = () => {
           {/* Mobile Menu Button - Updated to encompass profile interactions on mobile if needed, or stick to simple menu */}
           <div className="md:hidden flex items-center gap-4">
             <button
+              type="button"
               onClick={() => {
                 if (user) {
                   // Logic for mobile profile clicking if different, otherwise same
@@ -180,10 +187,12 @@ const Header: React.FC = () => {
             >
               {user ? (
                 user.avatar ? (
-                  <img
+                  <Image
                     src={user.avatar}
                     alt={user.name}
                     className="w-full h-full object-cover"
+                    width={32}
+                    height={32}
                   />
                 ) : (
                   <span className="text-xs font-semibold text-gray-700">
@@ -197,6 +206,7 @@ const Header: React.FC = () => {
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
+                  <title>Profile</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -223,6 +233,7 @@ const Header: React.FC = () => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
+                <title>Toggle menu</title>
                 <line x1="3" y1="12" x2="21" y2="12"></line>
                 <line x1="3" y1="6" x2="21" y2="6"></line>
                 <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -246,6 +257,7 @@ const Header: React.FC = () => {
                   My Bookings
                 </Link>
                 <button
+                  type="button"
                   onClick={() => {
                     logout();
                     setIsMenuOpen(false);
@@ -258,6 +270,7 @@ const Header: React.FC = () => {
             )}
             {!user && (
               <button
+                type="button"
                 onClick={() => {
                   setIsLoginModalOpen(true);
                   setIsMenuOpen(false);

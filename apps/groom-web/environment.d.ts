@@ -5,7 +5,7 @@ interface Window {
   gtag: (
     command: "config" | "event" | "js" | "set",
     targetId: string,
-    config?: Record<string, any>
+    config?: Record<string, any>,
   ) => void;
   dataLayer: any[];
 }

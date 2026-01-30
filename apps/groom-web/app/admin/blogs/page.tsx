@@ -1,5 +1,5 @@
 import BlogsAdminTable from "##/components/admin/BlogsAdminTable";
-import { groomService } from "##/services";
+import groomService from "##/services/groomService";
 
 // Revalidate every 60 seconds
 export const revalidate = 60;

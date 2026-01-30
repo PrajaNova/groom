@@ -6,7 +6,6 @@ import {
   AddressCreateSchema,
   AddressListResponseSchema,
   AddressResponseSchema,
-  type AddressUpdate,
   AddressUpdateSchema,
 } from "@schemas/address.schema";
 import { ErrorSchema, IdParamSchema } from "@schemas/common";

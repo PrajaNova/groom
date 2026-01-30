@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useAuth } from "##/context/AuthContext";
-import BookingButton from "##/components/BookingButton";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import BookingButton from "##/components/BookingButton";
+import { useAuth } from "##/context/AuthContext";
 
 interface Booking {
   id: string;
@@ -77,6 +77,7 @@ const MyBookingsPage = () => {
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
+            <title>No bookings yet</title>
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -144,6 +145,7 @@ const MyBookingsPage = () => {
                   booking.status !== "completed" && (
                     <>
                       <button
+                        type="button"
                         onClick={async () => {
                           const newDate = prompt(
                             "Enter new date (YYYY-MM-DD HH:MM):",
@@ -179,6 +181,7 @@ const MyBookingsPage = () => {
                         Reschedule
                       </button>
                       <button
+                        type="button"
                         onClick={async () => {
                           if (
                             confirm(

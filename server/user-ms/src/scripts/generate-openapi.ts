@@ -1,3 +1,5 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
 import {
   OpenAPIRegistry,
   OpenApiGeneratorV31,
@@ -28,8 +30,6 @@ import {
   SessionResponseSchema,
 } from "@schemas/session.schema";
 import { UserResponseSchema, UserWithRolesSchema } from "@schemas/user.schema";
-import * as fs from "fs";
-import * as path from "path";
 import * as yaml from "yaml";
 import { z } from "zod";
 

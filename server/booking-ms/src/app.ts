@@ -1,6 +1,6 @@
 import "dotenv/config";
-import { join } from "path";
-import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
+import { join } from "node:path";
+import AutoLoad, { type AutoloadPluginOptions } from "@fastify/autoload";
 import type { FastifyPluginAsync, FastifyServerOptions } from "fastify";
 import { env } from "./config/env";
 

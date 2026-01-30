@@ -8,7 +8,7 @@ export default async function AdminBookingsPage() {
   today.setHours(0, 0, 0, 0);
 
   const res = await fetch(
-    "/api/bookings?status=confirmed,pending&fromDate=" + today.toISOString(),
+    `/api/bookings?status=confirmed,pending&fromDate=${today.toISOString()}`,
     { cache: "no-store" },
   );
   const bookings = res.ok ? await res.json() : [];

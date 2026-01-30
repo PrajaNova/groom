@@ -1,4 +1,4 @@
-import { FastifyPluginAsync } from "fastify";
+import type { FastifyPluginAsync } from "fastify";
 import z from "zod";
 
 const BlogSchema = z.object({
@@ -12,9 +12,12 @@ const BlogSchema = z.object({
   readTime: z.number().optional(),
 });
 
-const blogRoutes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+const blogRoutes: FastifyPluginAsync = async (
+  fastify,
+  _opts,
+): Promise<void> => {
   // GET /blogs
-  fastify.get("/", async function (request, reply) {
+  fastify.get("/", async (_request, _reply) => {
     const blogs = await fastify.prisma.blog.findMany({
       orderBy: { createdAt: "desc" },
     });
@@ -24,7 +27,7 @@ const blogRoutes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   // GET /blogs/:slug
   fastify.get<{ Params: { slug: string } }>(
     "/:slug",
-    async function (request, reply) {
+    async (request, reply) => {
       const { slug } = request.params;
       const blog = await fastify.prisma.blog.findUnique({
         where: { slug },
@@ -41,7 +44,7 @@ const blogRoutes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   // POST /blogs (Admin only ideally, but open for now for migration/seeding)
   fastify.post<{ Body: z.infer<typeof BlogSchema> }>(
     "/",
-    async function (request, reply) {
+    async (request, reply) => {
       const data = request.body;
       try {
         const blog = await fastify.prisma.blog.create({

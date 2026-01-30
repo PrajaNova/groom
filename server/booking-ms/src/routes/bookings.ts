@@ -1,14 +1,14 @@
 import type { FastifyInstance } from "fastify";
 import { BookingController } from "../controllers/booking.controller";
-import { BookingService } from "../services/booking.service";
 import {
-  CreateBookingRequestSchema,
-  UpdateBookingRequestSchema,
+  BookingListResponseSchema,
   BookingQuerySchema,
   BookingResponseSchema,
-  BookingListResponseSchema,
+  CreateBookingRequestSchema,
+  UpdateBookingRequestSchema,
 } from "../schemas/booking.schema";
 import { IdParamSchema } from "../schemas/common";
+import { BookingService } from "../services/booking.service";
 import { createRouteSchema } from "../utils/schema";
 
 export default async function bookingRoutes(fastify: FastifyInstance) {

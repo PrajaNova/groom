@@ -1,13 +1,13 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { BookingService } from "../services/booking.service";
-import { BookingStatus } from "@generated/client";
-import {
+import type { BookingStatus } from "@generated/client";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import type { z } from "zod";
+import type {
+  BookingQuery,
   CreateBookingRequest,
   UpdateBookingRequest,
-  BookingQuery,
 } from "../schemas/booking.schema";
-import { IdParamSchema } from "../schemas/common"; // Import from common
-import { z } from "zod";
+import type { IdParamSchema } from "../schemas/common"; // Import from common
+import type { BookingService } from "../services/booking.service";
 
 type IdParam = z.infer<typeof IdParamSchema>;
 

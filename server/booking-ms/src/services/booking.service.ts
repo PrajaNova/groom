@@ -1,9 +1,9 @@
-import { PrismaClient, Booking, BookingStatus } from "@generated/client";
+import type { Booking, BookingStatus, PrismaClient } from "@generated/client";
 import {
-  sendBookingConfirmationEmail,
-  sendBookingCancellationEmail,
-  sendBookingUpdateEmail,
   generateMeetingId,
+  sendBookingCancellationEmail,
+  sendBookingConfirmationEmail,
+  sendBookingUpdateEmail,
 } from "../utils/email";
 
 export class BookingService {
@@ -68,7 +68,6 @@ export class BookingService {
     sort?: "asc" | "desc";
     userId?: string;
   }) {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const where: any = {};
 
     if (filters?.status) {
