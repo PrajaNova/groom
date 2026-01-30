@@ -1,7 +1,6 @@
 // Prisma schema for User Microservice with Neon PostgreSQL
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/client"
 }
 
 datasource db {

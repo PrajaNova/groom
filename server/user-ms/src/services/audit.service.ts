@@ -1,5 +1,5 @@
 import { AUDIT_LOG_CONFIG } from "@constants";
-import type { Prisma } from "@generated/client";
+import type { Prisma } from "@prisma/client";
 import type { AuditLog } from "@types";
 import type { FastifyInstance } from "fastify";
 import { nanoid } from "nanoid";

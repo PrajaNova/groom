@@ -1,4 +1,4 @@
-import type { Role } from "@generated/client";
+import type { Role } from "@prisma/client";
 import { type RoleCreate, RoleCreateSchema } from "@schemas/role.schema";
 import type { FastifyInstance } from "fastify";
 import { nanoid } from "nanoid";

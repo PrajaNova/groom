@@ -1,5 +1,5 @@
 import type { OAuth2Namespace } from "@fastify/oauth2";
-import type { Prisma, PrismaClient } from "@generated/client";
+import type { Prisma, PrismaClient } from "@prisma/client";
 
 // Extend Fastify instance with custom decorators
 declare module "fastify" {

@@ -1,4 +1,4 @@
-import type { Address } from "@generated/client";
+import type { Address } from "@prisma/client";
 import {
   type AddressCreate,
   AddressCreateSchema,

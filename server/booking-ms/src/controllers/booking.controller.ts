@@ -1,4 +1,4 @@
-import type { BookingStatus } from "@generated/client";
+import type { BookingStatus } from "@prisma/client";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import type { z } from "zod";
 import type {
