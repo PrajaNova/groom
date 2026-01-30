@@ -6,7 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "node dist/server.js",
-    "build": "tsc && tsc-alias",
+    "build": "tsc && tsc-alias && cp -r src/generated dist/",
     "watch:tsc": "tsc -w",
     "dev": "tsx watch --clear-screen=false src/server.ts",
     "typecheck": "tsc --noEmit",

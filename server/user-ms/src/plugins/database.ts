@@ -1,5 +1,5 @@
 import { PLUGIN_LOG_MESSAGES } from "@constants";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@generated/client";
 import type { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 

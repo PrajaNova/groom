@@ -1,4 +1,4 @@
-import type { Booking, BookingStatus, PrismaClient } from "@prisma/client";
+import type { Booking, BookingStatus, PrismaClient } from "@generated/client";
 import {
   generateMeetingId,
   sendBookingCancellationEmail,

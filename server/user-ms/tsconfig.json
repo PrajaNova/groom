@@ -21,12 +21,12 @@
       "@types/*": ["src/types/*"],
       "@config": ["src/config"],
       "@config/*": ["src/config/*"],
-      "@generated/*": ["src/generated/*"],
       "@constants": ["src/constants"],
       "@controllers/*": ["src/controllers/*"],
       "@middleware/*": ["src/middleware/*"],
       "@utils": ["src/utils"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@generated/*": ["src/generated/*"]
     }
   },
   "include": ["src/**/*"],

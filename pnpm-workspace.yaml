@@ -2,6 +2,11 @@ packages:
   - apps/*
   - server/*
 
+hoistPattern:
+  - "*"          # Hoist everything by default
+  - "!prisma"    # Do NOT hoist prisma
+  - "!@prisma/*" # Do NOT hoist prisma client packages
+
 catalog:
   '@apollo/client': ^4.0.11
   '@asteasolutions/zod-to-openapi': 8.2.0
