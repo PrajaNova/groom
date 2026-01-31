@@ -13,7 +13,7 @@
     "dev:debug": "tsx watch --inspect --clear-screen=false src/app.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
-    "generate:openapi": "tsx src/scripts/generate-openapi.ts",
+    "generate:openapi": "tsx scripts/generate-openapi.ts",
     "generate:postman": "npx openapi-to-postmanv2 -s docs/openapi.yaml -o docs/postman_collection.json -p",
     "db:generate": "prisma generate",
     "db:diff": "prisma db push --dry-run",

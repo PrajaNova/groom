@@ -21,3 +21,18 @@ export const RoleCreateSchema = z
   .openapi("RoleCreate");
 
 export type RoleCreate = z.infer<typeof RoleCreateSchema>;
+
+export const RoleResponseSchema = RoleSchema;
+export const RoleListResponseSchema = z
+  .array(RoleSchema)
+  .openapi("RoleListResponse");
+
+export const AssignRoleSchema = z
+  .object({
+    roleId: z.string().cuid(),
+  })
+  .openapi("AssignRole");
+
+export type RoleResponse = z.infer<typeof RoleResponseSchema>;
+export type RoleListResponse = z.infer<typeof RoleListResponseSchema>;
+export type AssignRole = z.infer<typeof AssignRoleSchema>;
