@@ -1,3 +1,4 @@
+import { ROUTES } from "@constants";
 import { BookingController } from "@controllers/booking.controller";
 import { authGuard } from "@middleware/auth";
 import {
@@ -19,7 +20,7 @@ const bookingRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.addHook("preHandler", authGuard);
 
   fastify.post(
-    "/",
+    ROUTES.BOOKINGS,
     {
       schema: {
         body: CreateBookingRequestSchema,
@@ -32,7 +33,7 @@ const bookingRoutes: FastifyPluginAsync = async (fastify) => {
   );
 
   fastify.get(
-    "/",
+    ROUTES.BOOKINGS,
     {
       schema: {
         querystring: BookingQuerySchema,
@@ -45,7 +46,7 @@ const bookingRoutes: FastifyPluginAsync = async (fastify) => {
   );
 
   fastify.get(
-    "/:id",
+    ROUTES.BOOKING_BY_ID,
     {
       schema: {
         params: IdParamSchema,
@@ -58,7 +59,7 @@ const bookingRoutes: FastifyPluginAsync = async (fastify) => {
   );
 
   fastify.patch(
-    "/:id",
+    ROUTES.BOOKING_BY_ID,
     {
       schema: {
         params: IdParamSchema,
@@ -72,7 +73,7 @@ const bookingRoutes: FastifyPluginAsync = async (fastify) => {
   );
 
   fastify.delete(
-    "/:id",
+    ROUTES.BOOKING_BY_ID,
     {
       schema: {
         params: IdParamSchema,

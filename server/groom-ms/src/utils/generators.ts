@@ -1,4 +1,4 @@
-import type { User } from "@types";
+import type { UserResponse as User } from "@schemas/user.schema";
 import { nanoid } from "nanoid";
 
 export const sanitizeUserData = (user: any): User => {

@@ -1,5 +1,7 @@
 import type { OAuth2Namespace } from "@fastify/oauth2";
-import type { Prisma, PrismaClient } from "@generated/client";
+import type { PrismaClient } from "@generated/client";
+import type { Session } from "@schemas/session.schema";
+import type { UserResponse as User } from "@schemas/user.schema";
 
 // Extend Fastify instance with custom decorators
 declare module "fastify" {
@@ -108,84 +110,11 @@ export interface AuditConfig {
   events: string[];
 }
 
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  avatar?: string;
-  password?: string; // For local authentication
-  createdAt: Date;
-  updatedAt: Date;
-  roles?: string[];
-}
-export interface ProviderAccount {
-  id: string;
-  userId: string;
-  provider: string;
-  providerUserId: string;
-  metadata: Record<string, unknown>;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Session {
-  sessionId: string;
-  userId: string;
-  createdAt: Date;
-  expiresAt: Date;
-  device?: string;
-  userAgent?: string;
-  ipAddress?: string;
-}
-
-export interface Token {
-  id: string;
-  userId: string;
-  accessToken: string;
-  refreshToken?: string;
-  provider: string;
-  expiresAt?: Date;
-  createdAt: Date;
-}
-
-export interface AuditLog {
-  id: string;
-  userId: string | null;
-  event: string;
-  metadata: Prisma.JsonValue;
-  ipAddress: string | null;
-  userAgent: string | null;
-  timestamp: Date;
-}
+// User, ProviderAccount, Session, Token, AuditLog, ProviderInfo, Auth interfaces should be imported directly from schemas or generated client
 
 export interface OAuthCallbackQuery {
   code?: string;
   state?: string;
   error?: string;
   error_description?: string;
-}
-
-export interface ProviderInfo {
-  name: string;
-  displayName: string;
-  icon: string;
-  enabled: boolean;
-}
-
-// Local Authentication Interfaces
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  name: string;
-  avatar?: string;
-}
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface AuthResponse {
-  user: User;
-  sessionToken: string;
 }

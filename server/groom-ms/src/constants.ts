@@ -43,18 +43,32 @@ export const API_ENDPOINTS = {
 // Route Paths
 export const ROUTES = {
   // Auth routes
-  AUTH_PROVIDERS: "/auth/providers",
-  AUTH_REGISTER: "/auth/register",
-  AUTH_LOGIN: "/auth/login",
-  AUTH_LOGOUT: "/auth/logout",
-  AUTH_ME: "/auth/me",
+  AUTH_PROVIDERS: "/providers",
+  AUTH_REGISTER: "/register",
+  AUTH_LOGIN: "/login",
+  AUTH_LOGOUT: "/logout",
+  AUTH_ME: "/me",
 
   // OAuth callbacks
-  GOOGLE_CALLBACK: "/auth/google/callback",
-  GITHUB_CALLBACK: "/auth/github/callback",
-  FACEBOOK_CALLBACK: "/auth/facebook/callback",
-  DISCORD_CALLBACK: "/auth/discord/callback",
-  LINKEDIN_CALLBACK: "/auth/linkedin/callback",
+  GOOGLE_CALLBACK: "/google/callback",
+  GITHUB_CALLBACK: "/github/callback",
+  FACEBOOK_CALLBACK: "/facebook/callback",
+  DISCORD_CALLBACK: "/discord/callback",
+  LINKEDIN_CALLBACK: "/linkedin/callback",
+
+  // Blog Routes
+  BLOGS: "/",
+  BLOG_BY_SLUG: "/:slug",
+
+  // Booking Routes
+  BOOKINGS: "/",
+  BOOKING_BY_ID: "/:id",
+
+  // Confession Routes
+  CONFESSIONS: "/",
+
+  // JaaS Routes
+  JAAS: "/",
 } as const;
 
 // Error Messages

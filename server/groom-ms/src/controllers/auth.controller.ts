@@ -6,7 +6,6 @@ import {
   ENV,
   ERROR_MESSAGES,
   HTTP_HEADERS,
-  LOG_MESSAGES,
   MISC,
   type OAuthToken,
   PROVIDER_DISPLAY_NAMES,
@@ -16,12 +15,13 @@ import {
   SUCCESS_MESSAGES,
 } from "@constants";
 import type { OAuth2Namespace } from "@fastify/oauth2";
+import type { Provider as ProviderInfo } from "@schemas/auth.schema";
 import { AuditService } from "@services/audit.service";
 import { SessionService } from "@services/session.service";
 import { TokenService } from "@services/token.service";
 import { UserService } from "@services/user.service";
-import type { OAuthCallbackQuery, ProviderInfo } from "@types";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import type { OAuthCallbackQuery } from "../types";
 
 export class AuthController {
   constructor(private fastify: FastifyInstance) {}
@@ -252,7 +252,7 @@ export class AuthController {
         message: "Registration successful",
         sessionToken: jwt,
       });
-    } catch (error) {
+    } catch (_error) {
       // Handle error
       return reply.internalServerError("Registration failed");
     }
@@ -310,7 +310,7 @@ export class AuthController {
         message: SUCCESS_MESSAGES.AUTH_SUCCESS,
         sessionToken: jwt,
       });
-    } catch (error) {
+    } catch (_error) {
       return reply.internalServerError("Login failed");
     }
   }

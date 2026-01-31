@@ -1,3 +1,4 @@
+import { ROUTES } from "@constants";
 import { JaasController } from "@controllers/jaas.controller";
 import { authGuard } from "@middleware/auth";
 import {
@@ -13,7 +14,7 @@ const jaasRoutes: FastifyPluginAsync = async (fastify) => {
   const controller = new JaasController(service);
 
   fastify.post<{ Body: JaasTokenRequest }>(
-    "/",
+    ROUTES.JAAS,
     {
       preHandler: authGuard,
       schema: {

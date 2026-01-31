@@ -1,8 +1,7 @@
 // Load environment variables first
-import "dotenv/config";
-
-import { join } from "node:path";
 import AutoLoad, { type AutoloadPluginOptions } from "@fastify/autoload";
+import "dotenv/config";
+import { join } from "node:path";
 import type {
   FastifyInstance,
   FastifyPluginAsync,

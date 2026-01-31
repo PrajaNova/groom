@@ -1,3 +1,4 @@
+import { ROUTES } from "@constants";
 import { ConfessionController } from "@controllers/confession.controller";
 import {
   ConfessionListResponseSchema,
@@ -13,7 +14,7 @@ const confessionRoutes: FastifyPluginAsync = async (fastify) => {
 
   // Public: Read recent confessions
   fastify.get(
-    "/",
+    ROUTES.CONFESSIONS,
     {
       schema: {
         response: { 200: ConfessionListResponseSchema },
@@ -25,7 +26,7 @@ const confessionRoutes: FastifyPluginAsync = async (fastify) => {
 
   // Public: Create confession (Anonymous)
   fastify.post(
-    "/",
+    ROUTES.CONFESSIONS,
     {
       schema: {
         body: CreateConfessionRequestSchema,

@@ -8,10 +8,10 @@ import {
   RegisterRequestSchema,
 } from "@schemas/auth.schema";
 import { ErrorSchema } from "@schemas/common";
-import type { OAuthCallbackQuery } from "@types";
 import { createRouteSchema } from "@utils/schema";
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
+import type { OAuthCallbackQuery } from "../../types";
 
 export default async function authRoutes(fastify: FastifyInstance) {
   const authController = new AuthController(fastify);
@@ -34,7 +34,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
 
   // POST /auth/register
   fastify.post(
-    "/register",
+    ROUTES.AUTH_REGISTER,
     {
       schema: createRouteSchema({
         body: RegisterRequestSchema,
@@ -50,7 +50,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
 
   // POST /auth/login
   fastify.post(
-    "/login",
+    ROUTES.AUTH_LOGIN,
     {
       schema: createRouteSchema({
         body: LoginRequestSchema,
@@ -66,7 +66,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
 
   // POST /auth/logout (Protected)
   fastify.post(
-    "/logout",
+    ROUTES.AUTH_LOGOUT,
     {
       preHandler: authGuard,
       schema: createRouteSchema({
@@ -82,7 +82,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
 
   // GET /auth/me (Protected)
   fastify.get(
-    "/me",
+    ROUTES.AUTH_ME,
     {
       preHandler: authGuard,
       schema: createRouteSchema({
@@ -98,7 +98,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
 
   // OAuth Callbacks
   fastify.get<{ Querystring: OAuthCallbackQuery }>(
-    "/google/callback",
+    ROUTES.GOOGLE_CALLBACK,
     {
       schema: {
         tags: ["Auth"],

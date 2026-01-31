@@ -1,7 +1,4 @@
-import type {
-  CreateBlogRequest,
-  UpdateBlogRequest,
-} from "@schemas/blog.schema";
+import type { CreateBlogRequest } from "@schemas/blog.schema";
 import type { BlogService } from "@services/blog.service";
 import type { FastifyReply, FastifyRequest } from "fastify";
 

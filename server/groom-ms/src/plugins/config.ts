@@ -1,4 +1,4 @@
-import { loadConfig } from "@config";
+import { loadConfig } from "@config/index";
 import type { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 
@@ -20,7 +20,7 @@ export default fp(
 
     // Log enabled providers
     const enabledProviders = Object.entries(config.providers)
-      .filter(([_, providerConfig]) => providerConfig.enabled)
+      .filter(([_, providerConfig]) => (providerConfig as any).enabled)
       .map(([name]) => name);
 
     if (enabledProviders.length > 0) {

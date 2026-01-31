@@ -1,3 +1,4 @@
+import { ROUTES } from "@constants";
 import { BlogController } from "@controllers/blog.controller";
 import { authGuard } from "@middleware/auth";
 import { requireRole } from "@middleware/role";
@@ -16,7 +17,7 @@ const blogRoutes: FastifyPluginAsync = async (fastify) => {
 
   // Public Routes
   fastify.get(
-    "/",
+    ROUTES.BLOGS,
     {
       schema: {
         response: { 200: BlogListResponseSchema },
@@ -27,7 +28,7 @@ const blogRoutes: FastifyPluginAsync = async (fastify) => {
   );
 
   fastify.get(
-    "/:slug",
+    ROUTES.BLOG_BY_SLUG,
     {
       schema: {
         params: {
@@ -44,7 +45,7 @@ const blogRoutes: FastifyPluginAsync = async (fastify) => {
 
   // Protected Routes
   fastify.post<{ Body: CreateBlogRequest }>(
-    "/",
+    ROUTES.BLOGS,
     {
       preHandler: [authGuard, requireRole("ADMIN")],
       schema: {

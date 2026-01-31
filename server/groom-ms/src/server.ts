@@ -1,12 +1,9 @@
-// Load environment variables first
 import "dotenv/config";
-
 import Fastify from "fastify";
 import app, { options } from "./app";
 
 const PORT = Number(process.env.PORT) || 3001;
 const HOST = process.env.HOST || "0.0.0.0";
-
 const server = Fastify(options);
 
 // Register the app plugin

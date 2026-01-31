@@ -1,7 +1,6 @@
+import { loadConfig } from "@config/index";
 import crypto from "node:crypto";
-import type { EmailConfig } from "@types";
 import { Resend } from "resend";
-import { loadConfig } from "../config";
 
 const config = loadConfig();
 const resend = new Resend(config.email.resendApiKey);

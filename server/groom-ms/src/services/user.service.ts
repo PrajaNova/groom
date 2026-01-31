@@ -1,5 +1,5 @@
-import type { Prisma, PrismaClient } from "@generated/client";
-import type { ProviderAccount, User } from "@types";
+import type { Prisma, PrismaClient, ProviderAccount } from "@generated/client";
+import type { UserResponse as User } from "@schemas/user.schema";
 import bcrypt from "bcrypt";
 import type { FastifyInstance } from "fastify";
 import { nanoid } from "nanoid";

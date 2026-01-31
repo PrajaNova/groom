@@ -1,4 +1,4 @@
-import type { Session, User } from "@types";
+import type { Session } from "@schemas/session.schema";
 import type { FastifyInstance } from "fastify";
 import { nanoid } from "nanoid";
 
@@ -27,6 +27,7 @@ export class SessionService {
     });
 
     return {
+      id: session.id,
       sessionId: session.sessionId,
       userId: session.userId,
       createdAt: session.createdAt,
@@ -49,6 +50,7 @@ export class SessionService {
     }
 
     return {
+      id: session.id,
       sessionId: session.sessionId,
       userId: session.userId,
       createdAt: session.createdAt,

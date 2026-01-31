@@ -21,5 +21,5 @@
     "editor.defaultFormatter": "biomejs.biome"
   },
   "biome.enabled": true,
-  "biome.lsp.bin": "./node_modules/@biomejs/biome/bin/biome"
+  "cSpell.words": ["Jaas"]
 }
