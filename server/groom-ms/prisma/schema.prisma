@@ -9,8 +9,34 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["groom_schema"]
 }
+
+// --- BOOKING SYSTEM ---
+
+model Booking {
+  id        String        @id @default(uuid())
+  name      String
+  email     String
+  userId    String?       // Reference to User ID
+  user      User?         @relation(fields: [userId], references: [id])
+  when      DateTime
+  reason    String
+  status    BookingStatus @default(pending)
+  meetingId String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("bookings")
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  completed
+  cancelled
+}
+
+// --- CONTENT SYSTEM ---
 
 model Blog {
   id          String   @id @default(uuid())
@@ -26,7 +52,7 @@ model Blog {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@schema("groom_schema")
+  @@map("blogs")
 }
 
 model Confession {
@@ -34,17 +60,122 @@ model Confession {
   content   String
   createdAt DateTime @default(now())
   
-  // Optional: If we want to capture who submitted it anonymously but still have record if they opted in
-  // For now, keeping it simple as per implementation plan
-
-  @@schema("groom_schema")
+  @@map("confessions")
 }
 
 model Testimonial {
   id        String   @id @default(uuid())
   quote     String
   author    String
-  createdAt DateTime @default(now())
+  @@map("testimonials")
+}
 
-  @@schema("groom_schema")
+// --- AUTHENTICATION & USERS ---
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  avatar    String?
+  password  String? // For local authentication (hashed)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  providerAccounts ProviderAccount[]
+  sessions         Session[]
+  tokens           Token[]
+  auditLogs        AuditLog[]
+  roles            Role[]
+  bookings         Booking[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique // e.g., "ADMIN", "SELLER", "DEVELOPER"
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  users       User[]
+
+  @@map("roles")
+}
+
+model ProviderAccount {
+  id             String   @id @default(cuid())
+  userId         String
+  provider       String // 'google', 'github', 'facebook', 'discord', 'linkedin', 'custom'
+  providerUserId String // ID from the provider
+  metadata       Json? // Provider-specific metadata
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerUserId])
+  @@index([userId])
+  @@index([provider])
+  @@map("provider_accounts")
+}
+
+model Session {
+  id         String    @id @default(cuid())
+  sessionId  String    @unique
+  userId     String
+  expiresAt  DateTime
+  device     String?
+  userAgent  String?
+  ipAddress  String?
+  createdAt  DateTime  @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model Token {
+  id           String    @id @default(cuid())
+  userId       String
+  provider     String
+  accessToken  String // Hashed
+  refreshToken String? // Hashed
+  expiresAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider])
+  @@index([userId])
+  @@index([provider])
+  @@map("tokens")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  event     String // 'login', 'logout', 'register', etc.
+  metadata  Json? // Event-specific data
+  ipAddress String?
+  userAgent String?
+  timestamp DateTime @default(now())
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([event])
+  @@index([timestamp])
+  @@map("audit_logs")
 }

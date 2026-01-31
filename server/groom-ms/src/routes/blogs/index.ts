@@ -1,62 +1,60 @@
+import { BlogController } from "@controllers/blog.controller";
+import { authGuard } from "@middleware/auth";
+import { requireRole } from "@middleware/role";
+import {
+  BlogListResponseSchema,
+  BlogResponseSchema,
+  type CreateBlogRequest,
+  CreateBlogRequestSchema,
+} from "@schemas/blog.schema";
+import { BlogService } from "@services/blog.service";
 import type { FastifyPluginAsync } from "fastify";
-import z from "zod";
 
-const BlogSchema = z.object({
-  slug: z.string(),
-  title: z.string(),
-  content: z.string(),
-  excerpt: z.string().optional(),
-  author: z.string().optional(),
-  category: z.string().optional(),
-  imageSeed: z.string().optional(),
-  readTime: z.number().optional(),
-});
+const blogRoutes: FastifyPluginAsync = async (fastify) => {
+  const service = new BlogService(fastify);
+  const controller = new BlogController(service);
 
-const blogRoutes: FastifyPluginAsync = async (
-  fastify,
-  _opts,
-): Promise<void> => {
-  // GET /blogs
-  fastify.get("/", async (_request, _reply) => {
-    const blogs = await fastify.prisma.blog.findMany({
-      orderBy: { createdAt: "desc" },
-    });
-    return blogs;
-  });
-
-  // GET /blogs/:slug
-  fastify.get<{ Params: { slug: string } }>(
-    "/:slug",
-    async (request, reply) => {
-      const { slug } = request.params;
-      const blog = await fastify.prisma.blog.findUnique({
-        where: { slug },
-      });
-
-      if (!blog) {
-        reply.code(404);
-        return { error: "Blog not found" };
-      }
-      return blog;
+  // Public Routes
+  fastify.get(
+    "/",
+    {
+      schema: {
+        response: { 200: BlogListResponseSchema },
+        tags: ["Blogs"],
+      },
     },
+    controller.getAll,
   );
 
-  // POST /blogs (Admin only ideally, but open for now for migration/seeding)
-  fastify.post<{ Body: z.infer<typeof BlogSchema> }>(
-    "/",
-    async (request, reply) => {
-      const data = request.body;
-      try {
-        const blog = await fastify.prisma.blog.create({
-          data,
-        });
-        return blog;
-      } catch (e) {
-        request.log.error(e);
-        reply.code(500);
-        return { error: "Failed to create blog" };
-      }
+  fastify.get(
+    "/:slug",
+    {
+      schema: {
+        params: {
+          type: "object",
+          properties: { slug: { type: "string" } },
+          required: ["slug"],
+        },
+        response: { 200: BlogResponseSchema },
+        tags: ["Blogs"],
+      },
     },
+    controller.getBySlug,
+  );
+
+  // Protected Routes
+  fastify.post<{ Body: CreateBlogRequest }>(
+    "/",
+    {
+      preHandler: [authGuard, requireRole("ADMIN")],
+      schema: {
+        body: CreateBlogRequestSchema,
+        response: { 201: BlogResponseSchema },
+        tags: ["Blogs"],
+        security: [{ bearerAuth: [] }],
+      } as any,
+    },
+    controller.create,
   );
 };
 

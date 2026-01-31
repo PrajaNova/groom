@@ -1,6 +1,13 @@
+// Load environment variables first
+import "dotenv/config";
+
 import { join } from "node:path";
 import AutoLoad, { type AutoloadPluginOptions } from "@fastify/autoload";
-import type { FastifyPluginAsync, FastifyServerOptions } from "fastify";
+import type {
+  FastifyInstance,
+  FastifyPluginAsync,
+  FastifyServerOptions,
+} from "fastify";
 
 export interface AppOptions
   extends FastifyServerOptions,
@@ -21,33 +28,31 @@ const options: AppOptions = {
           }
         : undefined,
   },
+  trustProxy: true,
+  requestIdHeader: "x-request-id",
+  requestIdLogLabel: "reqId",
 };
 
 const app: FastifyPluginAsync<AppOptions> = async (
-  fastify,
-  opts,
+  fastify: FastifyInstance,
+  opts?: AppOptions,
 ): Promise<void> => {
-  // Register Plugins (Prisma, etc) via autoload
-  void fastify.register(AutoLoad, {
+  // Register plugins first (auto-loads from plugins directory)
+  await fastify.register(AutoLoad, {
     dir: join(__dirname, "plugins"),
     options: opts,
   });
 
-  // Register Routes via autoload
-  void fastify.register(AutoLoad, {
-    dir: join(__dirname, "routes"),
-    options: { ...opts, prefix: "/api" }, // Add /api prefix
-  });
-
-  // Register CORS
-  fastify.register(import("@fastify/cors"), {
-    origin: true, // Allow all for now, or match *
-  });
-
-  // Register Helmet
-  fastify.register(import("@fastify/helmet"), {
-    global: true,
-  });
+  // Register routes with /api prefix
+  await fastify.register(
+    async (instance) => {
+      await instance.register(AutoLoad, {
+        dir: join(__dirname, "routes"),
+        options: opts,
+      });
+    },
+    { prefix: "/api" },
+  );
 };
 
 export default app;
