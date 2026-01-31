@@ -87,52 +87,6 @@ export const loadConfig = (): AppConfig => {
           getEnv("AUTH_GOOGLE_SCOPES", "openid,profile,email"),
         ),
       },
-      facebook: {
-        enabled: getBoolEnv("AUTH_FACEBOOK_ENABLED", false),
-        clientId: getEnv("AUTH_FACEBOOK_APP_ID"),
-        clientSecret: getEnv("AUTH_FACEBOOK_APP_SECRET"),
-        callbackUrl: getEnv(
-          "AUTH_FACEBOOK_CALLBACK_URL",
-          "http://localhost:3002/auth/facebook/callback",
-        ),
-        scopes: parseScopes(
-          getEnv("AUTH_FACEBOOK_SCOPES", "email,public_profile"),
-        ),
-      },
-      github: {
-        enabled: getBoolEnv("AUTH_GITHUB_ENABLED", false),
-        clientId: getEnv("AUTH_GITHUB_CLIENT_ID"),
-        clientSecret: getEnv("AUTH_GITHUB_CLIENT_SECRET"),
-        callbackUrl: getEnv(
-          "AUTH_GITHUB_CALLBACK_URL",
-          "http://localhost:3002/auth/github/callback",
-        ),
-        scopes: parseScopes(
-          getEnv("AUTH_GITHUB_SCOPES", "read:user,user:email"),
-        ),
-      },
-      discord: {
-        enabled: getBoolEnv("AUTH_DISCORD_ENABLED", false),
-        clientId: getEnv("AUTH_DISCORD_CLIENT_ID"),
-        clientSecret: getEnv("AUTH_DISCORD_CLIENT_SECRET"),
-        callbackUrl: getEnv(
-          "AUTH_DISCORD_CALLBACK_URL",
-          "http://localhost:3002/auth/discord/callback",
-        ),
-        scopes: parseScopes(getEnv("AUTH_DISCORD_SCOPES", "identify,email")),
-      },
-      linkedin: {
-        enabled: getBoolEnv("AUTH_LINKEDIN_ENABLED", false),
-        clientId: getEnv("AUTH_LINKEDIN_CLIENT_ID"),
-        clientSecret: getEnv("AUTH_LINKEDIN_CLIENT_SECRET"),
-        callbackUrl: getEnv(
-          "AUTH_LINKEDIN_CALLBACK_URL",
-          "http://localhost:3002/auth/linkedin/callback",
-        ),
-        scopes: parseScopes(
-          getEnv("AUTH_LINKEDIN_SCOPES", "openid,profile,email"),
-        ),
-      },
       custom: {
         enabled: getBoolEnv("AUTH_CUSTOM_ENABLED", false),
         name: getEnv("AUTH_CUSTOM_NAME", "Custom Provider"),
@@ -155,7 +109,16 @@ export const loadConfig = (): AppConfig => {
       timeWindow: getNumberEnv("RATE_LIMIT_TIMEWINDOW", 900000),
     },
     database: {
-      logLevel: getEnv("PRISMA_LOG_LEVEL", "warn,error"),
+      logEnabled: getBoolEnv("PRISMA_LOG_ENABLED", true),
+      logLevel: getEnv("PRISMA_LOG_LEVEL", "warn,error")
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => ["info", "query", "warn", "error"].includes(s)) as (
+        | "info"
+        | "query"
+        | "warn"
+        | "error"
+      )[],
     },
     audit: {
       enabled: getBoolEnv("AUDIT_LOG_ENABLED", true),

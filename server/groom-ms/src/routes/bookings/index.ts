@@ -10,6 +10,7 @@ import {
 } from "@schemas/booking.schema";
 import { IdParamSchema } from "@schemas/common";
 import { BookingService } from "@services/booking.service";
+import { createRouteSchema } from "@utils/schema";
 import type { FastifyPluginAsync } from "fastify";
 
 const bookingRoutes: FastifyPluginAsync = async (fastify) => {
@@ -22,12 +23,12 @@ const bookingRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.post(
     ROUTES.BOOKINGS,
     {
-      schema: {
+      schema: createRouteSchema({
         body: CreateBookingRequestSchema,
         response: { 201: BookingResponseSchema },
         tags: ["Bookings"],
         security: [{ bearerAuth: [] }],
-      },
+      }),
     },
     controller.create,
   );
@@ -35,12 +36,12 @@ const bookingRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.get(
     ROUTES.BOOKINGS,
     {
-      schema: {
+      schema: createRouteSchema({
         querystring: BookingQuerySchema,
         response: { 200: BookingListResponseSchema },
         tags: ["Bookings"],
         security: [{ bearerAuth: [] }],
-      },
+      }),
     },
     controller.list,
   );
@@ -48,12 +49,12 @@ const bookingRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.get(
     ROUTES.BOOKING_BY_ID,
     {
-      schema: {
+      schema: createRouteSchema({
         params: IdParamSchema,
         response: { 200: BookingResponseSchema },
         tags: ["Bookings"],
         security: [{ bearerAuth: [] }],
-      },
+      }),
     },
     controller.getById,
   );
@@ -61,13 +62,13 @@ const bookingRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.patch(
     ROUTES.BOOKING_BY_ID,
     {
-      schema: {
+      schema: createRouteSchema({
         params: IdParamSchema,
         body: UpdateBookingRequestSchema,
         response: { 200: BookingResponseSchema },
         tags: ["Bookings"],
         security: [{ bearerAuth: [] }],
-      },
+      }),
     },
     controller.update,
   );
@@ -75,11 +76,11 @@ const bookingRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.delete(
     ROUTES.BOOKING_BY_ID,
     {
-      schema: {
+      schema: createRouteSchema({
         params: IdParamSchema,
         tags: ["Bookings"],
         security: [{ bearerAuth: [] }],
-      },
+      }),
     },
     controller.delete,
   );

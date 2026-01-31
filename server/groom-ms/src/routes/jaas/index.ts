@@ -7,6 +7,7 @@ import {
   JaasTokenResponseSchema,
 } from "@schemas/jaas.schema";
 import { JaasService } from "@services/jaas.service";
+import { createRouteSchema } from "@utils/schema";
 import type { FastifyPluginAsync } from "fastify";
 
 const jaasRoutes: FastifyPluginAsync = async (fastify) => {
@@ -17,12 +18,12 @@ const jaasRoutes: FastifyPluginAsync = async (fastify) => {
     ROUTES.JAAS,
     {
       preHandler: authGuard,
-      schema: {
+      schema: createRouteSchema({
         body: JaasTokenRequestSchema,
         response: { 200: JaasTokenResponseSchema },
         tags: ["JaaS"],
         security: [{ bearerAuth: [] }],
-      } as any,
+      }),
     },
     controller.generateToken,
   );

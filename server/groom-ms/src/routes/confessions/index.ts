@@ -6,6 +6,7 @@ import {
   CreateConfessionRequestSchema,
 } from "@schemas/confession.schema";
 import { ConfessionService } from "@services/confession.service";
+import { createRouteSchema } from "@utils/schema";
 import type { FastifyPluginAsync } from "fastify";
 
 const confessionRoutes: FastifyPluginAsync = async (fastify) => {
@@ -16,10 +17,10 @@ const confessionRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.get(
     ROUTES.CONFESSIONS,
     {
-      schema: {
+      schema: createRouteSchema({
         response: { 200: ConfessionListResponseSchema },
         tags: ["Confessions"],
-      },
+      }),
     },
     controller.getRecent,
   );
@@ -28,11 +29,11 @@ const confessionRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.post(
     ROUTES.CONFESSIONS,
     {
-      schema: {
+      schema: createRouteSchema({
         body: CreateConfessionRequestSchema,
         response: { 201: ConfessionResponseSchema },
         tags: ["Confessions"],
-      },
+      }),
     },
     controller.create,
   );

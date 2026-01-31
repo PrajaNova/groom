@@ -14,15 +14,15 @@ export class BookingService {
     this.prisma = fastify.prisma;
   }
 
-  async createBooking(data: {
-    name: string;
-    email: string;
-    when: string | Date;
-    reason: string;
-    userId?: string;
-    status?: BookingStatus;
-    meetingId?: string;
-  }) {
+  async createBooking(
+    data: {
+      name: string;
+      email: string;
+      when: string | Date;
+      reason: string;
+    },
+    userId?: string,
+  ) {
     if (!data.email || !data.when || !data.name) {
       throw new Error("Email, Name, and When are required fields");
     }
@@ -37,7 +37,6 @@ export class BookingService {
     });
 
     if (existing) {
-      // You might want to return the existing one or throw, for now mimic current logic: return existing.
       return existing;
     }
 
@@ -47,9 +46,9 @@ export class BookingService {
         email: data.email,
         when: new Date(data.when),
         reason: data.reason ?? "No reason provided",
-        userId: data.userId ?? null,
-        status: data.status ?? "pending",
-        meetingId: data.meetingId ?? null,
+        userId: userId ?? null,
+        status: "pending",
+        meetingId: null,
       },
     });
   }

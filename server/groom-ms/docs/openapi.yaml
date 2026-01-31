@@ -413,17 +413,6 @@ components:
           format: date-time
         reason:
           type: string
-        userId:
-          type: string
-        status:
-          type: string
-          enum:
-            - pending
-            - confirmed
-            - completed
-            - cancelled
-        meetingId:
-          type: string
       required:
         - name
         - email

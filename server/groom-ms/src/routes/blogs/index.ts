@@ -9,7 +9,9 @@ import {
   CreateBlogRequestSchema,
 } from "@schemas/blog.schema";
 import { BlogService } from "@services/blog.service";
+import { createRouteSchema } from "@utils/schema";
 import type { FastifyPluginAsync } from "fastify";
+import { z } from "zod";
 
 const blogRoutes: FastifyPluginAsync = async (fastify) => {
   const service = new BlogService(fastify);
@@ -19,10 +21,10 @@ const blogRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.get(
     ROUTES.BLOGS,
     {
-      schema: {
+      schema: createRouteSchema({
         response: { 200: BlogListResponseSchema },
         tags: ["Blogs"],
-      },
+      }),
     },
     controller.getAll,
   );
@@ -30,15 +32,11 @@ const blogRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.get(
     ROUTES.BLOG_BY_SLUG,
     {
-      schema: {
-        params: {
-          type: "object",
-          properties: { slug: { type: "string" } },
-          required: ["slug"],
-        },
+      schema: createRouteSchema({
+        params: z.object({ slug: z.string() }),
         response: { 200: BlogResponseSchema },
         tags: ["Blogs"],
-      },
+      }),
     },
     controller.getBySlug,
   );
@@ -48,12 +46,12 @@ const blogRoutes: FastifyPluginAsync = async (fastify) => {
     ROUTES.BLOGS,
     {
       preHandler: [authGuard, requireRole("ADMIN")],
-      schema: {
+      schema: createRouteSchema({
         body: CreateBlogRequestSchema,
         response: { 201: BlogResponseSchema },
         tags: ["Blogs"],
         security: [{ bearerAuth: [] }],
-      } as any,
+      }),
     },
     controller.create,
   );

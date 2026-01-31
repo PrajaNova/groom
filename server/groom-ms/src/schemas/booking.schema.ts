@@ -34,9 +34,6 @@ export const CreateBookingRequestSchema = z
     email: z.string().email(),
     when: z.string().datetime(),
     reason: z.string().optional(),
-    userId: z.string().optional(),
-    status: BookingStatusSchema.optional(),
-    meetingId: z.string().optional(),
   })
   .openapi("CreateBookingRequest");
 

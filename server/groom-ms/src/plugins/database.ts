@@ -8,7 +8,10 @@ import fp from "fastify-plugin";
  * @see https://www.prisma.io/docs/guides/performance-and-optimization/connection-management
  */
 export default fp(async (fastify: FastifyInstance) => {
-  const prisma = new PrismaClient();
+  const { logEnabled, logLevel } = fastify.config.database;
+  const prisma = new PrismaClient({
+    log: logEnabled ? logLevel : [],
+  });
   try {
     await prisma.$connect();
     fastify.log.info(PLUGIN_LOG_MESSAGES.DATABASE_CONNECTED);

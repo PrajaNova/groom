@@ -8,10 +8,6 @@ declare module "fastify" {
   interface FastifyInstance {
     prisma: PrismaClient;
     googleOAuth2?: OAuth2Namespace;
-    facebookOAuth2?: OAuth2Namespace;
-    githubOAuth2?: OAuth2Namespace;
-    discordOAuth2?: OAuth2Namespace;
-    linkedinOAuth2?: OAuth2Namespace;
     customOAuth2?: OAuth2Namespace;
     config: AppConfig;
     user?: User;
@@ -45,10 +41,6 @@ export interface AppConfig {
   };
   providers: {
     google: ProviderConfig;
-    facebook: ProviderConfig;
-    github: ProviderConfig;
-    discord: ProviderConfig;
-    linkedin: ProviderConfig;
     custom: CustomProviderConfig;
   };
   branding: {
@@ -97,7 +89,8 @@ export interface CustomProviderConfig extends ProviderConfig {
 }
 
 export interface DatabaseConfig {
-  logLevel: string;
+  logEnabled: boolean;
+  logLevel: ("info" | "query" | "warn" | "error")[];
 }
 
 export interface RateLimitConfig {

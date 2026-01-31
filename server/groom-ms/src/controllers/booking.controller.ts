@@ -19,10 +19,13 @@ export class BookingController {
     reply: FastifyReply,
   ) => {
     try {
-      const booking = await this.service.createBooking({
-        ...req.body,
-        reason: req.body.reason || "No reason provided", // Default if optional
-      });
+      const booking = await this.service.createBooking(
+        {
+          ...req.body,
+          reason: req.body.reason || "No reason provided",
+        },
+        req.user?.id,
+      );
       return reply.code(201).send(booking);
     } catch (error) {
       return reply.badRequest(
