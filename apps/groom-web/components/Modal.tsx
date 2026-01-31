@@ -1,8 +1,7 @@
 "use client";
 
-import { useSignalEffect } from "@preact-signals/safe-react";
 import type React from "react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ModalManager from "##/utils/ModalManager";
 
 const Modal: React.FC = () => {
@@ -16,9 +15,9 @@ const Modal: React.FC = () => {
     }
   };
 
-  useSignalEffect(() => {
+  useEffect(() => {
     setOpen(ModalManager.isVisible.value);
-  });
+  }, []);
 
   if (!open) return null;
 

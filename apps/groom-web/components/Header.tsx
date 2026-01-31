@@ -13,52 +13,40 @@ const Header: React.FC = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const { user, logout } = useAuth();
-
-  const getInitials = (name: string) => {
-    return name
-      ? name
-          .split(" ")
-          .map((n) => n[0])
-          .join("")
-          .toUpperCase()
-          .slice(0, 2)
-      : "";
-  };
-
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const NavLinks = () => (
     <>
       <Link
-        href="/"
+        href="/groom"
         className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#B48B7F] hover:bg-gray-50 transition duration-300 md:p-0 md:bg-transparent md:hover:bg-transparent"
         onClick={() => setIsMenuOpen(false)}
       >
         Home
       </Link>
       <Link
-        href="/about"
+        href="/groom/about-us"
         className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#B48B7F] hover:bg-gray-50 transition duration-300 md:p-0 md:bg-transparent md:hover:bg-transparent"
         onClick={() => setIsMenuOpen(false)}
       >
         About Us
       </Link>
       <Link
-        href="/blogs"
+        href="/groom/blogs"
         className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#B48B7F] hover:bg-gray-50 transition duration-300 md:p-0 md:bg-transparent md:hover:bg-transparent"
         onClick={() => setIsMenuOpen(false)}
       >
         Blogs
       </Link>
       <Link
-        href="/confessions"
+        href="/groom/confessions"
         className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#B48B7F] hover:bg-gray-50 transition duration-300 md:p-0 md:bg-transparent md:hover:bg-transparent"
         onClick={() => setIsMenuOpen(false)}
       >
         Confession
       </Link>
       <Link
-        href="/bookings"
+        href="/groom/bookings"
         className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#B48B7F] hover:bg-gray-50 transition duration-300 md:p-0 md:bg-transparent md:hover:bg-transparent"
         onClick={() => setIsMenuOpen(false)}
       >
@@ -92,9 +80,11 @@ const Header: React.FC = () => {
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
-            <BookingButton className="btn-sm" />
+            <BookingButton
+              className="btn-sm"
+              onLoginRequest={() => setIsLoginModalOpen(true)}
+            />
 
-            {/* User Profile / Login */}
             <div className="relative">
               <button
                 type="button"
@@ -118,7 +108,7 @@ const Header: React.FC = () => {
                     />
                   ) : (
                     <span className="text-sm font-semibold text-gray-700">
-                      {getInitials(user.name)}
+                      {user.name}
                     </span>
                   )
                 ) : (
@@ -196,7 +186,7 @@ const Header: React.FC = () => {
                   />
                 ) : (
                   <span className="text-xs font-semibold text-gray-700">
-                    {getInitials(user.name)}
+                    {user.name}
                   </span>
                 )
               ) : (

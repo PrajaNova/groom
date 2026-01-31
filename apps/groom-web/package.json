@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@jitsi/react-sdk": "catalog:",
+    "@preact-signals/safe-react": "catalog:",
     "jose": "catalog:",
     "jsonwebtoken": "catalog:",
     "lucide-react": "catalog:",

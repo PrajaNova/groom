@@ -24,7 +24,6 @@ export default function ConditionalLayout({
   // Normal routes: include header and footer
   return (
     <>
-      <Header />
       {children}
       <Footer />
     </>
