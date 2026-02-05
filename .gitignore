@@ -1,16 +1,5 @@
-# Dependencies
 node_modules
-
-# System files
-.DS_Store
-
-# Build outputs
-dist
 .next
-coverage
-build
-generated
-
-# Environment variables - DO NOT COMMIT
 .env
-
+.DS_Store
+.pnpm-store

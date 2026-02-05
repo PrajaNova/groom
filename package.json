@@ -16,13 +16,5 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@biomejs/biome": "catalog:",
-    "@types/node": "catalog:",
-    "concurrently": "catalog:",
-    "dotenv": "catalog:",
-    "tsx": "catalog:",
-    "typescript": "catalog:"
-  }
+  "license": "ISC"
 }
