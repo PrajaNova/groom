@@ -77,6 +77,7 @@ export class SessionService {
     // Fetch user to put in token if needed, but here we just sign the session payload
     const user = await this.fastify.prisma.user.findUnique({
       where: { id: session.userId },
+      include: { roles: true },
     });
 
     return this.fastify.jwt.sign({

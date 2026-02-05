@@ -76,4 +76,41 @@ export class RoleService {
 
     return user?.roles.map((r) => r.name) || [];
   }
+  async assignRoles(userId: string, roleIds: string[]): Promise<boolean> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        roles: {
+          connect: roleIds.map((id) => ({ id })),
+        },
+      },
+    });
+    return true;
+  }
+
+  async revokeRoles(userId: string, roleIds: string[]): Promise<boolean> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        roles: {
+          disconnect: roleIds.map((id) => ({ id })),
+        },
+      },
+    });
+    return true;
+  }
+
+  async deleteRole(id: string): Promise<boolean> {
+    await this.prisma.role.delete({
+      where: { id },
+    });
+    return true;
+  }
+
+  async updateRole(id: string, name: string): Promise<Role> {
+    return this.prisma.role.update({
+      where: { id },
+      data: { name: name.toUpperCase() },
+    });
+  }
 }

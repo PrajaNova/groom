@@ -20,6 +20,12 @@ export const RoleCreateSchema = z
   })
   .openapi("RoleCreate");
 
+export const RoleUpdateSchema = z
+  .object({
+    name: z.string().min(2),
+  })
+  .openapi("RoleUpdate");
+
 export type RoleCreate = z.infer<typeof RoleCreateSchema>;
 
 export const RoleResponseSchema = RoleSchema;
@@ -33,6 +39,23 @@ export const AssignRoleSchema = z
   })
   .openapi("AssignRole");
 
+export const AssignRolesSchema = z
+  .object({
+    userId: z.string().cuid(),
+    roleIds: z.array(z.string().cuid()),
+  })
+  .openapi("AssignRoles");
+
+export const RevokeRolesSchema = z
+  .object({
+    userId: z.string().cuid(),
+    roleIds: z.array(z.string().cuid()),
+  })
+  .openapi("RevokeRoles");
+
 export type RoleResponse = z.infer<typeof RoleResponseSchema>;
 export type RoleListResponse = z.infer<typeof RoleListResponseSchema>;
 export type AssignRole = z.infer<typeof AssignRoleSchema>;
+export type AssignRoles = z.infer<typeof AssignRolesSchema>;
+export type RevokeRoles = z.infer<typeof RevokeRolesSchema>;
+export type RoleUpdate = z.infer<typeof RoleUpdateSchema>;

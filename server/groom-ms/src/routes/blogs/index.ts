@@ -55,6 +55,24 @@ const blogRoutes: FastifyPluginAsync = async (fastify) => {
     },
     controller.create,
   );
+
+  fastify.delete(
+    ROUTES.BLOGS + "/:id",
+    {
+      preHandler: [authGuard, requireRole("ADMIN")],
+      schema: createRouteSchema({
+        params: z.object({ id: z.string() }),
+        response: { 200: z.object({ success: z.boolean() }) },
+        tags: ["Blogs"],
+        security: [{ bearerAuth: [] }],
+      }),
+    },
+    async (request, reply) => {
+      const { id } = request.params as { id: string };
+      await service.delete(id); // Ensure service has this
+      return { success: true };
+    },
+  );
 };
 
 export default blogRoutes;

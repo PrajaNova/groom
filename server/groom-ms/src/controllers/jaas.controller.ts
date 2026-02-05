@@ -10,8 +10,19 @@ export class JaasController {
     reply: FastifyReply,
   ) => {
     try {
-      // TODO: Extract user from request if authenticated
-      const token = this.service.generateToken(req.body.meetingId);
+      if (!req.user) {
+        return reply.unauthorized("Authentication required");
+      }
+
+      const user = {
+        ...req.user,
+        roles: req.user.roles?.map((r) => ({
+          ...r,
+          description: r.description ?? null,
+        })),
+      };
+
+      const token = this.service.generateToken(req.body.meetingId, user);
       return { token };
     } catch (error) {
       req.log.error(error);

@@ -43,7 +43,7 @@ class UserService {
   }
 
   async getProfile(): Promise<User> {
-    return fetchAPI("/api/user/profile", { cache: "no-store" });
+    return fetchAPI("/api/auth/me", { cache: "no-store" });
   }
 
   // OAuth

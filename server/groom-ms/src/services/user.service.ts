@@ -33,6 +33,14 @@ export class UserService {
     return user ? this.sanitize(user) : null;
   }
 
+  async getAllUsers(): Promise<User[]> {
+    const users = await this.prisma.user.findMany({
+      include: { roles: true },
+      orderBy: { createdAt: "desc" },
+    });
+    return users.map((u) => this.sanitize(u));
+  }
+
   async createUser(
     email: string,
     name: string,

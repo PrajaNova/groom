@@ -14,34 +14,23 @@ const BookingButton: React.FC<{
 }> = ({ className, children, onLoginRequest }) => {
   const router = useRouter();
   const { user } = useAuth();
-  const [hasBooking, setHasBooking] = useState(false);
-
-  // Still checking localStorage for legacy reasons, but auth blocked first
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("tqs_booking");
-      if (raw) setHasBooking(true);
-    } catch (_e) {
-      // ignore
-    }
-  }, []);
 
   const onClick = useCallback(() => {
     if (!user) {
-      if (onLoginRequest) onLoginRequest();
+      if (onLoginRequest) {
+        onLoginRequest();
+      } else {
+        router.push("/auth/login");
+      }
       return;
     }
 
-    if (hasBooking) {
-      router.push("/bookings");
-      return;
-    }
     ModalManager.open(<BookingModal />);
-  }, [user, hasBooking, router, onLoginRequest]);
+  }, [user, router, onLoginRequest]);
 
   return (
     <button onClick={onClick} type="button" className={className ?? "btn-sm"}>
-      {children ?? (hasBooking ? "Manage Booking" : "Book Session")}
+      {children ?? "Book Session"}
     </button>
   );
 };

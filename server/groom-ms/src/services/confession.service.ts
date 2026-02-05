@@ -23,4 +23,17 @@ export class ConfessionService {
       },
     });
   }
+
+  async deleteConfession(id: string) {
+    return await this.prisma.confession.delete({
+      where: { id },
+    });
+  }
+
+  async updateConfession(id: string, content: string) {
+    return await this.prisma.confession.update({
+      where: { id },
+      data: { content },
+    });
+  }
 }

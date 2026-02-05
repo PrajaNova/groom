@@ -34,9 +34,12 @@ import {
 } from "@schemas/jaas.schema";
 import {
   AssignRoleSchema,
+  AssignRolesSchema,
+  RevokeRolesSchema,
   RoleCreateSchema,
   RoleListResponseSchema,
   RoleResponseSchema,
+  RoleUpdateSchema,
 } from "@schemas/role.schema";
 import {
   SessionListResponseSchema,
@@ -73,6 +76,9 @@ registry.register("Role", RoleResponseSchema);
 registry.register("RoleCreate", RoleCreateSchema);
 registry.register("RoleListResponse", RoleListResponseSchema);
 registry.register("AssignRole", AssignRoleSchema);
+registry.register("AssignRoles", AssignRolesSchema);
+registry.register("RevokeRoles", RevokeRolesSchema);
+registry.register("RoleUpdate", RoleUpdateSchema);
 
 // Blogs
 registry.register("Blog", BlogResponseSchema);
@@ -363,6 +369,129 @@ registry.registerPath({
     200: {
       description: "List of roles",
       content: { "application/json": { schema: RoleListResponseSchema } },
+    },
+  },
+});
+
+registry.registerPath({
+  method: "get",
+  path: "/api/roles/{id}",
+  tags: ["Roles"],
+  summary: "Get user roles",
+  security: [{ bearerAuth: [] }],
+  request: {
+    params: z.object({ id: z.string() }),
+  },
+  responses: {
+    200: {
+      description: "User roles",
+      content: { "application/json": { schema: z.array(z.string()) } },
+    },
+  },
+});
+
+registry.registerPath({
+  method: "post",
+  path: "/api/roles/add",
+  tags: ["Roles"],
+  summary: "Assign roles to user",
+  security: [{ bearerAuth: [] }],
+  request: {
+    body: {
+      content: { "application/json": { schema: AssignRolesSchema } },
+    },
+  },
+  responses: {
+    200: {
+      description: "Roles assigned",
+      content: {
+        "application/json": {
+          schema: z.object({ success: z.boolean(), message: z.string() }),
+        },
+      },
+    },
+  },
+});
+
+registry.registerPath({
+  method: "post",
+  path: "/api/roles/remove",
+  tags: ["Roles"],
+  summary: "Remove roles from user",
+  security: [{ bearerAuth: [] }],
+  request: {
+    body: {
+      content: { "application/json": { schema: RevokeRolesSchema } },
+    },
+  },
+  responses: {
+    200: {
+      description: "Roles removed",
+      content: {
+        "application/json": {
+          schema: z.object({ success: z.boolean(), message: z.string() }),
+        },
+      },
+    },
+  },
+});
+
+registry.registerPath({
+  method: "post",
+  path: "/api/roles/create",
+  tags: ["Roles"],
+  summary: "Create a new role",
+  security: [{ bearerAuth: [] }],
+  request: {
+    body: {
+      content: { "application/json": { schema: RoleCreateSchema } },
+    },
+  },
+  responses: {
+    201: {
+      description: "Role created",
+      content: { "application/json": { schema: RoleResponseSchema } },
+    },
+  },
+});
+
+registry.registerPath({
+  method: "delete",
+  path: "/api/roles/{id}",
+  tags: ["Roles"],
+  summary: "Delete a role",
+  security: [{ bearerAuth: [] }],
+  request: {
+    params: z.object({ id: z.string() }),
+  },
+  responses: {
+    200: {
+      description: "Role deleted",
+      content: {
+        "application/json": {
+          schema: z.object({ success: z.boolean(), message: z.string() }),
+        },
+      },
+    },
+  },
+});
+
+registry.registerPath({
+  method: "patch",
+  path: "/api/roles/{id}",
+  tags: ["Roles"],
+  summary: "Update a role",
+  security: [{ bearerAuth: [] }],
+  request: {
+    params: z.object({ id: z.string() }),
+    body: {
+      content: { "application/json": { schema: RoleUpdateSchema } },
+    },
+  },
+  responses: {
+    200: {
+      description: "Role updated",
+      content: { "application/json": { schema: RoleResponseSchema } },
     },
   },
 });

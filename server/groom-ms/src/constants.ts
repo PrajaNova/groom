@@ -60,6 +60,13 @@ export const ROUTES = {
   BLOGS: "/",
   BLOG_BY_SLUG: "/:slug",
 
+  // Role Routes
+  ROLES: "/roles",
+  ROLE_BY_ID: "/:id",
+  ROLE_ADD: "/add",
+  ROLE_REMOVE: "/remove",
+  ROLE_CREATE: "/create",
+
   // Booking Routes
   BOOKINGS: "/",
   BOOKING_BY_ID: "/:id",

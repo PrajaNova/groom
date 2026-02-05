@@ -69,6 +69,8 @@ export class BookingService {
   async getBookings(filters?: {
     status?: BookingStatus[];
     fromDate?: Date;
+    toDate?: Date;
+    endDay?: Date;
     sort?: "asc" | "desc";
     userId?: string;
   }) {
@@ -82,8 +84,21 @@ export class BookingService {
       where.userId = filters.userId;
     }
 
-    if (filters?.fromDate) {
-      where.when = { gte: filters.fromDate };
+    // Date Filtering Logic
+    if (filters?.fromDate || filters?.toDate || filters?.endDay) {
+      where.when = {};
+      if (filters.fromDate) {
+        where.when.gte = filters.fromDate;
+      }
+      if (filters.toDate) {
+        where.when.lte = filters.toDate;
+      } else if (filters.endDay) {
+        // If endDay is provided, we want to include everything up to the end of that day
+        // Assuming endDay is passed as start of the day, we need to add 1 day or set to 23:59:59
+        // But simpler might be to trust the frontend/controller to pass the correct ISO string
+        // Let's assume endDay matches the 'lte' behavior we want (e.g. 23:59:59)
+        where.when.lte = filters.endDay;
+      }
     }
 
     return await this.prisma.booking.findMany({

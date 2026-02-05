@@ -49,4 +49,10 @@ export class BlogService {
       where: { slug },
     });
   }
+
+  async delete(id: string) {
+    return await this.prisma.blog.delete({
+      where: { id },
+    });
+  }
 }

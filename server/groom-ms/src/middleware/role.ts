@@ -7,7 +7,7 @@ export const requireRole = (roleName: string) => {
       return reply.unauthorized(ERROR_MESSAGES.UNAUTHORIZED);
     }
 
-    const userRoles = request.user.roles || [];
+    const userRoles = request.user.roles?.map((r) => r.name) || [];
     if (userRoles.includes("SUPER_ADMIN")) {
       return;
     }
@@ -23,7 +23,8 @@ export const requireAnyRole = (roleNames: string[]) => {
     if (!request.user) {
       return reply.unauthorized(ERROR_MESSAGES.UNAUTHORIZED);
     }
-    const userRoles = request.user.roles || [];
+
+    const userRoles = request.user.roles?.map((r) => r.name) || [];
     if (userRoles.includes("SUPER_ADMIN")) {
       return;
     }

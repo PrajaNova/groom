@@ -1,13 +1,13 @@
+import type { Role } from "@generated/client";
 import type { FastifyInstance } from "fastify";
 import jwt from "jsonwebtoken";
-import { nanoid } from "nanoid";
 
 export class JaasService {
   constructor(private fastify: FastifyInstance) {}
 
   generateToken(
     meetingId: string,
-    user?: { id: string; name: string; email: string },
+    user: { id: string; name: string; email: string; roles?: Role[] },
   ) {
     const { appId, apiKey, privateKey } = this.fastify.config.jitsi;
 
@@ -15,13 +15,11 @@ export class JaasService {
       throw new Error("JaaS credentials not configured");
     }
 
-    const userContext = user || {
-      id: nanoid(),
-      name: "Guest User",
-      email: "",
-      avatar: "",
-    };
-    const isModerator = false; // Default logic for now
+    const userContext = user;
+    const isModerator =
+      user?.roles?.some((role) =>
+        ["ADMIN", "SUPER_ADMIN"].includes(role.name),
+      ) || false;
 
     const now = Math.floor(Date.now() / 1000);
     const exp = now + 60 * 60 * 12; // 12 hours

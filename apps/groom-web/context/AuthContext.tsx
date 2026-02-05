@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       // Always try to fetch current user from backend on page load
       // This verifies the session cookie and gets latest user data
       try {
-        const res = await fetch("/api/user/profile", {
+        const res = await fetch("/api/auth/me", {
           credentials: "include", // Always send cookies
         });
 

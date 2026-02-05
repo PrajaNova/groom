@@ -13,7 +13,7 @@
                             "description": "",
                             "item": [
                                 {
-                                    "id": "7852f8e9-10cb-4cf3-8bfe-b5549c5ccfac",
+                                    "id": "d2db2bbd-c989-4006-b585-ad8b55cd7abc",
                                     "name": "Register a new user",
                                     "request": {
                                         "name": "Register a new user",
@@ -55,7 +55,7 @@
                                     },
                                     "response": [
                                         {
-                                            "id": "356074b3-3aab-47aa-8e31-6c9170c26d46",
+                                            "id": "da4679c7-4b40-4d84-b2fc-db449ad0208e",
                                             "name": "User registered successfully",
                                             "originalRequest": {
                                                 "url": {
@@ -100,12 +100,12 @@
                                                     "value": "application/json"
                                                 }
                                             ],
-                                            "body": "{\n  \"user\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"name\": \"<string>\",\n    \"createdAt\": \"<date>\",\n    \"updatedAt\": \"<date>\",\n    \"avatar\": \"<string,null>\",\n    \"roles\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"sessionToken\": \"<string>\"\n}",
+                                            "body": "{\n  \"user\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"name\": \"<string>\",\n    \"createdAt\": \"<date>\",\n    \"updatedAt\": \"<date>\",\n    \"avatar\": \"<string,null>\",\n    \"roles\": [\n      {\n        \"id\": \"<string>\",\n        \"name\": \"<string>\",\n        \"createdAt\": \"<date>\",\n        \"updatedAt\": \"<date>\",\n        \"description\": \"<string,null>\"\n      },\n      {\n        \"id\": \"<string>\",\n        \"name\": \"<string>\",\n        \"createdAt\": \"<date>\",\n        \"updatedAt\": \"<date>\",\n        \"description\": \"<string,null>\"\n      }\n    ]\n  },\n  \"sessionToken\": \"<string>\"\n}",
                                             "cookie": [],
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "7e3dc421-7511-418c-a8ed-91358e5fe8d9",
+                                            "id": "1cf34c95-d5bf-4cdc-b704-5a15f1b76c95",
                                             "name": "Bad request",
                                             "originalRequest": {
                                                 "url": {
@@ -167,7 +167,7 @@
                             "description": "",
                             "item": [
                                 {
-                                    "id": "a5829859-6f29-44a8-a9a7-0cec07135429",
+                                    "id": "d32648ed-3a3f-4209-8dc3-27033b87e9e7",
                                     "name": "Login user",
                                     "request": {
                                         "name": "Login user",
@@ -209,7 +209,7 @@
                                     },
                                     "response": [
                                         {
-                                            "id": "42ea09ef-6f59-4bd6-919f-9ce527f0524c",
+                                            "id": "5fd2e823-04ba-4897-9d59-d534a93e3ac9",
                                             "name": "Login successful",
                                             "originalRequest": {
                                                 "url": {
@@ -254,12 +254,12 @@
                                                     "value": "application/json"
                                                 }
                                             ],
-                                            "body": "{\n  \"user\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"name\": \"<string>\",\n    \"createdAt\": \"<date>\",\n    \"updatedAt\": \"<date>\",\n    \"avatar\": \"<string,null>\",\n    \"roles\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"sessionToken\": \"<string>\"\n}",
+                                            "body": "{\n  \"user\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"name\": \"<string>\",\n    \"createdAt\": \"<date>\",\n    \"updatedAt\": \"<date>\",\n    \"avatar\": \"<string,null>\",\n    \"roles\": [\n      {\n        \"id\": \"<string>\",\n        \"name\": \"<string>\",\n        \"createdAt\": \"<date>\",\n        \"updatedAt\": \"<date>\",\n        \"description\": \"<string,null>\"\n      },\n      {\n        \"id\": \"<string>\",\n        \"name\": \"<string>\",\n        \"createdAt\": \"<date>\",\n        \"updatedAt\": \"<date>\",\n        \"description\": \"<string,null>\"\n      }\n    ]\n  },\n  \"sessionToken\": \"<string>\"\n}",
                                             "cookie": [],
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "d09c206f-037c-4caa-b713-43574aa26530",
+                                            "id": "cd59c9a7-9b1c-4fbd-b39d-46bdb63cb2d7",
                                             "name": "Unauthorized",
                                             "originalRequest": {
                                                 "url": {
@@ -321,7 +321,7 @@
                             "description": "",
                             "item": [
                                 {
-                                    "id": "acd329d6-e19f-4e04-81be-ef000d4c90c5",
+                                    "id": "a945bd12-9513-4f84-a516-c4605bde36bf",
                                     "name": "Logout user",
                                     "request": {
                                         "name": "Logout user",
@@ -358,7 +358,7 @@
                                     },
                                     "response": [
                                         {
-                                            "id": "3e0b009a-e868-4f99-8f2a-a8f3e58e211a",
+                                            "id": "df723e8c-7c9b-4a43-8be2-53e37a4c8783",
                                             "name": "Logout successful",
                                             "originalRequest": {
                                                 "url": {
@@ -415,7 +415,7 @@
                             "description": "",
                             "item": [
                                 {
-                                    "id": "99379159-bcf5-467f-a5e8-69c233f1018b",
+                                    "id": "20cf5eca-a022-4b68-ab82-bc322379cf8f",
                                     "name": "Get current user",
                                     "request": {
                                         "name": "Get current user",
@@ -452,7 +452,7 @@
                                     },
                                     "response": [
                                         {
-                                            "id": "094a7bfe-73c2-4aa7-8b60-c8e20a462f76",
+                                            "id": "5c473bd6-1adb-4f06-9fb9-307626c5c9f2",
                                             "name": "Current user profile",
                                             "originalRequest": {
                                                 "url": {
@@ -492,7 +492,7 @@
                                                     "value": "application/json"
                                                 }
                                             ],
-                                            "body": "{\n  \"user\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"name\": \"<string>\",\n    \"createdAt\": \"<date>\",\n    \"updatedAt\": \"<date>\",\n    \"avatar\": \"<string,null>\",\n    \"roles\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"sessionToken\": \"<string>\"\n}",
+                                            "body": "{\n  \"user\": {\n    \"id\": \"<string>\",\n    \"email\": \"<email>\",\n    \"name\": \"<string>\",\n    \"createdAt\": \"<date>\",\n    \"updatedAt\": \"<date>\",\n    \"avatar\": \"<string,null>\",\n    \"roles\": [\n      {\n        \"id\": \"<string>\",\n        \"name\": \"<string>\",\n        \"createdAt\": \"<date>\",\n        \"updatedAt\": \"<date>\",\n        \"description\": \"<string,null>\"\n      },\n      {\n        \"id\": \"<string>\",\n        \"name\": \"<string>\",\n        \"createdAt\": \"<date>\",\n        \"updatedAt\": \"<date>\",\n        \"description\": \"<string,null>\"\n      }\n    ]\n  },\n  \"sessionToken\": \"<string>\"\n}",
                                             "cookie": [],
                                             "_postman_previewlanguage": "json"
                                         }
@@ -509,7 +509,7 @@
                             "description": "",
                             "item": [
                                 {
-                                    "id": "90aa4169-d721-4ab0-8e5b-77ae58bf8a6a",
+                                    "id": "7e2ade26-7cd9-4cfb-a3a7-321ab8e032a5",
                                     "name": "Get OAuth providers",
                                     "request": {
                                         "name": "Get OAuth providers",
@@ -538,7 +538,7 @@
                                     },
                                     "response": [
                                         {
-                                            "id": "7365d861-0156-4cd2-aeeb-ad356ccea69e",
+                                            "id": "baa0c1c0-4768-462f-b4af-a88fc8cb621e",
                                             "name": "List of providers",
                                             "originalRequest": {
                                                 "url": {
@@ -589,7 +589,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "94d1cf57-ca63-46b1-aba4-40b2b6c4cc23",
+                            "id": "81b93281-efc5-418a-a55a-f6926a6b8cc8",
                             "name": "Get all blogs",
                             "request": {
                                 "name": "Get all blogs",
@@ -617,7 +617,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "8c84fbe0-b3d0-4f5b-b7f6-1ea4a56f4b87",
+                                    "id": "2d929537-5d43-415f-a8b7-2379c0163e77",
                                     "name": "List of blogs",
                                     "originalRequest": {
                                         "url": {
@@ -659,7 +659,7 @@
                             }
                         },
                         {
-                            "id": "40b74fb1-7fa3-4855-be53-27f1607b0e40",
+                            "id": "8f56275d-d5eb-474a-9a82-827c265efc54",
                             "name": "Create a blog post",
                             "request": {
                                 "name": "Create a blog post",
@@ -708,7 +708,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "1bca7eae-fe25-4e19-a28e-d21de221241d",
+                                    "id": "68764f28-c4b9-41c5-a064-41e6a72868b5",
                                     "name": "Blog created",
                                     "originalRequest": {
                                         "url": {
@@ -775,7 +775,7 @@
                             "description": "",
                             "item": [
                                 {
-                                    "id": "2f2bb0e8-d741-4ee0-a521-2d80cf7418d8",
+                                    "id": "691c6668-b85f-4b7b-960d-a4345ea03402",
                                     "name": "Get blog by slug",
                                     "request": {
                                         "name": "Get blog by slug",
@@ -815,7 +815,7 @@
                                     },
                                     "response": [
                                         {
-                                            "id": "77c37df1-1683-4dee-84e3-1710751b0151",
+                                            "id": "369d3a95-17d8-4bb4-a854-a30d9d0353e4",
                                             "name": "Blog details",
                                             "originalRequest": {
                                                 "url": {
@@ -863,7 +863,7 @@
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "fa84e74b-7d5d-40d2-aa60-e1789b1b3c9f",
+                                            "id": "c8283219-7274-455f-b7f9-6eb6a05a9827",
                                             "name": "Not found",
                                             "originalRequest": {
                                                 "url": {
@@ -925,7 +925,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "61440f4c-5561-4e6d-96e8-7a85c8596725",
+                            "id": "9f40f733-33f3-42fa-b142-3eefe2611745",
                             "name": "Get bookings",
                             "request": {
                                 "name": "Get bookings",
@@ -982,7 +982,7 @@
                                                 "type": "text/plain"
                                             },
                                             "key": "sort",
-                                            "value": "desc"
+                                            "value": "asc"
                                         }
                                     ],
                                     "variable": []
@@ -1007,7 +1007,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "396593cf-9e09-478f-a742-3a4dfaaaf0b5",
+                                    "id": "ffe6ba1f-7d74-4d82-b136-3fa3fa67dcd2",
                                     "name": "List of bookings",
                                     "originalRequest": {
                                         "url": {
@@ -1062,7 +1062,7 @@
                                                         "type": "text/plain"
                                                     },
                                                     "key": "sort",
-                                                    "value": "desc"
+                                                    "value": "asc"
                                                 }
                                             ],
                                             "variable": []
@@ -1092,7 +1092,7 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "[\n  {\n    \"id\": \"<uuid>\",\n    \"name\": \"<string>\",\n    \"email\": \"<email>\",\n    \"when\": \"<dateTime>\",\n    \"reason\": \"<string>\",\n    \"status\": \"pending\",\n    \"createdAt\": \"<dateTime>\",\n    \"updatedAt\": \"<dateTime>\",\n    \"userId\": \"<string,null>\",\n    \"meetingId\": \"<string,null>\"\n  },\n  {\n    \"id\": \"<uuid>\",\n    \"name\": \"<string>\",\n    \"email\": \"<email>\",\n    \"when\": \"<dateTime>\",\n    \"reason\": \"<string>\",\n    \"status\": \"completed\",\n    \"createdAt\": \"<dateTime>\",\n    \"updatedAt\": \"<dateTime>\",\n    \"userId\": \"<string,null>\",\n    \"meetingId\": \"<string,null>\"\n  }\n]",
+                                    "body": "[\n  {\n    \"id\": \"<uuid>\",\n    \"name\": \"<string>\",\n    \"email\": \"<email>\",\n    \"when\": \"<dateTime>\",\n    \"reason\": \"<string>\",\n    \"status\": \"completed\",\n    \"createdAt\": \"<dateTime>\",\n    \"updatedAt\": \"<dateTime>\",\n    \"userId\": \"<string,null>\",\n    \"meetingId\": \"<string,null>\"\n  },\n  {\n    \"id\": \"<uuid>\",\n    \"name\": \"<string>\",\n    \"email\": \"<email>\",\n    \"when\": \"<dateTime>\",\n    \"reason\": \"<string>\",\n    \"status\": \"confirmed\",\n    \"createdAt\": \"<dateTime>\",\n    \"updatedAt\": \"<dateTime>\",\n    \"userId\": \"<string,null>\",\n    \"meetingId\": \"<string,null>\"\n  }\n]",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 }
@@ -1103,7 +1103,7 @@
                             }
                         },
                         {
-                            "id": "a48b7e75-1d9e-4cdc-a260-1fedd739544f",
+                            "id": "052389dd-5443-4a4d-84cc-e39565b6092e",
                             "name": "Create booking",
                             "request": {
                                 "name": "Create booking",
@@ -1152,7 +1152,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "166ea4a7-b1b1-421d-957c-001e2e54420b",
+                                    "id": "c727b6f1-ef6c-4fca-87e1-30d812ce4b30",
                                     "name": "Booking created",
                                     "originalRequest": {
                                         "url": {
@@ -1219,7 +1219,7 @@
                             "description": "",
                             "item": [
                                 {
-                                    "id": "2dba27aa-9666-45be-8d2d-670d50f30751",
+                                    "id": "e98e519d-5d05-4023-ae86-bcb69f035fe8",
                                     "name": "Get booking by ID",
                                     "request": {
                                         "name": "Get booking by ID",
@@ -1267,7 +1267,7 @@
                                     },
                                     "response": [
                                         {
-                                            "id": "2e23a631-9ec2-40a2-8b0a-516354c95780",
+                                            "id": "88cddf80-397c-45f7-b161-ac8f93f33ac8",
                                             "name": "Booking details",
                                             "originalRequest": {
                                                 "url": {
@@ -1337,7 +1337,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "a9f8c41b-ea05-4aa2-8af8-6f0f630b4491",
+                            "id": "f41cf7d7-b7ad-45ec-b844-dc39204cfd03",
                             "name": "Get recent confessions",
                             "request": {
                                 "name": "Get recent confessions",
@@ -1365,7 +1365,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "b38b7b99-169a-44aa-9d7a-e469958158b6",
+                                    "id": "305c6b55-a34c-474b-919b-f39346f80bfb",
                                     "name": "List of confessions",
                                     "originalRequest": {
                                         "url": {
@@ -1407,7 +1407,7 @@
                             }
                         },
                         {
-                            "id": "69342b70-ca49-4289-887e-150386021fa5",
+                            "id": "122dff1b-27f9-40c9-b2ff-b082f22d0cea",
                             "name": "Create confession",
                             "request": {
                                 "name": "Create confession",
@@ -1448,7 +1448,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "253d01fa-36d8-4704-9211-e063d4d3c733",
+                                    "id": "a6951877-b11a-4415-a955-1e853b175ae9",
                                     "name": "Confession created",
                                     "originalRequest": {
                                         "url": {
@@ -1509,7 +1509,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "1ab6900a-477a-4358-b9c1-9b97ee3dd0b1",
+                            "id": "c48468de-11d8-4750-9407-44f07f12792c",
                             "name": "Generate Jitsi token",
                             "request": {
                                 "name": "Generate Jitsi token",
@@ -1558,7 +1558,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "c6ed7769-c72b-4e86-8a39-c11035eed239",
+                                    "id": "aba035a4-9063-4b2a-873c-52bbc7f9f2f1",
                                     "name": "Token generated",
                                     "originalRequest": {
                                         "url": {
@@ -1627,7 +1627,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "78b8c384-b916-43f2-bdba-b19900ffc4bb",
+                            "id": "52c8c1e1-1e8a-4f03-acc7-7fee883490d6",
                             "name": "Get all roles",
                             "request": {
                                 "name": "Get all roles",
@@ -1663,7 +1663,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "81107327-bbfc-4a68-9b8c-5ad2bb71b8cf",
+                                    "id": "ebc4919c-d47f-4bb5-852e-231b50a3541b",
                                     "name": "List of roles",
                                     "originalRequest": {
                                         "url": {
@@ -1711,6 +1711,728 @@
                             "protocolProfileBehavior": {
                                 "disableBodyPruning": true
                             }
+                        },
+                        {
+                            "name": "{id}",
+                            "description": "",
+                            "item": [
+                                {
+                                    "id": "e916e432-b276-4f78-a23d-2e72a89bb8d2",
+                                    "name": "Get user roles",
+                                    "request": {
+                                        "name": "Get user roles",
+                                        "description": {},
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "roles",
+                                                ":id"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": [
+                                                {
+                                                    "type": "any",
+                                                    "value": "<string>",
+                                                    "key": "id",
+                                                    "disabled": false,
+                                                    "description": {
+                                                        "content": "(Required) ",
+                                                        "type": "text/plain"
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "GET",
+                                        "body": {},
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{bearerToken}}"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "response": [
+                                        {
+                                            "id": "4d73bed8-721b-4faf-ae6c-fbf1f15190f1",
+                                            "name": "User roles",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "roles",
+                                                        ":id"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": [
+                                                        {
+                                                            "disabled": false,
+                                                            "description": {
+                                                                "content": "(Required) ",
+                                                                "type": "text/plain"
+                                                            },
+                                                            "type": "any",
+                                                            "value": "<string>",
+                                                            "key": "id"
+                                                        }
+                                                    ]
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    },
+                                                    {
+                                                        "description": {
+                                                            "content": "Added as a part of security scheme: bearer",
+                                                            "type": "text/plain"
+                                                        },
+                                                        "key": "Authorization",
+                                                        "value": "Bearer <token>"
+                                                    }
+                                                ],
+                                                "method": "GET",
+                                                "body": {}
+                                            },
+                                            "status": "OK",
+                                            "code": 200,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "[\n  \"<string>\",\n  \"<string>\"\n]",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        }
+                                    ],
+                                    "event": [],
+                                    "protocolProfileBehavior": {
+                                        "disableBodyPruning": true
+                                    }
+                                },
+                                {
+                                    "id": "50758330-70bf-4fc2-a233-1d56d0d6ce08",
+                                    "name": "Delete a role",
+                                    "request": {
+                                        "name": "Delete a role",
+                                        "description": {},
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "roles",
+                                                ":id"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": [
+                                                {
+                                                    "type": "any",
+                                                    "value": "<string>",
+                                                    "key": "id",
+                                                    "disabled": false,
+                                                    "description": {
+                                                        "content": "(Required) ",
+                                                        "type": "text/plain"
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "DELETE",
+                                        "body": {},
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{bearerToken}}"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "response": [
+                                        {
+                                            "id": "1813bdb0-bfc9-4331-a038-32774a6e3875",
+                                            "name": "Role deleted",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "roles",
+                                                        ":id"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": [
+                                                        {
+                                                            "disabled": false,
+                                                            "description": {
+                                                                "content": "(Required) ",
+                                                                "type": "text/plain"
+                                                            },
+                                                            "type": "any",
+                                                            "value": "<string>",
+                                                            "key": "id"
+                                                        }
+                                                    ]
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    },
+                                                    {
+                                                        "description": {
+                                                            "content": "Added as a part of security scheme: bearer",
+                                                            "type": "text/plain"
+                                                        },
+                                                        "key": "Authorization",
+                                                        "value": "Bearer <token>"
+                                                    }
+                                                ],
+                                                "method": "DELETE",
+                                                "body": {}
+                                            },
+                                            "status": "OK",
+                                            "code": 200,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"success\": \"<boolean>\",\n  \"message\": \"<string>\"\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        }
+                                    ],
+                                    "event": [],
+                                    "protocolProfileBehavior": {
+                                        "disableBodyPruning": true
+                                    }
+                                },
+                                {
+                                    "id": "cb31794a-95a3-438d-addf-d17c94043c5c",
+                                    "name": "Update a role",
+                                    "request": {
+                                        "name": "Update a role",
+                                        "description": {},
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "roles",
+                                                ":id"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": [
+                                                {
+                                                    "type": "any",
+                                                    "value": "<string>",
+                                                    "key": "id",
+                                                    "disabled": false,
+                                                    "description": {
+                                                        "content": "(Required) ",
+                                                        "type": "text/plain"
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json"
+                                            },
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "PATCH",
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n  \"name\": \"<string>\"\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "headerFamily": "json",
+                                                    "language": "json"
+                                                }
+                                            }
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{bearerToken}}"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "response": [
+                                        {
+                                            "id": "f3371493-ffa8-43df-b271-3490d833a03b",
+                                            "name": "Role updated",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "roles",
+                                                        ":id"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": [
+                                                        {
+                                                            "disabled": false,
+                                                            "description": {
+                                                                "content": "(Required) ",
+                                                                "type": "text/plain"
+                                                            },
+                                                            "type": "any",
+                                                            "value": "<string>",
+                                                            "key": "id"
+                                                        }
+                                                    ]
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Content-Type",
+                                                        "value": "application/json"
+                                                    },
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    },
+                                                    {
+                                                        "description": {
+                                                            "content": "Added as a part of security scheme: bearer",
+                                                            "type": "text/plain"
+                                                        },
+                                                        "key": "Authorization",
+                                                        "value": "Bearer <token>"
+                                                    }
+                                                ],
+                                                "method": "PATCH",
+                                                "body": {
+                                                    "mode": "raw",
+                                                    "raw": "{\n  \"name\": \"<string>\"\n}",
+                                                    "options": {
+                                                        "raw": {
+                                                            "headerFamily": "json",
+                                                            "language": "json"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "status": "OK",
+                                            "code": 200,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"id\": \"<string>\",\n  \"name\": \"<string>\",\n  \"createdAt\": \"<date>\",\n  \"updatedAt\": \"<date>\",\n  \"description\": \"<string,null>\"\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        }
+                                    ],
+                                    "event": [],
+                                    "protocolProfileBehavior": {
+                                        "disableBodyPruning": true
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "add",
+                            "description": "",
+                            "item": [
+                                {
+                                    "id": "25328104-51f1-4745-9cab-e7a5e5c88afc",
+                                    "name": "Assign roles to user",
+                                    "request": {
+                                        "name": "Assign roles to user",
+                                        "description": {},
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "roles",
+                                                "add"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json"
+                                            },
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "POST",
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n  \"userId\": \"<string>\",\n  \"roleIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "headerFamily": "json",
+                                                    "language": "json"
+                                                }
+                                            }
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{bearerToken}}"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "response": [
+                                        {
+                                            "id": "196af6cc-8437-4403-9f2a-310a5df93df8",
+                                            "name": "Roles assigned",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "roles",
+                                                        "add"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": []
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Content-Type",
+                                                        "value": "application/json"
+                                                    },
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    },
+                                                    {
+                                                        "description": {
+                                                            "content": "Added as a part of security scheme: bearer",
+                                                            "type": "text/plain"
+                                                        },
+                                                        "key": "Authorization",
+                                                        "value": "Bearer <token>"
+                                                    }
+                                                ],
+                                                "method": "POST",
+                                                "body": {
+                                                    "mode": "raw",
+                                                    "raw": "{\n  \"userId\": \"<string>\",\n  \"roleIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                                                    "options": {
+                                                        "raw": {
+                                                            "headerFamily": "json",
+                                                            "language": "json"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "status": "OK",
+                                            "code": 200,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"success\": \"<boolean>\",\n  \"message\": \"<string>\"\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        }
+                                    ],
+                                    "event": [],
+                                    "protocolProfileBehavior": {
+                                        "disableBodyPruning": true
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "remove",
+                            "description": "",
+                            "item": [
+                                {
+                                    "id": "79b3d558-b9ce-4c22-9384-ca298bda8507",
+                                    "name": "Remove roles from user",
+                                    "request": {
+                                        "name": "Remove roles from user",
+                                        "description": {},
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "roles",
+                                                "remove"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json"
+                                            },
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "POST",
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n  \"userId\": \"<string>\",\n  \"roleIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "headerFamily": "json",
+                                                    "language": "json"
+                                                }
+                                            }
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{bearerToken}}"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "response": [
+                                        {
+                                            "id": "44a8adb8-9c1e-48dd-8a47-05372fd3d762",
+                                            "name": "Roles removed",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "roles",
+                                                        "remove"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": []
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Content-Type",
+                                                        "value": "application/json"
+                                                    },
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    },
+                                                    {
+                                                        "description": {
+                                                            "content": "Added as a part of security scheme: bearer",
+                                                            "type": "text/plain"
+                                                        },
+                                                        "key": "Authorization",
+                                                        "value": "Bearer <token>"
+                                                    }
+                                                ],
+                                                "method": "POST",
+                                                "body": {
+                                                    "mode": "raw",
+                                                    "raw": "{\n  \"userId\": \"<string>\",\n  \"roleIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                                                    "options": {
+                                                        "raw": {
+                                                            "headerFamily": "json",
+                                                            "language": "json"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "status": "OK",
+                                            "code": 200,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"success\": \"<boolean>\",\n  \"message\": \"<string>\"\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        }
+                                    ],
+                                    "event": [],
+                                    "protocolProfileBehavior": {
+                                        "disableBodyPruning": true
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "create",
+                            "description": "",
+                            "item": [
+                                {
+                                    "id": "68a507a3-4512-4c30-b37d-f71d7eb23301",
+                                    "name": "Create a new role",
+                                    "request": {
+                                        "name": "Create a new role",
+                                        "description": {},
+                                        "url": {
+                                            "path": [
+                                                "api",
+                                                "roles",
+                                                "create"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json"
+                                            },
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "method": "POST",
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n  \"name\": \"<string>\",\n  \"description\": \"<string>\"\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "headerFamily": "json",
+                                                    "language": "json"
+                                                }
+                                            }
+                                        },
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{bearerToken}}"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "response": [
+                                        {
+                                            "id": "4401775b-cffa-4fc8-89b0-53f62c386c19",
+                                            "name": "Role created",
+                                            "originalRequest": {
+                                                "url": {
+                                                    "path": [
+                                                        "api",
+                                                        "roles",
+                                                        "create"
+                                                    ],
+                                                    "host": [
+                                                        "{{baseUrl}}"
+                                                    ],
+                                                    "query": [],
+                                                    "variable": []
+                                                },
+                                                "header": [
+                                                    {
+                                                        "key": "Content-Type",
+                                                        "value": "application/json"
+                                                    },
+                                                    {
+                                                        "key": "Accept",
+                                                        "value": "application/json"
+                                                    },
+                                                    {
+                                                        "description": {
+                                                            "content": "Added as a part of security scheme: bearer",
+                                                            "type": "text/plain"
+                                                        },
+                                                        "key": "Authorization",
+                                                        "value": "Bearer <token>"
+                                                    }
+                                                ],
+                                                "method": "POST",
+                                                "body": {
+                                                    "mode": "raw",
+                                                    "raw": "{\n  \"name\": \"<string>\",\n  \"description\": \"<string>\"\n}",
+                                                    "options": {
+                                                        "raw": {
+                                                            "headerFamily": "json",
+                                                            "language": "json"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "status": "Created",
+                                            "code": 201,
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "application/json"
+                                                }
+                                            ],
+                                            "body": "{\n  \"id\": \"<string>\",\n  \"name\": \"<string>\",\n  \"createdAt\": \"<date>\",\n  \"updatedAt\": \"<date>\",\n  \"description\": \"<string,null>\"\n}",
+                                            "cookie": [],
+                                            "_postman_previewlanguage": "json"
+                                        }
+                                    ],
+                                    "event": [],
+                                    "protocolProfileBehavior": {
+                                        "disableBodyPruning": true
+                                    }
+                                }
+                            ]
                         }
                     ]
                 }
@@ -1725,7 +2447,7 @@
         }
     ],
     "info": {
-        "_postman_id": "3c614143-1fea-4b9e-8ff8-94aefc87e491",
+        "_postman_id": "b98e072b-571f-4f0b-9a3d-4aecacb3eb55",
         "name": "Groom MS API",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "description": {

@@ -1,5 +1,6 @@
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import { z } from "zod";
+import { RoleSchema } from "./role.schema";
 
 extendZodWithOpenApi(z);
 
@@ -11,7 +12,7 @@ export const UserSchema = z
     avatar: z.string().optional().nullable(),
     createdAt: z.date(),
     updatedAt: z.date(),
-    roles: z.array(z.string()).optional(),
+    roles: z.array(RoleSchema).optional(),
   })
   .openapi("User");
 

@@ -34,6 +34,28 @@ components:
       required:
         - success
         - message
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type:
+            - string
+            - "null"
+        createdAt:
+          type: string
+          format: date
+        updatedAt:
+          type: string
+          format: date
+      required:
+        - id
+        - name
+        - createdAt
+        - updatedAt
     User:
       type: object
       properties:
@@ -57,7 +79,7 @@ components:
         roles:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/Role"
       required:
         - id
         - email
@@ -199,28 +221,6 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Provider"
-    Role:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        description:
-          type:
-            - string
-            - "null"
-        createdAt:
-          type: string
-          format: date
-        updatedAt:
-          type: string
-          format: date
-      required:
-        - id
-        - name
-        - createdAt
-        - updatedAt
     RoleCreate:
       type: object
       properties:
@@ -243,6 +243,42 @@ components:
           format: cuid
       required:
         - roleId
+    AssignRoles:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: cuid
+        roleIds:
+          type: array
+          items:
+            type: string
+            format: cuid
+      required:
+        - userId
+        - roleIds
+    RevokeRoles:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: cuid
+        roleIds:
+          type: array
+          items:
+            type: string
+            format: cuid
+      required:
+        - userId
+        - roleIds
+    RoleUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 2
+      required:
+        - name
     Blog:
       type: object
       properties:
@@ -789,4 +825,150 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RoleListResponse"
+  /api/roles/{id}:
+    get:
+      tags:
+        - Roles
+      summary: Get user roles
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: string
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: User roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+    delete:
+      tags:
+        - Roles
+      summary: Delete a role
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: string
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: Role deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                required:
+                  - success
+                  - message
+    patch:
+      tags:
+        - Roles
+      summary: Update a role
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: string
+          required: true
+          name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoleUpdate"
+      responses:
+        "200":
+          description: Role updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Role"
+  /api/roles/add:
+    post:
+      tags:
+        - Roles
+      summary: Assign roles to user
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssignRoles"
+      responses:
+        "200":
+          description: Roles assigned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                required:
+                  - success
+                  - message
+  /api/roles/remove:
+    post:
+      tags:
+        - Roles
+      summary: Remove roles from user
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RevokeRoles"
+      responses:
+        "200":
+          description: Roles removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                required:
+                  - success
+                  - message
+  /api/roles/create:
+    post:
+      tags:
+        - Roles
+      summary: Create a new role
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoleCreate"
+      responses:
+        "201":
+          description: Role created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Role"
 webhooks: {}

@@ -1,54 +1,52 @@
 import { jwtVerify } from "jose";
-import { type NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "your-secret-key-change-this-in-production",
-);
+// Using the same secret as backend
+const JWT_SECRET =
+  process.env.JWT_SECRET || "5b340ec7-2437-4a0c-b451-0f3e7867bbad"; // Should ideally matching backend env
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  // Check specifically for admin routes
+  if (request.nextUrl.pathname.startsWith("/admin")) {
+    // Allow access to login page
+    if (request.nextUrl.pathname === "/admin/login") {
+      const session = request.cookies.get("session");
+      if (session) {
+        return NextResponse.redirect(new URL("/admin", request.url));
+      }
+      return NextResponse.next();
+    }
 
-  // Allow login page and API routes
-  if (pathname === "/admin/login" || pathname.startsWith("/api/")) {
-    return NextResponse.next();
+    const session = request.cookies.get("session");
+
+    // 1. Check if session cookie exists
+    if (!session) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+
+    // 2. Verify JWT and check roles
+    try {
+      const secret = new TextEncoder().encode(JWT_SECRET);
+      const { payload } = await jwtVerify(session.value, secret);
+
+      const user = payload.user as any;
+      const roles = user?.roles || [];
+      const hasAdminRole = roles.some((r: any) =>
+        ["ADMIN", "SUPER_ADMIN"].includes(r.name),
+      );
+
+      if (!hasAdminRole) {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+    } catch (e) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
   }
 
-  // Protect all other admin routes
-  if (!pathname.startsWith("/admin")) {
-    return NextResponse.next();
-  }
-
-  // Check for admin-token cookie
-  const token = request.cookies.get("admin-token")?.value;
-
-  if (!token) {
-    // Redirect to login if no token
-    const url = new URL("/admin/login", request.url);
-    url.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(url);
-  }
-
-  try {
-    // Verify token
-    await jwtVerify(token, JWT_SECRET);
-    return NextResponse.next();
-  } catch (error) {
-    console.error("Token verification failed:", error);
-    // Redirect to login if token is invalid
-    const url = new URL("/admin/login", request.url);
-    url.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(url);
-  }
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/admin/:path*"],
 };

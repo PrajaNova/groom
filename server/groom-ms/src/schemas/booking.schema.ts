@@ -53,6 +53,8 @@ export const BookingQuerySchema = z
     userId: z.string().optional(),
     status: z.string().optional(), // Can be comma separated
     fromDate: z.string().datetime().optional(),
+    toDate: z.string().datetime().optional(),
+    endDay: z.string().datetime().optional(), // Helper for "end of day" queries
     sort: z.enum(["asc", "desc"]).optional(),
   })
   .openapi("BookingQuery");
