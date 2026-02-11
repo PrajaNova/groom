@@ -9,13 +9,16 @@
 		"build:backend": "pnpm --filter groom-backend build",
 		"build:frontend": "pnpm --filter groom-frontend build",
 		"start:backend": "pnpm --filter groom-backend start",
-		"start:frontend": "pnpm --filter groom-frontend start"
+		"start:frontend": "pnpm --filter groom-frontend start",
+		"format": "biome format . --write",
+		"lint": "biome check"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "MIT",
 	"packageManager": "pnpm@10.28.2",
 	"devDependencies": {
+		"@biomejs/biome": "2.3.14",
 		"@typescript/native-preview": "7.0.0-dev.20260211.1"
 	}
 }
