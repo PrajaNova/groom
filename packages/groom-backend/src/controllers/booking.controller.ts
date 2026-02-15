@@ -20,13 +20,50 @@ export class BookingController {
       const booking = await bookingService.createBooking({
         ...request.body,
         reason: request.body.reason || "No reason provided",
-        userId: request.user?.id, // Optional: associate if logged in (even on public route if auth header sent?)
-        // Currently route is public, authGuard not forced. If token present, request.user might be populated if authGuard was optional?
-        // But authGuard is not on this route. So request.user is undefined unless we use optionalAuth (not implemented yet).
-        // For now, userId is from body if provided, or null.
-        // Wait, schema doesn't have userId in body usually.
+        userId: request.user?.id,
       });
       return reply.code(201).send(booking);
+    } catch (error) {
+      return reply.badRequest(
+        error instanceof Error ? error.message : String(error),
+      );
+    }
+  }
+
+  async initiate(
+    request: FastifyRequest<{ Body: CreateBookingRequest }>,
+    reply: FastifyReply,
+  ) {
+    try {
+      const bookingService = new BookingService(this.fastify);
+      const result = await bookingService.initiateBooking({
+        ...request.body,
+        reason: request.body.reason || "No reason provided",
+        userId: request.user?.id,
+      });
+      return reply.send(result);
+    } catch (error) {
+      return reply.badRequest(
+        error instanceof Error ? error.message : String(error),
+      );
+    }
+  }
+
+  async verify(
+    request: FastifyRequest<{
+      Body: {
+        bookingId: string;
+        razorpayPaymentId: string;
+        razorpayOrderId: string;
+        razorpaySignature: string;
+      };
+    }>,
+    reply: FastifyReply,
+  ) {
+    try {
+      const bookingService = new BookingService(this.fastify);
+      const booking = await bookingService.verifyPayment(request.body);
+      return reply.send(booking);
     } catch (error) {
       return reply.badRequest(
         error instanceof Error ? error.message : String(error),
@@ -58,13 +95,8 @@ export class BookingController {
       };
 
       if (isAdmin) {
-        // Admin can filter by specific user or email if requested
         if (request.query.userId) filters.userId = request.query.userId;
-        // If email query param is supported by service:
-        // Service currently has getBookings(filters) and getBookingsByEmail(email)
-        // Let's stick to getBookings with userId filter for now, or email if service supports it in filters
       } else {
-        // Non-admin sees ONLY their own bookings
         filters.userId = request.user.id;
       }
 

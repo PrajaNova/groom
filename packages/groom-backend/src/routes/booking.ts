@@ -29,6 +29,28 @@ export default async function bookingRoutes(fastify: FastifyInstance) {
     async (request, reply) => bookingController.create(request as any, reply),
   );
 
+  // POST /bookings/initiate - Initiate booking & payment
+  fastify.post(
+    "/bookings/initiate",
+    {
+      preHandler: [optionalAuth],
+      schema: createRouteSchema({
+        body: CreateBookingRequestSchema,
+        // response: ... (let's keep flexible for now or define schema later)
+      }),
+    },
+    async (request, reply) => bookingController.initiate(request as any, reply),
+  );
+
+  // POST /bookings/verify - Verify payment & confirm
+  fastify.post(
+    "/bookings/verify",
+    {
+      // Public route, security via signature verification
+    },
+    async (request, reply) => bookingController.verify(request as any, reply),
+  );
+
   // GET /bookings - List bookings (Protected: Admin=All, User=Own)
   fastify.get(
     BOOKING_ROUTES.LIST,

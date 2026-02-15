@@ -6,13 +6,12 @@ import { useCallback } from "react";
 import LoginModal from "@/components/auth/LoginModal";
 import { useAuth } from "@/context/AuthContext";
 import ModalManager from "@/utils/ModalManager";
-import BookingModal from "./BookingModal";
 
 const BookingButton: React.FC<{
   className?: string;
   children?: React.ReactNode;
 }> = ({ className, children }) => {
-  const _router = useRouter();
+  const router = useRouter();
   const { user } = useAuth();
 
   const onClick = useCallback(() => {
@@ -24,9 +23,9 @@ const BookingButton: React.FC<{
       return;
     }
 
-    // Open Booking Modal if authenticated
-    ModalManager.open(<BookingModal />);
-  }, [user]);
+    // Navigate to Booking Page if authenticated
+    router.push("/book-session");
+  }, [user, router]);
 
   return (
     <button onClick={onClick} type="button" className={className ?? "btn-sm"}>

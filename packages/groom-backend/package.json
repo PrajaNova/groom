@@ -42,6 +42,7 @@
     "nanoid": "catalog:",
     "pino-pretty": "catalog:",
     "pkce-challenge": "catalog:",
+    "razorpay": "^2.9.6",
     "resend": "catalog:",
     "yaml": "catalog:",
     "zod": "catalog:",

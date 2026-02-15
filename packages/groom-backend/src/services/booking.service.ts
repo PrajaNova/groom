@@ -1,14 +1,27 @@
 import type { Booking, BookingStatus } from "@generated/client";
 import { EmailService } from "@services/email.service";
 import type { FastifyInstance } from "fastify";
+import Razorpay from "razorpay";
+import crypto from "node:crypto";
 
 export class BookingService {
   private emailService: EmailService;
+  private razorpay?: Razorpay;
 
   constructor(private fastify: FastifyInstance) {
     this.emailService = new EmailService(this.fastify);
+    
+    if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+      this.razorpay = new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET,
+      });
+    } else {
+      this.fastify.log.warn("Razorpay credentials missing. Payment features disabled.");
+    }
   }
 
+  // Old create method (legacy or manual creation)
   async createBooking(data: {
     name: string;
     email: string;
@@ -22,19 +35,6 @@ export class BookingService {
       throw new Error("Email, Name, and When are required fields");
     }
 
-    // Check for duplicate pending/confirmed booking
-    const existing = await this.fastify.prisma.booking.findFirst({
-      where: {
-        email: data.email,
-        status: { in: ["pending", "confirmed"] },
-      },
-      orderBy: { createdAt: "desc" },
-    });
-
-    if (existing) {
-      return existing;
-    }
-
     return await this.fastify.prisma.booking.create({
       data: {
         name: data.name,
@@ -46,6 +46,98 @@ export class BookingService {
         meetingId: data.meetingId,
       },
     });
+  }
+
+  // New Payment Flow: Step 1 - Initiate
+  async initiateBooking(data: {
+    name: string;
+    email: string;
+    when: string | Date;
+    reason: string;
+    userId?: string;
+    amount?: number; // Optional amount override
+  }): Promise<{ booking: Booking; order: any }> {
+    if (!this.razorpay) {
+      throw new Error("Payment gateway not configured");
+    }
+
+    const amount = data.amount || 50000; // Default 500 INR (in paise)
+    
+    // Create Razorpay Order
+    const order = await this.razorpay.orders.create({
+      amount,
+      currency: "INR",
+      receipt: `booking_${Date.now()}`,
+    });
+
+    // Create Booking (Payment Pending)
+    const booking = await this.fastify.prisma.booking.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        when: new Date(data.when),
+        reason: data.reason ?? "No reason provided",
+        userId: data.userId,
+        status: "payment_pending",
+        orderId: order.id,
+        amount: amount,
+        currency: "INR",
+      },
+    });
+
+    return { booking, order };
+  }
+
+  // New Payment Flow: Step 2 - Verify & Confirm
+  async verifyPayment(data: {
+    bookingId: string;
+    razorpayPaymentId: string;
+    razorpayOrderId: string;
+    razorpaySignature: string;
+  }): Promise<Booking> {
+    const booking = await this.getBookingById(data.bookingId);
+    if (!booking) throw new Error("Booking not found");
+    if (booking.status === "confirmed") return booking; // Already confirmed
+
+    if (!process.env.RAZORPAY_KEY_SECRET) throw new Error("Razorpay secret missing");
+
+    // Verify Signature
+    const body = booking.orderId + "|" + data.razorpayPaymentId;
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(body.toString())
+      .digest("hex");
+
+    if (expectedSignature !== data.razorpaySignature) {
+      throw new Error("Invalid payment signature");
+    }
+
+    // Generate Meeting ID
+    const meetingId = this.emailService.generateMeetingId(booking.email);
+
+    // Update Booking
+    const updated = await this.fastify.prisma.booking.update({
+      where: { id: booking.id },
+      data: {
+        status: "confirmed",
+        paymentId: data.razorpayPaymentId,
+        meetingId,
+      },
+    });
+
+    // Send Confirmation Email
+    await this.emailService
+      .sendBookingConfirmationEmail({
+        to: updated.email,
+        name: updated.name,
+        scheduledTime: new Date(updated.when),
+        meetingId,
+      })
+      .catch((err) =>
+        this.fastify.log.error(err, "Failed to send confirmation email"),
+      );
+
+    return updated;
   }
 
   async getBookingById(id: string): Promise<Booking | null> {
@@ -93,7 +185,7 @@ export class BookingService {
       throw new Error("Booking not found");
     }
 
-    // Handle Confirmation Logic
+    // Handle Confirmation Logic (Manual Admin Confirm)
     if (data.status === "confirmed" && existingBooking.status !== "confirmed") {
       const meetingId =
         existingBooking.meetingId ||
@@ -108,7 +200,6 @@ export class BookingService {
         },
       });
 
-      // Send email
       await this.emailService
         .sendBookingConfirmationEmail({
           to: existingBooking.email,
