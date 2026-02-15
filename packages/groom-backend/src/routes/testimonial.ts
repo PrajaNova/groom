@@ -3,12 +3,16 @@ import { TestimonialController } from "@controllers/testimonial.controller";
 import { authGuard } from "@middleware/auth";
 import { roleGuard } from "@middleware/rbac";
 import {
+  ErrorSchema,
+  IdParamSchema,
+  SuccessResponseSchema,
+} from "@schemas/common";
+import {
   TestimonialCreateSchema,
   TestimonialListResponseSchema,
   TestimonialResponseSchema,
   TestimonialUpdateSchema,
 } from "@schemas/testimonial.schema";
-import { ErrorSchema, IdParamSchema, SuccessResponseSchema } from "@schemas/common";
 import { createRouteSchema } from "@utils/schema";
 import type { FastifyInstance } from "fastify";
 
@@ -36,7 +40,8 @@ export default async function testimonialRoutes(fastify: FastifyInstance) {
         response: { 201: TestimonialResponseSchema, 400: ErrorSchema },
       }),
     },
-    async (request, reply) => testimonialController.create(request as any, reply),
+    async (request, reply) =>
+      testimonialController.create(request as any, reply),
   );
 
   // PUT /testimonials/:id - Update testimonial (ADMIN only)
@@ -50,7 +55,8 @@ export default async function testimonialRoutes(fastify: FastifyInstance) {
         response: { 200: TestimonialResponseSchema, 404: ErrorSchema },
       }),
     },
-    async (request, reply) => testimonialController.update(request as any, reply),
+    async (request, reply) =>
+      testimonialController.update(request as any, reply),
   );
 
   // DELETE /testimonials/:id - Delete testimonial (ADMIN only)

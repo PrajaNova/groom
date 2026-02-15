@@ -30,27 +30,32 @@ export const UserBaseSchema = z
   .openapi("User");
 
 // User Create Schema
-export const UserCreateSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-  name: z.string().min(2),
-  avatar: z.string().url().optional(),
-}).openapi("UserCreate");
+export const UserCreateSchema = z
+  .object({
+    email: z.string().email(),
+    password: z.string().min(8),
+    name: z.string().min(2),
+    avatar: z.string().url().optional(),
+  })
+  .openapi("UserCreate");
 
 // User Update Schema
-export const UserUpdateSchema = z.object({
-  name: z.string().min(2).optional(),
-  avatar: z.string().url().optional(),
-  bio: z.string().optional(),
-  phone: z.string().optional(),
-  dateOfBirth: z.coerce.date().optional(),
-  gender: z.string().optional(),
-  street: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  zipCode: z.string().optional(),
-  country: z.string().optional(),
-}).partial().openapi("UserUpdate");
+export const UserUpdateSchema = z
+  .object({
+    name: z.string().min(2).optional(),
+    avatar: z.string().url().optional(),
+    bio: z.string().optional(),
+    phone: z.string().optional(),
+    dateOfBirth: z.coerce.date().optional(),
+    gender: z.string().optional(),
+    street: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    zipCode: z.string().optional(),
+    country: z.string().optional(),
+  })
+  .partial()
+  .openapi("UserUpdate");
 
 // User Response Schema - public-facing (omits sensitive data)
 export const UserResponseSchema = UserBaseSchema.openapi("UserResponse");

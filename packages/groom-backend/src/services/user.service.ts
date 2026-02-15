@@ -117,10 +117,35 @@ export class UserService {
 
   async updateUser(id: string, updates: UserUpdate): Promise<User | null> {
     const validated = UserUpdateSchema.parse(updates);
-    const { name, avatar, bio, phone, dateOfBirth, gender, street, city, state, zipCode, country, ...otherUpdates } = validated;
-    
+    const {
+      name,
+      avatar,
+      bio,
+      phone,
+      dateOfBirth,
+      gender,
+      street,
+      city,
+      state,
+      zipCode,
+      country,
+      ...otherUpdates
+    } = validated;
+
     // Check if any profile updates are present
-    const hasProfileUpdates = [name, avatar, bio, phone, dateOfBirth, gender, street, city, state, zipCode, country].some(v => v !== undefined);
+    const hasProfileUpdates = [
+      name,
+      avatar,
+      bio,
+      phone,
+      dateOfBirth,
+      gender,
+      street,
+      city,
+      state,
+      zipCode,
+      country,
+    ].some((v) => v !== undefined);
 
     try {
       const user = await this.fastify.prisma.user.update({

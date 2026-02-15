@@ -27,9 +27,12 @@ export class TestimonialController {
     const testimonialService = new TestimonialService(this.fastify);
 
     try {
-      const testimonial = await testimonialService.createTestimonial({ quote, author });
+      const testimonial = await testimonialService.createTestimonial({
+        quote,
+        author,
+      });
       return reply.code(201).send(testimonial);
-    } catch (error) {
+    } catch (_error) {
       return reply.internalServerError("Failed to create testimonial");
     }
   }
@@ -67,7 +70,9 @@ export class TestimonialController {
     }
 
     const testimonialService = new TestimonialService(this.fastify);
-    const success = await testimonialService.deleteTestimonial(request.params.id);
+    const success = await testimonialService.deleteTestimonial(
+      request.params.id,
+    );
 
     if (!success) {
       return reply.notFound(ERROR_MESSAGES.TESTIMONIAL_NOT_FOUND);

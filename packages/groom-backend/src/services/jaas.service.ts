@@ -1,7 +1,6 @@
 import type { User } from "@types";
 import type { FastifyInstance } from "fastify";
 import jwt from "jsonwebtoken";
-import { nanoid } from "nanoid";
 
 export class JaasService {
   constructor(private fastify: FastifyInstance) {}

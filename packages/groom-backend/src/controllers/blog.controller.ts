@@ -76,7 +76,10 @@ export class BlogController {
     }
 
     const blogService = new BlogService(this.fastify);
-    const blog = await blogService.updateBlog(request.params.slug, request.body);
+    const blog = await blogService.updateBlog(
+      request.params.slug,
+      request.body,
+    );
 
     if (!blog) {
       return reply.notFound(ERROR_MESSAGES.BLOG_NOT_FOUND);

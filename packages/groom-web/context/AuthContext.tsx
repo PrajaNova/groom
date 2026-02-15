@@ -1,9 +1,9 @@
 "use client";
 
-import userService, { type User } from "@/services/userService";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
+import userService, { type User } from "@/services/userService";
 
 interface AuthContextType {
   user: User | null;
@@ -26,7 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         const { user } = await userService.getProfile();
         setUser(user);
-      } catch (error) {
+      } catch (_error) {
         console.log("No active session or session expired");
         setUser(null);
       } finally {

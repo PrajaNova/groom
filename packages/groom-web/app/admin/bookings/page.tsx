@@ -10,7 +10,7 @@ export default async function AdminBookingsPage() {
 
   // Fetch all bookings (Admin can see all via fetchServer which passes auth cookie)
   // Optional: Add status/date filters if API supports them via query params
-  // e.g. /api/bookings?fromDate=... 
+  // e.g. /api/bookings?fromDate=...
   const bookings = await fetchServer<any[]>("/api/bookings");
 
   const bookingRows = bookings.map((bk: any) => ({

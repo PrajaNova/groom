@@ -1,10 +1,13 @@
 import { USER_ROUTES } from "@constants";
 import { UserController } from "@controllers/user.controller";
 import { authGuard } from "@middleware/auth";
-import { UserProfileResponseSchema, AuthResponseSchema } from "@schemas/auth.schema";
-import { UserUpdateSchema } from "@schemas/user.schema";
+import {
+  AuthResponseSchema,
+  UserProfileResponseSchema,
+} from "@schemas/auth.schema";
 import { ErrorSchema, SuccessResponseSchema } from "@schemas/common";
 import { SessionListResponseSchema } from "@schemas/session.schema";
+import { UserUpdateSchema } from "@schemas/user.schema";
 import { createRouteSchema } from "@utils/schema";
 import type { FastifyInstance } from "fastify";
 

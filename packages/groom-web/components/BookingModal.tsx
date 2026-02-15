@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import type React from "react";
-import { useRef, useState, useEffect } from "react";
-import ModalManager from "@/utils/ModalManager";
-import bookingService from "@/services/bookingService";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import bookingService from "@/services/bookingService";
+import ModalManager from "@/utils/ModalManager";
 
 const BookingModal: React.FC = () => {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -25,7 +25,7 @@ const BookingModal: React.FC = () => {
   // Pre-fill form when user logs in or modal opens
   useEffect(() => {
     if (user) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         name: user.name || prev.name,
         email: user.email || prev.email,
@@ -58,7 +58,7 @@ const BookingModal: React.FC = () => {
       });
 
       setIsSubmitted(true);
-      
+
       // Auto close after success
       setTimeout(() => {
         ModalManager.close();
@@ -67,7 +67,6 @@ const BookingModal: React.FC = () => {
           router.push("/my-bookings");
         }
       }, 2000);
-
     } catch (error) {
       console.error("Booking failed:", error);
       alert("Failed to send booking request. Please try again later.");
@@ -137,15 +136,26 @@ const BookingModal: React.FC = () => {
         {isSubmitted ? (
           <div className="text-center py-8">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+              <svg
+                className="w-8 h-8 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M5 13l4 4L19 7"
+                ></path>
               </svg>
             </div>
             <p className="text-gray-700 text-lg mb-2">
               Thank you for reaching out!
             </p>
             <p className="text-gray-600">
-              We will contact you at <span className="font-semibold">{formData.email}</span> shortly.
+              We will contact you at{" "}
+              <span className="font-semibold">{formData.email}</span> shortly.
             </p>
           </div>
         ) : (

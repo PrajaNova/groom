@@ -25,7 +25,7 @@ export class ConfessionController {
     try {
       const confession = await confessionService.createConfession({ content });
       return reply.code(201).send(confession);
-    } catch (error) {
+    } catch (_error) {
       return reply.internalServerError("Failed to submit confession");
     }
   }

@@ -171,7 +171,8 @@ export const HTTP_STATUS = {
 export const SERVICE_INFO = {
   NAME: "groom-backend",
   VERSION: "1.0.0",
-  DESCRIPTION: "Groom Backend - Unified API Service for Mental Health Counseling Platform",
+  DESCRIPTION:
+    "Groom Backend - Unified API Service for Mental Health Counseling Platform",
 } as const;
 
 export const ENDPOINT_DOCS = {

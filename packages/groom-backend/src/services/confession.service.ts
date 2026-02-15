@@ -1,12 +1,14 @@
+import { CONFESSION_CONFIG } from "@constants";
 import type { Confession } from "@generated/client";
 import { ConfessionCreateSchema } from "@schemas/confession.schema";
-import { CONFESSION_CONFIG } from "@constants";
 import type { FastifyInstance } from "fastify";
 
 export class ConfessionService {
   constructor(private fastify: FastifyInstance) {}
 
-  async getAllConfessions(limit: number = CONFESSION_CONFIG.DEFAULT_LIMIT): Promise<Confession[]> {
+  async getAllConfessions(
+    limit: number = CONFESSION_CONFIG.DEFAULT_LIMIT,
+  ): Promise<Confession[]> {
     return this.fastify.prisma.confession.findMany({
       orderBy: { createdAt: "desc" },
       take: limit,

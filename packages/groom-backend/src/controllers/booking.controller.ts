@@ -1,12 +1,12 @@
+import { ERROR_MESSAGES } from "@constants";
 import type { BookingStatus } from "@generated/client";
-import { BookingService } from "@services/booking.service";
 import type {
   BookingQuery,
   CreateBookingRequest,
   UpdateBookingRequest,
 } from "@schemas/booking.schema";
+import { BookingService } from "@services/booking.service";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { ERROR_MESSAGES } from "@constants";
 
 export class BookingController {
   constructor(private fastify: FastifyInstance) {}
@@ -51,7 +51,9 @@ export class BookingController {
         status: request.query.status
           ? (request.query.status.split(",") as BookingStatus[])
           : undefined,
-        fromDate: request.query.fromDate ? new Date(request.query.fromDate) : undefined,
+        fromDate: request.query.fromDate
+          ? new Date(request.query.fromDate)
+          : undefined,
         sort: request.query.sort,
       };
 
@@ -86,13 +88,15 @@ export class BookingController {
     try {
       const bookingService = new BookingService(this.fastify);
       const booking = await bookingService.getBookingById(request.params.id);
-      
+
       if (!booking) {
         return reply.notFound("Booking not found");
       }
 
       const isAdmin = request.user.roles?.includes("ADMIN");
-      const isOwner = booking.userId === request.user.id || booking.email === request.user.email;
+      const isOwner =
+        booking.userId === request.user.id ||
+        booking.email === request.user.email;
 
       if (!isAdmin && !isOwner) {
         return reply.forbidden(ERROR_MESSAGES.FORBIDDEN);
@@ -107,7 +111,10 @@ export class BookingController {
   }
 
   async update(
-    request: FastifyRequest<{ Params: { id: string }; Body: UpdateBookingRequest }>,
+    request: FastifyRequest<{
+      Params: { id: string };
+      Body: UpdateBookingRequest;
+    }>,
     reply: FastifyReply,
   ) {
     try {

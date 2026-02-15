@@ -1,5 +1,5 @@
-import { PrismaClient } from "../src/generated/client";
 import bcrypt from "bcrypt";
+import { PrismaClient } from "../src/generated/client";
 
 const prisma = new PrismaClient();
 
@@ -8,9 +8,9 @@ async function main() {
 
   // 1. Create Roles
   const roles = ["SUPER_ADMIN", "ADMIN", "USER"];
-  
+
   for (const roleName of roles) {
-    const role = await prisma.role.upsert({
+    const _role = await prisma.role.upsert({
       where: { name: roleName },
       update: {},
       create: {
@@ -28,7 +28,9 @@ async function main() {
   const hashedPassword = await bcrypt.hash(superAdminPassword, salt);
 
   // Check if user exists first to avoid upsert complexity with nested writes
-  let user = await prisma.user.findUnique({ where: { email: superAdminEmail } });
+  let user = await prisma.user.findUnique({
+    where: { email: superAdminEmail },
+  });
 
   if (!user) {
     user = await prisma.user.create({
@@ -39,7 +41,7 @@ async function main() {
           create: {
             name: "Super Admin",
             bio: "System Administrator",
-          }
+          },
         },
         roles: {
           connect: { name: "SUPER_ADMIN" },
@@ -59,7 +61,7 @@ async function main() {
     });
     console.log(`✅ Super Admin user updated: ${superAdminEmail}`);
   }
-  
+
   console.log("✨ Seed completed!");
 }
 

@@ -61,7 +61,9 @@ export const BookingQuerySchema = z
   .openapi("BookingQuery");
 
 export const BookingResponseSchema = BookingSchema;
-export const BookingListResponseSchema = z.array(BookingSchema).openapi("BookingListResponse");
+export const BookingListResponseSchema = z
+  .array(BookingSchema)
+  .openapi("BookingListResponse");
 
 export type CreateBookingRequest = z.infer<typeof CreateBookingRequestSchema>;
 export type UpdateBookingRequest = z.infer<typeof UpdateBookingRequestSchema>;

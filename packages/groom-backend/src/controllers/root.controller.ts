@@ -1,8 +1,4 @@
-import {
-  ENDPOINT_DOCS,
-  HEALTH_MESSAGES,
-  SERVICE_INFO,
-} from "@constants";
+import { ENDPOINT_DOCS, HEALTH_MESSAGES, SERVICE_INFO } from "@constants";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
 export class RootController {

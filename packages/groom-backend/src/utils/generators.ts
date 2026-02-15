@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
+import type { User } from "@types";
 import type { FastifyRequest } from "fastify";
 import { nanoid } from "nanoid";
-import type { User } from "@types";
 
 export const generateSessionId = (): string => {
   return nanoid(32);
@@ -51,8 +51,10 @@ export const sanitizeUserData = (user: any): User => {
     email,
     createdAt,
     updatedAt,
-    roles: roles ? roles.map((r: any) => (typeof r === "string" ? r : r.name)) : [],
-    
+    roles: roles
+      ? roles.map((r: any) => (typeof r === "string" ? r : r.name))
+      : [],
+
     // Profile Fields
     name: userProfile.name || "Unknown User",
     avatar: userProfile.avatar,
@@ -82,7 +84,9 @@ export const extractDeviceInfo = (userAgent?: string) => {
  * Extract the user-agent header safely from request headers.
  * Shared helper to avoid duplication across controllers.
  */
-export const getUserAgent = (headers: FastifyRequest["headers"]): string | undefined => {
+export const getUserAgent = (
+  headers: FastifyRequest["headers"],
+): string | undefined => {
   const userAgent = headers["user-agent"];
   if (Array.isArray(userAgent)) {
     return userAgent[0];

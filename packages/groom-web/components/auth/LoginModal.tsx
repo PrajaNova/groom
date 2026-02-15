@@ -1,10 +1,10 @@
 "use client";
 
-import userService from "@/services/userService";
-import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 import type React from "react";
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import userService, { type AuthResponse } from "@/services/userService";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -26,8 +26,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setError("");
 
     try {
-      let response;
-      
+      let response: AuthResponse;
+
       if (isLogin) {
         response = await userService.login({ email, password });
       } else {
@@ -43,7 +43,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       }
     } catch (err: any) {
       // Extract error message from API error if possible
-      const message = err.message?.replace("API Error: 401 - ", "") || err.message;
+      const message =
+        err.message?.replace("API Error: 401 - ", "") || err.message;
       setError(message);
     }
   };

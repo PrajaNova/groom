@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import LoginModal from "@/components/auth/LoginModal";
 import BookingButton from "@/components/BookingButton";
 import { useAuth } from "@/context/AuthContext";
 import bookingService, { type Booking } from "@/services/bookingService";
 import ModalManager from "@/utils/ModalManager";
-import LoginModal from "@/components/auth/LoginModal";
 
 const MyBookingsPage = () => {
   const { user, isLoading } = useAuth();
@@ -34,7 +34,9 @@ const MyBookingsPage = () => {
   }, [user]);
 
   const openLogin = () => {
-    ModalManager.open(<LoginModal isOpen={true} onClose={() => ModalManager.close()} />);
+    ModalManager.open(
+      <LoginModal isOpen={true} onClose={() => ModalManager.close()} />,
+    );
   };
 
   const handleReschedule = async (booking: Booking) => {
@@ -83,13 +85,17 @@ const MyBookingsPage = () => {
           Please login to view your bookings.
         </p>
         <div className="flex justify-center gap-4">
-          <button 
+          <button
+            type="button"
             onClick={openLogin}
             className="px-6 py-2 bg-[#006442] text-white rounded-md hover:bg-[#004d32] transition-colors"
           >
             Log In
           </button>
-          <Link href="/" className="px-6 py-2 border border-[#006442] text-[#006442] rounded-md hover:bg-green-50 transition-colors">
+          <Link
+            href="/"
+            className="px-6 py-2 border border-[#006442] text-[#006442] rounded-md hover:bg-green-50 transition-colors"
+          >
             Go Home
           </Link>
         </div>

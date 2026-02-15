@@ -33,7 +33,8 @@ const nextConfig: NextConfig = {
     ],
   },
   async rewrites() {
-    const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+    const BACKEND_URL =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
 
     return [
       {

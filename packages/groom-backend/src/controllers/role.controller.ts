@@ -65,7 +65,7 @@ export class RoleController {
     }
 
     const roleService = new RoleService(this.fastify);
-    
+
     // Check hierarchy
     const requesterRoles = request.user.roles || [];
     const isSuperAdmin = requesterRoles.includes("SUPER_ADMIN");
@@ -110,7 +110,7 @@ export class RoleController {
 
     const roleService = new RoleService(this.fastify);
     const targetRole = await roleService.getRoleById(roleId);
-    
+
     if (!targetRole) {
       return reply.notFound("Role not found");
     }

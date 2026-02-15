@@ -17,7 +17,8 @@ export const ConfessionCreateSchema = z
   })
   .openapi("ConfessionCreate");
 
-export const ConfessionResponseSchema = ConfessionBaseSchema.openapi("ConfessionResponse");
+export const ConfessionResponseSchema =
+  ConfessionBaseSchema.openapi("ConfessionResponse");
 
 export const ConfessionListResponseSchema = z
   .array(ConfessionResponseSchema)
@@ -26,4 +27,6 @@ export const ConfessionListResponseSchema = z
 export type Confession = z.infer<typeof ConfessionBaseSchema>;
 export type ConfessionCreate = z.infer<typeof ConfessionCreateSchema>;
 export type ConfessionResponse = z.infer<typeof ConfessionResponseSchema>;
-export type ConfessionListResponse = z.infer<typeof ConfessionListResponseSchema>;
+export type ConfessionListResponse = z.infer<
+  typeof ConfessionListResponseSchema
+>;

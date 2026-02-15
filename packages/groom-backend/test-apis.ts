@@ -37,25 +37,28 @@ async function runTests() {
     console.error("❌ Register Failed:", error.response?.data || error.message);
     // Try login if conflict
     if (error.response?.status === 409) {
-        console.log("User already exists, trying login...");
-        try {
-            const login = await axios.post(`${BASE_URL}/auth/login`, {
-                email: EMAIL,
-                password: PASSWORD
-            });
-            console.log("✅ Login Success:", login.data.user.email);
-            userId = login.data.user.id;
-            const setCookie = login.headers["set-cookie"];
-            if (setCookie) {
-                cookie = setCookie[0].split(";")[0];
-                console.log("🍪 Cookie obtained:", cookie);
-            }
-        } catch (loginError: any) {
-            console.error("❌ Login Failed:", loginError.response?.data || loginError.message);
-            process.exit(1);
+      console.log("User already exists, trying login...");
+      try {
+        const login = await axios.post(`${BASE_URL}/auth/login`, {
+          email: EMAIL,
+          password: PASSWORD,
+        });
+        console.log("✅ Login Success:", login.data.user.email);
+        userId = login.data.user.id;
+        const setCookie = login.headers["set-cookie"];
+        if (setCookie) {
+          cookie = setCookie[0].split(";")[0];
+          console.log("🍪 Cookie obtained:", cookie);
         }
-    } else {
+      } catch (loginError: any) {
+        console.error(
+          "❌ Login Failed:",
+          loginError.response?.data || loginError.message,
+        );
         process.exit(1);
+      }
+    } else {
+      process.exit(1);
     }
   }
 
@@ -80,11 +83,14 @@ async function runTests() {
         email: EMAIL,
         name: "Test User",
       },
-      { headers } // usually requires auth or at least user ID depending on implementation
+      { headers }, // usually requires auth or at least user ID depending on implementation
     );
     console.log("✅ Create Booking:", booking.data.id);
   } catch (error: any) {
-    console.error("❌ Create Booking Failed:", error.response?.data || error.message);
+    console.error(
+      "❌ Create Booking Failed:",
+      error.response?.data || error.message,
+    );
   }
 
   // 5. List Bookings
@@ -92,7 +98,10 @@ async function runTests() {
     const bookings = await axios.get(`${BASE_URL}/bookings`, { headers });
     console.log("✅ List Bookings:", bookings.data.length, "found");
   } catch (error: any) {
-    console.error("❌ List Bookings Failed:", error.response?.data || error.message);
+    console.error(
+      "❌ List Bookings Failed:",
+      error.response?.data || error.message,
+    );
   }
 
   // 6. Testimonials (Public)
@@ -100,7 +109,10 @@ async function runTests() {
     const testimonials = await axios.get(`${BASE_URL}/testimonials`);
     console.log("✅ List Testimonials:", testimonials.data.length, "found");
   } catch (error: any) {
-    console.error("❌ List Testimonials Failed:", error.response?.data || error.message);
+    console.error(
+      "❌ List Testimonials Failed:",
+      error.response?.data || error.message,
+    );
   }
 
   console.log("✨ All tests completed!");

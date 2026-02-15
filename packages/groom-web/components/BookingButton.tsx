@@ -3,26 +3,23 @@
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useCallback } from "react";
-import ModalManager from "@/utils/ModalManager";
-import BookingModal from "./BookingModal";
 import LoginModal from "@/components/auth/LoginModal";
 import { useAuth } from "@/context/AuthContext";
+import ModalManager from "@/utils/ModalManager";
+import BookingModal from "./BookingModal";
 
 const BookingButton: React.FC<{
   className?: string;
   children?: React.ReactNode;
 }> = ({ className, children }) => {
-  const router = useRouter();
+  const _router = useRouter();
   const { user } = useAuth();
 
   const onClick = useCallback(() => {
     if (!user) {
       // Open Login Modal if not authenticated
       ModalManager.open(
-        <LoginModal 
-          isOpen={true} 
-          onClose={() => ModalManager.close()} 
-        />
+        <LoginModal isOpen={true} onClose={() => ModalManager.close()} />,
       );
       return;
     }

@@ -1,4 +1,4 @@
-import { JaasTokenRequestSchema } from "@schemas/jaas.schema";
+import type { JaasTokenRequestSchema } from "@schemas/jaas.schema";
 import { JaasService } from "@services/jaas.service";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import type { z } from "zod";

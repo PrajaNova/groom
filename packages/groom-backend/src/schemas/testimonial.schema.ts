@@ -27,7 +27,9 @@ export const TestimonialUpdateSchema = z
   .partial()
   .openapi("TestimonialUpdate");
 
-export const TestimonialResponseSchema = TestimonialBaseSchema.openapi("TestimonialResponse");
+export const TestimonialResponseSchema = TestimonialBaseSchema.openapi(
+  "TestimonialResponse",
+);
 
 export const TestimonialListResponseSchema = z
   .array(TestimonialResponseSchema)
@@ -37,4 +39,6 @@ export type Testimonial = z.infer<typeof TestimonialBaseSchema>;
 export type TestimonialCreate = z.infer<typeof TestimonialCreateSchema>;
 export type TestimonialUpdate = z.infer<typeof TestimonialUpdateSchema>;
 export type TestimonialResponse = z.infer<typeof TestimonialResponseSchema>;
-export type TestimonialListResponse = z.infer<typeof TestimonialListResponseSchema>;
+export type TestimonialListResponse = z.infer<
+  typeof TestimonialListResponseSchema
+>;

@@ -48,7 +48,11 @@ export default async function blogRoutes(fastify: FastifyInstance) {
       preHandler: [authGuard, roleGuard(["ADMIN"])],
       schema: createRouteSchema({
         body: BlogCreateSchema,
-        response: { 201: BlogResponseSchema, 400: ErrorSchema, 409: ErrorSchema },
+        response: {
+          201: BlogResponseSchema,
+          400: ErrorSchema,
+          409: ErrorSchema,
+        },
       }),
     },
     async (request, reply) => blogController.create(request as any, reply),

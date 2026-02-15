@@ -53,15 +53,17 @@ export const ProviderSchema = z
 export const ProviderListResponseSchema = z
   .object({
     providers: z.array(ProviderSchema),
-    branding: z.object({
-      name: z.string(),
-      logoUrl: z.string().optional(),
-      primaryColor: z.string(),
-      secondaryColor: z.string(),
-      loginTitle: z.string(),
-      loginSubtitle: z.string(),
-      loginFooter: z.string(),
-    }).optional()
+    branding: z
+      .object({
+        name: z.string(),
+        logoUrl: z.string().optional(),
+        primaryColor: z.string(),
+        secondaryColor: z.string(),
+        loginTitle: z.string(),
+        loginSubtitle: z.string(),
+        loginFooter: z.string(),
+      })
+      .optional(),
   })
   .openapi("ProviderListResponse");
 

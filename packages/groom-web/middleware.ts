@@ -29,12 +29,12 @@ export async function middleware(request: NextRequest) {
   try {
     // Verify token
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    
+
     // Check Admin Access
     if (isAdminPath) {
       const roles = (payload.roles as string[]) || [];
       const isAdmin = roles.includes("ADMIN") || roles.includes("SUPER_ADMIN");
-      
+
       if (!isAdmin) {
         // Logged in but not admin -> Home
         return NextResponse.redirect(new URL("/", request.url));
@@ -50,8 +50,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/admin/:path*",
-    "/my-bookings/:path*",
-  ],
+  matcher: ["/admin/:path*", "/my-bookings/:path*"],
 };

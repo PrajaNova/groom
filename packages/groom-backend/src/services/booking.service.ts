@@ -96,7 +96,8 @@ export class BookingService {
     // Handle Confirmation Logic
     if (data.status === "confirmed" && existingBooking.status !== "confirmed") {
       const meetingId =
-        existingBooking.meetingId || this.emailService.generateMeetingId(existingBooking.email);
+        existingBooking.meetingId ||
+        this.emailService.generateMeetingId(existingBooking.email);
 
       const updated = await this.fastify.prisma.booking.update({
         where: { id },

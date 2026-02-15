@@ -22,7 +22,7 @@ export default async function jaasRoutes(fastify: FastifyInstance) {
       }),
     },
     async (request, reply) => {
-      // @ts-ignore - Body type inference is tricky with Zod and Fastify
+      // @ts-expect-error - Body type inference is tricky with Zod and Fastify
       return jaasController.generateToken(request, reply);
     },
   );
