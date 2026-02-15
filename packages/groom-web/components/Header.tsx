@@ -4,13 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
 import { useState } from "react";
-import LoginModal from "##/components/auth/LoginModal";
-import BookingButton from "##/components/BookingButton";
-import { useAuth } from "##/context/AuthContext";
+import LoginModal from "@/components/auth/LoginModal";
+import BookingButton from "@/components/BookingButton";
+import { useAuth } from "@/context/AuthContext";
+import ModalManager from "@/utils/ModalManager";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const { user, logout } = useAuth();
 
@@ -26,6 +26,10 @@ const Header: React.FC = () => {
   };
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const openLogin = () => {
+    ModalManager.open(<LoginModal isOpen={true} onClose={() => ModalManager.close()} />);
+  };
 
   const NavLinks = () => (
     <>
@@ -102,7 +106,7 @@ const Header: React.FC = () => {
                   if (user) {
                     setIsProfileDropdownOpen(!isProfileDropdownOpen);
                   } else {
-                    setIsLoginModalOpen(true);
+                    openLogin();
                   }
                 }}
                 className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none overflow-hidden border border-gray-300"
@@ -172,7 +176,7 @@ const Header: React.FC = () => {
             </div>
           </div>
 
-          {/* Mobile Menu Button - Updated to encompass profile interactions on mobile if needed, or stick to simple menu */}
+          {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-4">
             <button
               type="button"
@@ -180,7 +184,7 @@ const Header: React.FC = () => {
                 if (user) {
                   // Logic for mobile profile clicking if different, otherwise same
                 } else {
-                  setIsLoginModalOpen(true);
+                  openLogin();
                 }
               }}
               className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 border border-gray-300"
@@ -272,7 +276,7 @@ const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={() => {
-                  setIsLoginModalOpen(true);
+                  openLogin();
                   setIsMenuOpen(false);
                 }}
                 className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-[#006442] hover:bg-gray-50"
@@ -283,11 +287,6 @@ const Header: React.FC = () => {
           </div>
         )}
       </header>
-
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-      />
     </>
   );
 };

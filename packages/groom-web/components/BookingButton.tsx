@@ -2,37 +2,38 @@
 
 import { useRouter } from "next/navigation";
 import type React from "react";
-import { useCallback, useEffect, useState } from "react";
-import ModalManager from "##/utils/ModalManager";
+import { useCallback } from "react";
+import ModalManager from "@/utils/ModalManager";
 import BookingModal from "./BookingModal";
+import LoginModal from "@/components/auth/LoginModal";
+import { useAuth } from "@/context/AuthContext";
 
 const BookingButton: React.FC<{
   className?: string;
   children?: React.ReactNode;
 }> = ({ className, children }) => {
   const router = useRouter();
-  const [hasBooking, setHasBooking] = useState(false);
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("tqs_booking");
-      if (raw) setHasBooking(true);
-    } catch (_e) {
-      // ignore
-    }
-  }, []);
+  const { user } = useAuth();
 
   const onClick = useCallback(() => {
-    if (hasBooking) {
-      router.push("/bookings");
+    if (!user) {
+      // Open Login Modal if not authenticated
+      ModalManager.open(
+        <LoginModal 
+          isOpen={true} 
+          onClose={() => ModalManager.close()} 
+        />
+      );
       return;
     }
+
+    // Open Booking Modal if authenticated
     ModalManager.open(<BookingModal />);
-  }, [hasBooking, router]);
+  }, [user]);
 
   return (
     <button onClick={onClick} type="button" className={className ?? "btn-sm"}>
-      {children ?? (hasBooking ? "Manage Booking" : "Book Session")}
+      {children ?? "Book Session"}
     </button>
   );
 };

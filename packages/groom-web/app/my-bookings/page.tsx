@@ -2,18 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import BookingButton from "##/components/BookingButton";
-import { useAuth } from "##/context/AuthContext";
-
-interface Booking {
-  id: string;
-  name: string;
-  email: string;
-  when: string;
-  reason: string;
-  status: "pending" | "confirmed" | "completed" | "cancelled";
-  meetingId?: string;
-}
+import BookingButton from "@/components/BookingButton";
+import { useAuth } from "@/context/AuthContext";
+import bookingService, { type Booking } from "@/services/bookingService";
+import ModalManager from "@/utils/ModalManager";
+import LoginModal from "@/components/auth/LoginModal";
 
 const MyBookingsPage = () => {
   const { user, isLoading } = useAuth();
@@ -28,11 +21,8 @@ const MyBookingsPage = () => {
 
     const fetchBookings = async () => {
       try {
-        const res = await fetch(`/api/bookings?userId=${user.id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setBookings(data);
-        }
+        const data = await bookingService.getAll();
+        setBookings(data);
       } catch (error) {
         console.error("Failed to fetch bookings", error);
       } finally {
@@ -42,6 +32,40 @@ const MyBookingsPage = () => {
 
     fetchBookings();
   }, [user]);
+
+  const openLogin = () => {
+    ModalManager.open(<LoginModal isOpen={true} onClose={() => ModalManager.close()} />);
+  };
+
+  const handleReschedule = async (booking: Booking) => {
+    const newDate = prompt(
+      "Enter new date (YYYY-MM-DD HH:MM):",
+      new Date(booking.when).toISOString().slice(0, 16),
+    );
+    if (newDate) {
+      try {
+        await bookingService.update(booking.id, {
+          when: new Date(newDate).toISOString(),
+        });
+        window.location.reload(); // Simple reload to refresh
+      } catch (e) {
+        console.error(e);
+        alert("Error updating booking");
+      }
+    }
+  };
+
+  const handleCancel = async (bookingId: string) => {
+    if (confirm("Are you sure you want to cancel this booking?")) {
+      try {
+        await bookingService.delete(bookingId);
+        window.location.reload();
+      } catch (e) {
+        console.error(e);
+        alert("Failed to cancel booking");
+      }
+    }
+  };
 
   if (isLoading || fetching) {
     return (
@@ -58,9 +82,17 @@ const MyBookingsPage = () => {
         <p className="text-gray-600 mb-8">
           Please login to view your bookings.
         </p>
-        <Link href="/" className="text-[#006442] hover:underline">
-          Go Home
-        </Link>
+        <div className="flex justify-center gap-4">
+          <button 
+            onClick={openLogin}
+            className="px-6 py-2 bg-[#006442] text-white rounded-md hover:bg-[#004d32] transition-colors"
+          >
+            Log In
+          </button>
+          <Link href="/" className="px-6 py-2 border border-[#006442] text-[#006442] rounded-md hover:bg-green-50 transition-colors">
+            Go Home
+          </Link>
+        </div>
       </div>
     );
   }
@@ -146,65 +178,14 @@ const MyBookingsPage = () => {
                     <>
                       <button
                         type="button"
-                        onClick={async () => {
-                          const newDate = prompt(
-                            "Enter new date (YYYY-MM-DD HH:MM):",
-                            new Date(booking.when).toISOString().slice(0, 16),
-                          );
-                          if (newDate) {
-                            try {
-                              const res = await fetch(
-                                `/api/bookings/${booking.id}`,
-                                {
-                                  method: "PUT",
-                                  headers: {
-                                    "Content-Type": "application/json",
-                                  },
-                                  body: JSON.stringify({
-                                    when: new Date(newDate).toISOString(),
-                                  }),
-                                },
-                              );
-                              if (res.ok) {
-                                window.location.reload(); // Simple reload to refresh
-                              } else {
-                                alert("Failed to update booking");
-                              }
-                            } catch (e) {
-                              console.error(e);
-                              alert("Error updating booking");
-                            }
-                          }
-                        }}
+                        onClick={() => handleReschedule(booking)}
                         className="px-4 py-2 text-sm font-medium text-[#006442] bg-white border border-[#006442] rounded-md hover:bg-green-50 transition-colors"
                       >
                         Reschedule
                       </button>
                       <button
                         type="button"
-                        onClick={async () => {
-                          if (
-                            confirm(
-                              "Are you sure you want to cancel this booking?",
-                            )
-                          ) {
-                            try {
-                              const res = await fetch(
-                                `/api/bookings/${booking.id}`,
-                                {
-                                  method: "DELETE",
-                                },
-                              );
-                              if (res.ok) {
-                                window.location.reload();
-                              } else {
-                                alert("Failed to cancel booking");
-                              }
-                            } catch (e) {
-                              console.error(e);
-                            }
-                          }
-                        }}
+                        onClick={() => handleCancel(booking.id)}
                         className="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 transition-colors"
                       >
                         Cancel

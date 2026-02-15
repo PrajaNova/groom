@@ -2,13 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import type React from "react";
-import { useRef, useState } from "react";
-import ModalManager from "##/utils/ModalManager";
+import { useRef, useState, useEffect } from "react";
+import ModalManager from "@/utils/ModalManager";
+import bookingService from "@/services/bookingService";
+import { useAuth } from "@/context/AuthContext";
 
 const BookingModal: React.FC = () => {
   const modalRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -18,6 +21,17 @@ const BookingModal: React.FC = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Pre-fill form when user logs in or modal opens
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || prev.name,
+        email: user.email || prev.email,
+      }));
+    }
+  }, [user]);
 
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === modalRef.current) {
@@ -37,28 +51,25 @@ const BookingModal: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const userStr = localStorage.getItem("user"); // fallback if context not avail here easily, but better to use Context
-      let userId: string | undefined;
-      if (userStr) {
-        try {
-          userId = JSON.parse(userStr).id;
-        } catch (_: unknown) {}
-      }
-
-      const response = await fetch("/api/bookings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...formData, userId }),
+      // Create booking via service
+      // userId is not needed in body as backend uses optionalAuth via cookie to link user
+      await bookingService.create({
+        ...formData,
       });
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+
       setIsSubmitted(true);
-      ModalManager.close();
-      router.push("/bookings");
-    } catch (_: unknown) {
+      
+      // Auto close after success
+      setTimeout(() => {
+        ModalManager.close();
+        // Redirect to my-bookings if logged in, otherwise stay (or home)
+        if (user) {
+          router.push("/my-bookings");
+        }
+      }, 2000);
+
+    } catch (error) {
+      console.error("Booking failed:", error);
       alert("Failed to send booking request. Please try again later.");
     } finally {
       setIsSubmitting(false);
@@ -80,7 +91,7 @@ const BookingModal: React.FC = () => {
         if (e.key === "Escape") ModalManager.close();
       }}
       tabIndex={-1}
-      className="fixed inset-0 bg-opacity-70 z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4 backdrop-blur-sm"
       aria-modal="true"
       role="dialog"
       aria-labelledby="bookingModalTitle"
@@ -124,14 +135,17 @@ const BookingModal: React.FC = () => {
         </div>
 
         {isSubmitted ? (
-          <div className="text-center">
-            <p className="text-gray-700 text-lg">
-              Thank you for reaching out! We will get back to you at{" "}
-              <span className="font-semibold">{formData.email}</span> shortly to
-              confirm your session.
+          <div className="text-center py-8">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <p className="text-gray-700 text-lg mb-2">
+              Thank you for reaching out!
             </p>
-            <p className="text-sm text-gray-500 mt-4">
-              This window will close automatically.
+            <p className="text-gray-600">
+              We will contact you at <span className="font-semibold">{formData.email}</span> shortly.
             </p>
           </div>
         ) : (
