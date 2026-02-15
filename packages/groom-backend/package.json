@@ -1,0 +1,62 @@
+{
+  "name": "groom-backend",
+  "version": "1.0.0",
+  "description": "Groom Backend - Unified API Service",
+  "main": "dist/server.js",
+  "type": "commonjs",
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "scripts": {
+    "start": "node dist/server.js",
+    "copy-client": "cp -r src/generated dist/",
+    "build": "pnpm run db:generate && tsc && pnpm run copy-client && tsc-alias",
+    "watch:tsc": "tsc -w",
+    "dev": "tsx watch --clear-screen=false src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:diff": "prisma db push --dry-run",
+    "db:push": "prisma db push --skip-generate",
+    "db:push:force": "prisma db push --accept-data-loss",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:seed": "prisma db seed",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@asteasolutions/zod-to-openapi": "catalog:",
+    "@fastify/autoload": "catalog:",
+    "@fastify/cookie": "catalog:",
+    "@fastify/cors": "catalog:",
+    "@fastify/helmet": "catalog:",
+    "@fastify/jwt": "catalog:",
+    "@fastify/oauth2": "catalog:",
+    "@fastify/rate-limit": "catalog:",
+    "@fastify/sensible": "catalog:",
+    "@prisma/client": "catalog:",
+    "bcrypt": "catalog:",
+    "dotenv": "catalog:",
+    "fastify": "catalog:",
+    "fastify-plugin": "catalog:",
+    "jsonwebtoken": "catalog:",
+    "nanoid": "catalog:",
+    "pino-pretty": "catalog:",
+    "pkce-challenge": "catalog:",
+    "resend": "catalog:",
+    "yaml": "catalog:",
+    "zod": "catalog:",
+    "zod-to-json-schema": "catalog:"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "catalog:",
+    "@types/jsonwebtoken": "catalog:",
+    "@types/node": "catalog:",
+    "axios": "catalog:",
+    "prisma": "catalog:",
+    "tsc-alias": "catalog:",
+    "tsconfig-paths": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

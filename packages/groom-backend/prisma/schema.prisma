@@ -1,0 +1,228 @@
+// Prisma schema for Groom Backend - Unified API Service
+// Merges: user-ms, booking-ms, groom-ms into a single "groom" schema
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  schemas   = ["groom"]
+}
+
+// ============================================================
+// User Domain (from user-ms)
+// ============================================================
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  profile          UserProfile?
+  providerAccounts ProviderAccount[]
+  sessions         Session[]
+  tokens           Token[]
+  auditLogs        AuditLog[]
+  roles            Role[]
+  bookings         Booking[]
+
+  @@index([email])
+  @@map("users")
+  @@schema("groom")
+}
+
+model UserProfile {
+  id          String    @id @default(cuid())
+  userId      String    @unique
+  name        String
+  avatar      String?
+  bio         String?
+  phone       String?
+  dateOfBirth DateTime?
+  gender      String?
+
+  // Address Fields (Embedded)
+  street      String?
+  city        String?
+  state       String?
+  zipCode     String?
+  country     String?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("user_profiles")
+  @@schema("groom")
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users User[]
+
+  @@map("roles")
+  @@schema("groom")
+}
+
+model ProviderAccount {
+  id             String   @id @default(cuid())
+  userId         String
+  provider       String
+  providerUserId String
+  metadata       Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerUserId])
+  @@index([userId])
+  @@index([provider])
+  @@map("provider_accounts")
+  @@schema("groom")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  sessionId String   @unique
+  userId    String
+  expiresAt DateTime
+  device    String?
+  userAgent String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([expiresAt])
+  @@map("sessions")
+  @@schema("groom")
+}
+
+model Token {
+  id           String    @id @default(cuid())
+  userId       String
+  provider     String
+  accessToken  String
+  refreshToken String?
+  expiresAt    DateTime?
+  createdAt    DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider])
+  @@index([userId])
+  @@index([provider])
+  @@map("tokens")
+  @@schema("groom")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  event     String
+  metadata  Json?
+  ipAddress String?
+  userAgent String?
+  timestamp DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([event])
+  @@index([timestamp])
+  @@map("audit_logs")
+  @@schema("groom")
+}
+
+// ============================================================
+// Booking Domain (from booking-ms)
+// ============================================================
+
+model Booking {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  userId    String?
+  when      DateTime
+  reason    String
+  status    BookingStatus @default(pending)
+  meetingId String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([email])
+  @@index([userId])
+  @@index([status])
+  @@map("bookings")
+  @@schema("groom")
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  completed
+  cancelled
+
+  @@schema("groom")
+}
+
+// ============================================================
+// Content Domain (from groom-ms)
+// ============================================================
+
+model Blog {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  content     String
+  excerpt     String?
+  author      String?
+  publishedAt DateTime?
+  category    String?
+  imageSeed   String?
+  readTime    Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([category])
+  @@map("blogs")
+  @@schema("groom")
+}
+
+model Confession {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  @@map("confessions")
+  @@schema("groom")
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  quote     String
+  author    String
+  createdAt DateTime @default(now())
+
+  @@map("testimonials")
+  @@schema("groom")
+}
