@@ -5,6 +5,14 @@ export interface User {
   email: string;
   name: string;
   avatar?: string;
+  roles?: string[];
+  bio?: string;
+  phone?: string;
+  street?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  country?: string;
 }
 
 export interface LoginCredentials {
@@ -18,18 +26,22 @@ export interface RegisterData {
   name: string;
 }
 
+export interface AuthResponse {
+  success: boolean;
+  user: User;
+  message: string;
+}
+
 class UserService {
   // Auth methods
-  async login(
-    credentials: LoginCredentials,
-  ): Promise<{ user: User; token: string }> {
+  async login(credentials: LoginCredentials): Promise<AuthResponse> {
     return fetchAPI("/api/auth/login", {
       method: "POST",
       body: JSON.stringify(credentials),
     });
   }
 
-  async register(data: RegisterData): Promise<{ user: User; token: string }> {
+  async register(data: RegisterData): Promise<AuthResponse> {
     return fetchAPI("/api/auth/register", {
       method: "POST",
       body: JSON.stringify(data),
@@ -42,7 +54,7 @@ class UserService {
     });
   }
 
-  async getProfile(): Promise<User> {
+  async getProfile(): Promise<{ user: User }> {
     return fetchAPI("/api/user/profile", { cache: "no-store" });
   }
 
@@ -52,7 +64,8 @@ class UserService {
       typeof window === "undefined"
         ? process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
         : "";
-    return `${baseURL}/api/auth/google`;
+    // Note: The backend handles the redirect to Google
+    return `${baseURL}/api/auth/google/start`;
   }
 }
 

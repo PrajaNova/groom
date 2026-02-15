@@ -1,9 +1,10 @@
 "use client";
 
+import userService from "@/services/userService";
+import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 import type React from "react";
 import { useState } from "react";
-import { useAuth } from "##/context/AuthContext";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -24,39 +25,36 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     e.preventDefault();
     setError("");
 
-    const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
-    const body = isLogin ? { email, password } : { name, email, password };
-
     try {
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(
-          data.message || (isLogin ? "Login failed" : "Signup failed"),
-        );
+      let response;
+      
+      if (isLogin) {
+        response = await userService.login({ email, password });
+      } else {
+        response = await userService.register({ name, email, password });
       }
 
-      login(data.user, data.sessionToken);
-      onClose();
+      if (response.success) {
+        // No token handling - purely cookie based now
+        login(response.user);
+        onClose();
+      } else {
+        throw new Error(response.message || "Authentication failed");
+      }
     } catch (err: any) {
-      setError(err.message);
+      // Extract error message from API error if possible
+      const message = err.message?.replace("API Error: 401 - ", "") || err.message;
+      setError(message);
     }
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "/api/auth/google/start";
+    window.location.href = userService.getGoogleAuthUrl();
   };
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
     setError("");
-    // Optional: Clear fields? Keep them for better UX if user accidentally switches.
   };
 
   return (
