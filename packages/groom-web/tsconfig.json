@@ -18,16 +18,10 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
-      "##/lib/*": ["./lib/*"],
-      "##/components/*": ["./components/*"],
-      "##/utils/*": ["./utils/*"],
-      "##/types/*": ["./types/*"],
-      "##/data/*": ["./data/*"],
-      "##/api/*": ["./app/api/*"],
-      "##/services/*": ["./services/*"],
-      "##/context/*": ["./context/*"],
-      "##/DataBase/*": ["./DataBase/*"]
+      "@/*": ["./*"],
+      "##/*": ["./*"]
     }
   },
   "include": [

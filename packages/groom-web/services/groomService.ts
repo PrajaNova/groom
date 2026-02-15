@@ -50,9 +50,10 @@ class GroomService {
   }
 
   // JaaS Token
-  async getJaasToken(meetingId: string): Promise<{ token: string }> {
-    return fetchAPI(`/api/jaas-token?meetingId=${meetingId}`, {
-      cache: "no-store",
+  async getJaasToken(meetingId: string): Promise<{ token: string; appId: string }> {
+    return fetchAPI("/api/jaas/token", {
+      method: "POST",
+      body: JSON.stringify({ meetingId }),
     });
   }
 }

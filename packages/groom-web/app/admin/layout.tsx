@@ -1,6 +1,6 @@
+import Sidebar from "@/components/admin/Sidebar";
+import "@/components/admin/admin.scss";
 import type { Metadata } from "next";
-import Sidebar from "##/components/admin/Sidebar";
-import "##/components/admin/admin.scss";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard - Groom",

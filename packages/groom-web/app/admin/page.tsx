@@ -1,28 +1,15 @@
 import Link from "next/link";
+import { fetchServer } from "@/services/serverApi";
 
 // Revalidate every 60 seconds
 export const revalidate = 60;
 
 export default async function AdminDashboard() {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  // Fetch from microservices
-  // Since we are in the admin page (Server Component), we can fetch directly from services via http://localhost:PORT
-
-  const [blogsRes, bookingsRes, confessionsRes] = await Promise.all([
-    fetch("http://localhost:3004/blogs", { cache: "no-store" }),
-    fetch(
-      "http://localhost:3003/booking?status=confirmed,pending&fromDate=" +
-        today.toISOString(),
-      { cache: "no-store" },
-    ),
-    fetch("http://localhost:3004/confessions", { cache: "no-store" }),
+  const [blogs, bookings, confessions] = await Promise.all([
+    fetchServer<any[]>("/api/blogs"),
+    fetchServer<any[]>("/api/bookings"),
+    fetchServer<any[]>("/api/confessions"),
   ]);
-
-  const blogs = blogsRes.ok ? await blogsRes.json() : [];
-  const bookings = bookingsRes.ok ? await bookingsRes.json() : [];
-  const confessions = confessionsRes.ok ? await confessionsRes.json() : [];
 
   const stats = [
     {
