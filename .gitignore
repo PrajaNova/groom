@@ -11,6 +11,6 @@ coverage
 build
 generated
 
-# Environment variables - DO NOT COMMIT
-server/**/.env
-apps/**/.env
+.env
+.env.local
+.env.development
