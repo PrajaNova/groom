@@ -34,7 +34,22 @@ function BookingPageContent() {
     try {
       setLoading(true);
       const res = await fetch("/api/bookings?status=pending,confirmed");
-      const data: BackendBooking[] = await res.json();
+      if (!res.ok) {
+        throw new Error(`Failed to fetch bookings: ${res.status}`);
+      }
+      
+      const responseData = await res.json();
+      
+      // Handle both array and object responses
+      let data: BackendBooking[] = Array.isArray(responseData) 
+        ? responseData 
+        : responseData?.bookings || responseData?.data || [];
+
+      if (!Array.isArray(data)) {
+        console.error("Unexpected API response format:", responseData);
+        setBookings([]);
+        return;
+      }
 
       const formatted: Booking[] = data.map((b) => {
         const dateObj = new Date(b.when);
@@ -60,6 +75,7 @@ function BookingPageContent() {
       setBookings(formatted);
     } catch (err) {
       console.error("Failed to fetch bookings:", err);
+      setBookings([]);
     } finally {
       setLoading(false);
     }

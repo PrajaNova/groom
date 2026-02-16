@@ -2,42 +2,40 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import LoginModal from "@/components/auth/LoginModal";
 import BookingButton from "@/components/BookingButton";
 import { useAuth } from "@/context/AuthContext";
+import { useProtectedRoute } from "@/hooks/useProtectedRoute";
 import bookingService, { type Booking } from "@/services/bookingService";
-import ModalManager from "@/utils/ModalManager";
+import { showErrorToast } from "@/utils/errorHandler";
+import { toast } from "react-toastify";
 
 const MyBookingsPage = () => {
-  const { user, isLoading } = useAuth();
+  const { isLoading: authLoading, isAuthorized } = useProtectedRoute();
+  const { user } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [fetching, setFetching] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchBookings = async () => {
+    try {
+      setFetching(true);
+      setError(null);
+      const data = await bookingService.getAll();
+      setBookings(data);
+    } catch (err) {
+      const error = showErrorToast(err);
+      setError(error.message);
+      setBookings([]);
+    } finally {
+      setFetching(false);
+    }
+  };
 
   useEffect(() => {
-    if (!user) {
-      setFetching(false);
-      return;
+    if (isAuthorized && user) {
+      fetchBookings();
     }
-
-    const fetchBookings = async () => {
-      try {
-        const data = await bookingService.getAll();
-        setBookings(data);
-      } catch (error) {
-        console.error("Failed to fetch bookings", error);
-      } finally {
-        setFetching(false);
-      }
-    };
-
-    fetchBookings();
-  }, [user]);
-
-  const openLogin = () => {
-    ModalManager.open(
-      <LoginModal isOpen={true} onClose={() => ModalManager.close()} />,
-    );
-  };
+  }, [isAuthorized, user]);
 
   const handleReschedule = async (booking: Booking) => {
     const newDate = prompt(
@@ -49,10 +47,10 @@ const MyBookingsPage = () => {
         await bookingService.update(booking.id, {
           when: new Date(newDate).toISOString(),
         });
-        window.location.reload(); // Simple reload to refresh
-      } catch (e) {
-        console.error(e);
-        alert("Error updating booking");
+        toast.success("Booking rescheduled successfully!");
+        fetchBookings();
+      } catch (err) {
+        showErrorToast(err);
       }
     }
   };
@@ -61,15 +59,15 @@ const MyBookingsPage = () => {
     if (confirm("Are you sure you want to cancel this booking?")) {
       try {
         await bookingService.delete(bookingId);
-        window.location.reload();
-      } catch (e) {
-        console.error(e);
-        alert("Failed to cancel booking");
+        toast.success("Booking cancelled successfully!");
+        fetchBookings();
+      } catch (err) {
+        showErrorToast(err);
       }
     }
   };
 
-  if (isLoading || fetching) {
+  if (authLoading || fetching) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#006442]"></div>
@@ -77,35 +75,33 @@ const MyBookingsPage = () => {
     );
   }
 
-  if (!user) {
-    return (
-      <div className="max-w-4xl mx-auto py-20 px-4 text-center">
-        <h1 className="text-3xl font-bold mb-4 text-[#2C3531]">My Bookings</h1>
-        <p className="text-gray-600 mb-8">
-          Please login to view your bookings.
-        </p>
-        <div className="flex justify-center gap-4">
-          <button
-            type="button"
-            onClick={openLogin}
-            className="px-6 py-2 bg-[#006442] text-white rounded-md hover:bg-[#004d32] transition-colors"
-          >
-            Log In
-          </button>
-          <Link
-            href="/"
-            className="px-6 py-2 border border-[#006442] text-[#006442] rounded-md hover:bg-green-50 transition-colors"
-          >
-            Go Home
-          </Link>
-        </div>
-      </div>
-    );
+  if (!isAuthorized) {
+    return null; // Redirect is handled by useProtectedRoute hook
   }
 
   return (
     <main className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold mb-8 text-[#2C3531]">My Bookings</h1>
+
+      {/* Error Alert */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex gap-3">
+          <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <title>Error</title>
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+          </svg>
+          <div className="flex-1">
+            <p className="text-sm text-red-700 font-medium">Error loading bookings</p>
+            <p className="text-sm text-red-600">{error}</p>
+            <button
+              onClick={fetchBookings}
+              className="text-sm text-red-700 hover:text-red-900 underline mt-2"
+            >
+              Try again
+            </button>
+          </div>
+        </div>
+      )}
 
       {bookings.length === 0 ? (
         <div className="text-center py-16 bg-gray-50 rounded-lg border border-gray-100">
@@ -129,7 +125,7 @@ const MyBookingsPage = () => {
           <p className="text-gray-500 mb-6 max-w-sm mx-auto">
             You haven't made any bookings. Start your journey with us today.
           </p>
-          <BookingButton className="bg-[#006442] text-white hover:bg-[#004d32]" />
+          <BookingButton className="bg-[#006442] text-white hover:bg-[#004d32] px-6 py-2 rounded-lg font-medium inline-block" />
         </div>
       ) : (
         <div className="space-y-6">
@@ -148,7 +144,9 @@ const MyBookingsPage = () => {
                           ? "bg-yellow-100 text-yellow-800"
                           : booking.status === "cancelled"
                             ? "bg-red-100 text-red-800"
-                            : "bg-gray-100 text-gray-800"
+                            : booking.status === "completed"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-gray-100 text-gray-800"
                     }`}
                   >
                     {booking.status}
@@ -173,7 +171,9 @@ const MyBookingsPage = () => {
                 {booking.meetingId && (
                   <p className="text-sm text-gray-600">
                     Meeting ID:{" "}
-                    <span className="font-mono">{booking.meetingId}</span>
+                    <span className="font-mono text-gray-700">
+                      {booking.meetingId}
+                    </span>
                   </p>
                 )}
               </div>

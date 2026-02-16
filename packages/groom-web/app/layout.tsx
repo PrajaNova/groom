@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import GoogleAnalytics from "##/components/GoogleAnalytics";
-import "./globals.scss";
-import "./ui.scss";
-// Toasts
-import { ToastContainer } from "react-toastify";
 import ConditionalLayout from "##/components/ConditionalLayout";
 import { WhatsAppButton } from "##/components/common/WhatsAppButton";
 import Modal from "##/components/Modal";
+import { AuthProvider } from "##/context/AuthContext";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "./globals.scss";
+import "./ui.scss";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,10 +28,6 @@ export const metadata: Metadata = {
   },
 };
 
-import { AuthProvider } from "##/context/AuthContext";
-
-// ... existing imports
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -45,9 +41,9 @@ export default function RootLayout({
         <GoogleAnalytics GA_MEASUREMENT_ID="G-810Y1J3FJG" />
         <AuthProvider>
           <ConditionalLayout>{children}</ConditionalLayout>
+          <Modal />
         </AuthProvider>
         <WhatsAppButton />
-        <Modal />
         <ToastContainer
           position="top-right"
           autoClose={3000}

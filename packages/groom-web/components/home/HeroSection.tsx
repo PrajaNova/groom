@@ -1,17 +1,12 @@
 "use client";
 import Image from "next/image";
 import type React from "react";
-import { useCallback, useEffect, useState } from "react";
-import ModalManager from "##/utils/ModalManager";
+import { useEffect, useState } from "react";
 import AppImage from "../AppImage";
-import BookingModal from "../BookingModal";
+import BookingButton from "../BookingButton";
 
 const HeroSection: React.FC = () => {
   const [isMounted, setIsMounted] = useState(false);
-
-  const onBookingClick = useCallback(() => {
-    ModalManager.open(<BookingModal />);
-  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsMounted(true), 100);
@@ -63,13 +58,9 @@ const HeroSection: React.FC = () => {
             className={getAnimationClasses("delay-500")}
             style={{ transitionDelay: "500ms" }}
           >
-            <button
-              onClick={onBookingClick}
-              type="button"
-              className="btn-primary"
-            >
+            <BookingButton className="btn-primary">
               Book Your Discovery Call
-            </button>
+            </BookingButton>
           </div>
         </div>
         <div className="md:col-span-2 hidden md:block">

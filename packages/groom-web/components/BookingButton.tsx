@@ -1,31 +1,29 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import type React from "react";
 import { useCallback } from "react";
-import LoginModal from "@/components/auth/LoginModal";
 import { useAuth } from "@/context/AuthContext";
-import ModalManager from "@/utils/ModalManager";
 
 const BookingButton: React.FC<{
   className?: string;
   children?: React.ReactNode;
 }> = ({ className, children }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { user } = useAuth();
 
   const onClick = useCallback(() => {
     if (!user) {
-      // Open Login Modal if not authenticated
-      ModalManager.open(
-        <LoginModal isOpen={true} onClose={() => ModalManager.close()} />,
-      );
+      // Redirect to login with current page as redirect target
+      const redirectUrl = pathname === "/" ? "/book-session" : pathname;
+      router.push(`/login?redirect=${encodeURIComponent(redirectUrl)}`);
       return;
     }
 
     // Navigate to Booking Page if authenticated
     router.push("/book-session");
-  }, [user, router]);
+  }, [user, router, pathname]);
 
   return (
     <button onClick={onClick} type="button" className={className ?? "btn-sm"}>

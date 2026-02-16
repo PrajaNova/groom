@@ -2,17 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
-import LoginModal from "@/components/auth/LoginModal";
 import BookingButton from "@/components/BookingButton";
 import { useAuth } from "@/context/AuthContext";
-import ModalManager from "@/utils/ModalManager";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const isAdmin = user?.roles?.includes("ADMIN");
 
   const getInitials = (name: string) => {
     return name
@@ -27,10 +30,8 @@ const Header: React.FC = () => {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  const openLogin = () => {
-    ModalManager.open(
-      <LoginModal isOpen={true} onClose={() => ModalManager.close()} />,
-    );
+  const handleLoginClick = () => {
+    router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
   };
 
   const NavLinks = () => (
@@ -63,20 +64,13 @@ const Header: React.FC = () => {
       >
         Confession
       </Link>
-      <Link
-        href="/bookings"
-        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#B48B7F] hover:bg-gray-50 transition duration-300 md:p-0 md:bg-transparent md:hover:bg-transparent"
-        onClick={() => setIsMenuOpen(false)}
-      >
-        Book services
-      </Link>
     </>
   );
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
-        <Link href="/" className=" justify-center  tracking-wider">
+        <Link href="/" className="justify-center tracking-wider">
           <div className="flex items-center text-2xl font-bold text-[#006442]">
             <Image
               alt="groom logo"
@@ -86,7 +80,7 @@ const Header: React.FC = () => {
             />
             Groom
           </div>
-          <span className="text-[10px] uppercase  font-semibold  text-gray-500">
+          <span className="text-[10px] uppercase font-semibold text-gray-500">
             Transform today, lead tomorrow
           </span>
         </Link>
@@ -107,10 +101,11 @@ const Header: React.FC = () => {
                 if (user) {
                   setIsProfileDropdownOpen(!isProfileDropdownOpen);
                 } else {
-                  openLogin();
+                  handleLoginClick();
                 }
               }}
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none overflow-hidden border border-gray-300"
+              disabled={isLoading}
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none overflow-hidden border border-gray-300 disabled:opacity-50"
             >
               {user ? (
                 user.avatar ? (
@@ -153,13 +148,23 @@ const Header: React.FC = () => {
                   </p>
                   <p className="text-xs text-gray-500 truncate">{user.email}</p>
                 </div>
-                <Link
-                  href="/my-bookings"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                  onClick={() => setIsProfileDropdownOpen(false)}
-                >
-                  My Bookings
-                </Link>
+                {isAdmin ? (
+                  <Link
+                    href="/admin"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={() => setIsProfileDropdownOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                ) : (
+                  <Link
+                    href="/my-bookings"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={() => setIsProfileDropdownOpen(false)}
+                  >
+                    My Bookings
+                  </Link>
+                )}
                 <button
                   type="button"
                   onClick={() => {
@@ -181,12 +186,13 @@ const Header: React.FC = () => {
             type="button"
             onClick={() => {
               if (user) {
-                // Logic for mobile profile clicking if different, otherwise same
+                setIsProfileDropdownOpen(!isProfileDropdownOpen);
               } else {
-                openLogin();
+                handleLoginClick();
               }
             }}
-            className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 border border-gray-300"
+            disabled={isLoading}
+            className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 border border-gray-300 disabled:opacity-50"
           >
             {user ? (
               user.avatar ? (
@@ -249,16 +255,26 @@ const Header: React.FC = () => {
       {isMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t border-gray-100 py-4 px-4 flex flex-col space-y-2">
           <NavLinks />
-          {user && (
+          {user ? (
             <>
               <div className="border-t border-gray-100 my-2"></div>
-              <Link
-                href="/my-bookings"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#B48B7F]"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                My Bookings
-              </Link>
+              {isAdmin ? (
+                <Link
+                  href="/admin"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#B48B7F]"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+              ) : (
+                <Link
+                  href="/my-bookings"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#B48B7F]"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  My Bookings
+                </Link>
+              )}
               <button
                 type="button"
                 onClick={() => {
@@ -270,12 +286,11 @@ const Header: React.FC = () => {
                 Logout
               </button>
             </>
-          )}
-          {!user && (
+          ) : (
             <button
               type="button"
               onClick={() => {
-                openLogin();
+                handleLoginClick();
                 setIsMenuOpen(false);
               }}
               className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-[#006442] hover:bg-gray-50"
