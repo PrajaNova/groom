@@ -46,7 +46,7 @@ export default async function confessionRoutes(fastify: FastifyInstance) {
   fastify.delete<{ Params: { id: string } }>(
     CONFESSION_ROUTES.DELETE,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN"])],
+      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
       schema: createRouteSchema({
         params: IdParamSchema,
         response: { 200: SuccessResponseSchema, 404: ErrorSchema },

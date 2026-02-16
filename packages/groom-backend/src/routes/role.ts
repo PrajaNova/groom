@@ -25,7 +25,7 @@ export default async function roleRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: RoleCreate }>(
     ROLE_ROUTES.CREATE,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN"])],
+      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
       schema: createRouteSchema({
         body: RoleCreateSchema,
         response: {
@@ -44,7 +44,7 @@ export default async function roleRoutes(fastify: FastifyInstance) {
   fastify.get(
     ROLE_ROUTES.LIST,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN"])],
+      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
       schema: createRouteSchema({
         response: {
           200: RoleListResponseSchema,
@@ -60,7 +60,7 @@ export default async function roleRoutes(fastify: FastifyInstance) {
   fastify.post<{ Params: { id: string }; Body: AssignRole }>(
     ROLE_ROUTES.ASSIGN,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN"])],
+      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
       schema: createRouteSchema({
         params: IdParamSchema,
         body: AssignRoleSchema,
@@ -79,7 +79,7 @@ export default async function roleRoutes(fastify: FastifyInstance) {
   fastify.delete<{ Params: { id: string; roleId: string } }>(
     ROLE_ROUTES.REVOKE,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN"])],
+      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
       schema: createRouteSchema({
         response: {
           200: SuccessResponseSchema,

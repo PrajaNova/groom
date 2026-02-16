@@ -81,7 +81,7 @@ export default async function bookingRoutes(fastify: FastifyInstance) {
   fastify.put(
     BOOKING_ROUTES.UPDATE,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN"])],
+      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
       schema: createRouteSchema({
         params: IdParamSchema,
         body: UpdateBookingRequestSchema,
@@ -95,7 +95,7 @@ export default async function bookingRoutes(fastify: FastifyInstance) {
   fastify.delete(
     BOOKING_ROUTES.DELETE,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN"])],
+      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
       schema: createRouteSchema({
         params: IdParamSchema,
       }),

@@ -8,6 +8,8 @@ import { useProtectedRoute } from "@/hooks/useProtectedRoute";
 import bookingService, { type Booking } from "@/services/bookingService";
 import { showErrorToast } from "@/utils/errorHandler";
 import { toast } from "react-toastify";
+import ModalManager from "@/utils/ModalManager";
+import RescheduleBookingModal from "../bookings/RescheduleBookingModal";
 
 const MyBookingsPage = () => {
   const { isLoading: authLoading, isAuthorized } = useProtectedRoute();
@@ -38,21 +40,32 @@ const MyBookingsPage = () => {
   }, [isAuthorized, user]);
 
   const handleReschedule = async (booking: Booking) => {
-    const newDate = prompt(
-      "Enter new date (YYYY-MM-DD HH:MM):",
-      new Date(booking.when).toISOString().slice(0, 16),
+    const bookingData = {
+      id: booking.id,
+      date: new Date(booking.when).toLocaleDateString(undefined, {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+      time: new Date(booking.when).toLocaleTimeString(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      service: booking.reason || "Counseling Session",
+      isoDate: booking.when,
+    };
+
+    ModalManager.open(
+      <RescheduleBookingModal
+        booking={bookingData}
+        mode="reschedule"
+        onSuccess={() => {
+          toast.success("Booking rescheduled successfully!");
+          fetchBookings();
+        }}
+      />
     );
-    if (newDate) {
-      try {
-        await bookingService.update(booking.id, {
-          when: new Date(newDate).toISOString(),
-        });
-        toast.success("Booking rescheduled successfully!");
-        fetchBookings();
-      } catch (err) {
-        showErrorToast(err);
-      }
-    }
   };
 
   const handleCancel = async (bookingId: string) => {
@@ -79,9 +92,20 @@ const MyBookingsPage = () => {
     return null; // Redirect is handled by useProtectedRoute hook
   }
 
+  const isAdmin = user?.roles?.includes("ADMIN") || user?.roles?.includes("SUPER_ADMIN");
+
   return (
     <main className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold mb-8 text-[#2C3531]">My Bookings</h1>
+      <h1 className="text-3xl font-bold mb-8 text-[#2C3531]">
+        {isAdmin ? "All Bookings" : "My Bookings"}
+      </h1>
+      {isAdmin && (
+        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-800">
+            <strong>Admin View:</strong> You are viewing all bookings from all users.
+          </p>
+        </div>
+      )}
 
       {/* Error Alert */}
       {error && (
@@ -168,17 +192,55 @@ const MyBookingsPage = () => {
                 <h3 className="text-lg font-semibold text-gray-900 mb-1">
                   {booking.reason}
                 </h3>
+                {isAdmin && (
+                  <div className="mb-2 space-y-1">
+                    <p className="text-sm text-gray-700">
+                      <span className="font-medium">User:</span> {booking.name}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Email:</span> {booking.email}
+                    </p>
+                  </div>
+                )}
                 {booking.meetingId && (
-                  <p className="text-sm text-gray-600">
-                    Meeting ID:{" "}
-                    <span className="font-mono text-gray-700">
-                      {booking.meetingId}
-                    </span>
-                  </p>
+                  <div className="space-y-1">
+                    <p className="text-sm text-gray-600">
+                      Meeting ID:{" "}
+                      <span className="font-mono text-gray-700">
+                        {booking.meetingId}
+                      </span>
+                    </p>
+                    {booking.status === "confirmed" && (
+                      <a
+                        href={`/connect/${booking.meetingId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-sm text-[#006442] hover:text-[#004d32] font-medium"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        Join Session
+                      </a>
+                    )}
+                  </div>
                 )}
               </div>
 
               <div className="flex gap-2 mt-4 md:mt-0">
+                {booking.status === "confirmed" && booking.meetingId && (
+                  <a
+                    href={`/connect/${booking.meetingId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 text-sm font-medium text-white bg-[#006442] border border-[#006442] rounded-md hover:bg-[#004d32] transition-colors flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Join Session
+                  </a>
+                )}
                 {booking.status !== "cancelled" &&
                   booking.status !== "completed" && (
                     <>

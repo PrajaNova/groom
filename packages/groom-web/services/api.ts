@@ -5,9 +5,11 @@ const isServer = typeof window === "undefined";
 
 const getBaseURL = () => {
   if (isServer) {
-    return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    // Server-side: use backend API directly
+    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
   }
-  return ""; // Client-side uses relative URLs
+  // Client-side: use relative URLs (goes through Next.js server)
+  return "";
 };
 
 interface FetchOptions extends RequestInit {

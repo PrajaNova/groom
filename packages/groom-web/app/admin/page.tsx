@@ -5,13 +5,36 @@ import { fetchServer } from "@/services/serverApi";
 export const revalidate = 60;
 
 export default async function AdminDashboard() {
-  const [blogs, bookings, confessions] = await Promise.all([
+  const [blogs, bookings, confessions, users] = await Promise.all([
     fetchServer<any[]>("/api/blogs"),
     fetchServer<any[]>("/api/bookings"),
     fetchServer<any[]>("/api/confessions"),
+    fetchServer<any[]>("/api/users"),
   ]);
 
   const stats = [
+    {
+      label: "Total Users",
+      value: users.length,
+      href: "/admin/users",
+      icon: (
+        <svg
+          className="w-8 h-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <title>Users</title>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+          />
+        </svg>
+      ),
+      color: "from-orange-500 to-orange-600",
+    },
     {
       label: "Total Blogs",
       value: blogs.length,
@@ -93,7 +116,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {stats.map((stat) => (
           <Link
             key={stat.label}
@@ -141,7 +164,27 @@ export default async function AdminDashboard() {
         <h2 className="text-2xl font-bold text-[#2C3531] mb-4">
           Quick Actions
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Link
+            href="/admin/users"
+            className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-[#B48B7F] hover:bg-gray-50 transition-all"
+          >
+            <svg
+              className="w-6 h-6 text-[#B48B7F]"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <title>Manage users</title>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+              />
+            </svg>
+            <span className="font-medium">Manage Users</span>
+          </Link>
           <Link
             href="/admin/blogs"
             className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-[#B48B7F] hover:bg-gray-50 transition-all"

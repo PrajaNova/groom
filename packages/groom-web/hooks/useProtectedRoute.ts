@@ -57,8 +57,8 @@ export function useHasRole(roles: string | string[]) {
 }
 
 /**
- * Hook to check if user is admin
+ * Hook to check if user is admin (ADMIN or SUPER_ADMIN)
  */
 export function useIsAdmin() {
-  return useHasRole("ADMIN");
+  return useHasRole(["ADMIN", "SUPER_ADMIN"]);
 }

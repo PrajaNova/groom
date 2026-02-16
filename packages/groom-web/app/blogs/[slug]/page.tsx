@@ -9,14 +9,25 @@ export const revalidate = 0;
 type Props = { params: Promise<{ slug: string }> };
 
 async function getBlog(slug: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/blogs/${slug}`,
-    {
+  try {
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+    const res = await fetch(`${backendUrl}/api/blogs/${slug}`, {
       cache: "no-store",
-    },
-  );
-  if (!res.ok) return null;
-  return res.json();
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    
+    if (!res.ok) {
+      console.error(`Failed to fetch blog ${slug}:`, res.status);
+      return null;
+    }
+    
+    return res.json();
+  } catch (error) {
+    console.error(`Error fetching blog ${slug}:`, error);
+    return null;
+  }
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {

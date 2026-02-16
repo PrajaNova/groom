@@ -81,7 +81,7 @@ export class BookingController {
 
     try {
       const bookingService = new BookingService(this.fastify);
-      const isAdmin = request.user.roles?.includes("ADMIN");
+      const isAdmin = request.user.roles?.includes("ADMIN") || request.user.roles?.includes("SUPER_ADMIN");
 
       // Build filters
       const filters: any = {
@@ -125,7 +125,7 @@ export class BookingController {
         return reply.notFound("Booking not found");
       }
 
-      const isAdmin = request.user.roles?.includes("ADMIN");
+      const isAdmin = request.user.roles?.includes("ADMIN") || request.user.roles?.includes("SUPER_ADMIN");
       const isOwner =
         booking.userId === request.user.id ||
         booking.email === request.user.email;

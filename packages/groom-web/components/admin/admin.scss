@@ -155,6 +155,56 @@
     border: none;
 }
 
+/* Icon buttons for action tables */
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid rgba(15, 23, 32, 0.1);
+    background: #fff;
+    color: #44504b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.icon-btn:hover:not(:disabled) {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+.icon-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.icon-btn-primary {
+    background: rgba(0, 100, 66, 0.05);
+    color: #006442;
+    border-color: rgba(0, 100, 66, 0.15);
+}
+.icon-btn-primary:hover:not(:disabled) {
+    background: rgba(0, 100, 66, 0.1);
+    border-color: rgba(0, 100, 66, 0.25);
+}
+.icon-btn-secondary {
+    background: rgba(180, 139, 127, 0.05);
+    color: #B48B7F;
+    border-color: rgba(180, 139, 127, 0.15);
+}
+.icon-btn-secondary:hover:not(:disabled) {
+    background: rgba(180, 139, 127, 0.1);
+    border-color: rgba(180, 139, 127, 0.25);
+}
+.icon-btn-danger {
+    background: rgba(220, 38, 38, 0.05);
+    color: #dc2626;
+    border-color: rgba(220, 38, 38, 0.15);
+}
+.icon-btn-danger:hover:not(:disabled) {
+    background: rgba(220, 38, 38, 0.1);
+    border-color: rgba(220, 38, 38, 0.25);
+}
+
 .modal-backdrop {
     position: fixed;
     inset: 0;

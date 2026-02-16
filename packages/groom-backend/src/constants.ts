@@ -108,6 +108,7 @@ export const SUCCESS_MESSAGES = {
   BLOG_DELETED: "Blog deleted successfully",
   CONFESSION_DELETED: "Confession deleted successfully",
   TESTIMONIAL_DELETED: "Testimonial deleted successfully",
+  USER_DELETED: "User deleted successfully",
 } as const;
 
 // Audit Events

@@ -35,17 +35,35 @@ export class BookingService {
       throw new Error("Email, Name, and When are required fields");
     }
 
-    return await this.fastify.prisma.booking.create({
+    // Generate meeting ID
+    const meetingId = data.meetingId || this.emailService.generateMeetingId(data.email);
+
+    // Auto-confirm booking (skip payment for now)
+    const booking = await this.fastify.prisma.booking.create({
       data: {
         name: data.name,
         email: data.email,
         when: new Date(data.when),
         reason: data.reason ?? "No reason provided",
         userId: data.userId,
-        status: data.status ?? "pending",
-        meetingId: data.meetingId,
+        status: data.status ?? "confirmed", // Auto-confirm
+        meetingId,
       },
     });
+
+    // Send confirmation email
+    await this.emailService
+      .sendBookingConfirmationEmail({
+        to: booking.email,
+        name: booking.name,
+        scheduledTime: new Date(booking.when),
+        meetingId,
+      })
+      .catch((err) =>
+        this.fastify.log.error(err, "Failed to send confirmation email"),
+      );
+
+    return booking;
   }
 
   // New Payment Flow: Step 1 - Initiate

@@ -45,7 +45,7 @@ export default async function blogRoutes(fastify: FastifyInstance) {
   fastify.post(
     BLOG_ROUTES.CREATE,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN"])],
+      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
       schema: createRouteSchema({
         body: BlogCreateSchema,
         response: {
@@ -62,7 +62,7 @@ export default async function blogRoutes(fastify: FastifyInstance) {
   fastify.put<{ Params: { slug: string } }>(
     BLOG_ROUTES.UPDATE,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN"])],
+      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
       schema: createRouteSchema({
         params: SlugParamSchema,
         body: BlogUpdateSchema,
@@ -76,7 +76,7 @@ export default async function blogRoutes(fastify: FastifyInstance) {
   fastify.delete<{ Params: { slug: string } }>(
     BLOG_ROUTES.DELETE,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN"])],
+      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
       schema: createRouteSchema({
         params: SlugParamSchema,
         response: { 200: SuccessResponseSchema, 404: ErrorSchema },

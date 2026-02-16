@@ -56,6 +56,11 @@ export class UserService {
     name: string,
     avatar?: string,
   ): Promise<User> {
+    // Import RoleService inline to avoid circular dependency issues
+    const { RoleService } = await import("./role.service");
+    const roleService = new RoleService(this.fastify);
+    const userRole = await roleService.ensureDefaultUserRole();
+
     const user = await this.fastify.prisma.user.create({
       data: {
         id: nanoid(),
@@ -65,6 +70,9 @@ export class UserService {
             name,
             avatar: avatar || null,
           },
+        },
+        roles: {
+          connect: { id: userRole.id },
         },
       },
       include: this.defaultIncludes,
@@ -79,6 +87,11 @@ export class UserService {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(validated.password, saltRounds);
 
+    // Import RoleService inline to avoid circular dependency issues
+    const { RoleService } = await import("./role.service");
+    const roleService = new RoleService(this.fastify);
+    const userRole = await roleService.ensureDefaultUserRole();
+
     const user = await this.fastify.prisma.user.create({
       data: {
         id: nanoid(),
@@ -89,6 +102,9 @@ export class UserService {
             name: validated.name,
             avatar: validated.avatar || null,
           },
+        },
+        roles: {
+          connect: { id: userRole.id },
         },
       },
       include: this.defaultIncludes,

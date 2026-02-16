@@ -60,6 +60,11 @@ export const UserUpdateSchema = z
 // User Response Schema - public-facing (omits sensitive data)
 export const UserResponseSchema = UserBaseSchema.openapi("UserResponse");
 
+// User List Response Schema
+export const UserListResponseSchema = z
+  .array(UserResponseSchema)
+  .openapi("UserListResponse");
+
 // TypeScript type exports
 export type User = z.infer<typeof UserBaseSchema>;
 export type UserCreate = z.infer<typeof UserCreateSchema>;

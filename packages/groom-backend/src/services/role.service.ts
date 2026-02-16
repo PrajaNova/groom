@@ -97,4 +97,24 @@ export class RoleService {
 
     return user?.roles.map((r) => r.name) || [];
   }
+
+  /**
+   * Ensure default USER role exists and return it
+   */
+  async ensureDefaultUserRole(): Promise<Role> {
+    const userRole = await this.getRoleByName("USER");
+    
+    if (userRole) {
+      return userRole;
+    }
+
+    // Create USER role if it doesn't exist
+    return this.fastify.prisma.role.create({
+      data: {
+        id: nanoid(),
+        name: "USER",
+        description: "Default user role",
+      },
+    });
+  }
 }

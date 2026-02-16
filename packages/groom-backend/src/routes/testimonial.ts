@@ -34,7 +34,7 @@ export default async function testimonialRoutes(fastify: FastifyInstance) {
   fastify.post(
     TESTIMONIAL_ROUTES.CREATE,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN"])],
+      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
       schema: createRouteSchema({
         body: TestimonialCreateSchema,
         response: { 201: TestimonialResponseSchema, 400: ErrorSchema },
@@ -48,7 +48,7 @@ export default async function testimonialRoutes(fastify: FastifyInstance) {
   fastify.put<{ Params: { id: string } }>(
     TESTIMONIAL_ROUTES.UPDATE,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN"])],
+      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
       schema: createRouteSchema({
         params: IdParamSchema,
         body: TestimonialUpdateSchema,
@@ -63,7 +63,7 @@ export default async function testimonialRoutes(fastify: FastifyInstance) {
   fastify.delete<{ Params: { id: string } }>(
     TESTIMONIAL_ROUTES.DELETE,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN"])],
+      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
       schema: createRouteSchema({
         params: IdParamSchema,
         response: { 200: SuccessResponseSchema, 404: ErrorSchema },
