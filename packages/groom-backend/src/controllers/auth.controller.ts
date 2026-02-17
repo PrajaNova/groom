@@ -203,20 +203,6 @@ export class AuthController {
 			);
 
 			const frontendUrl = this.fastify.config.security.frontendUrl;
-			const query = request.query as any;
-			const state = query.state;
-
-			// Security check: only allow relative paths or paths starting with /
-			// to prevent open redirect vulnerabilities
-			if (
-				state &&
-				typeof state === "string" &&
-				state.startsWith("/") &&
-				!state.startsWith("//")
-			) {
-				return reply.redirect(`${frontendUrl}${state}`);
-			}
-
 			return reply.redirect(`${frontendUrl}/?auth=success`);
 		} catch (error: any) {
 			this.fastify.log.error(
