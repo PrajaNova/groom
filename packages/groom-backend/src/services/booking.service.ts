@@ -63,6 +63,7 @@ export class BookingService {
         name: booking.name,
         scheduledTime: new Date(booking.when),
         meetingId,
+        service: booking.service || undefined,
       })
       .catch((err) =>
         this.fastify.log.error(err, "Failed to send confirmation email"),
@@ -158,6 +159,7 @@ export class BookingService {
         name: updated.name,
         scheduledTime: new Date(updated.when),
         meetingId,
+        service: updated.service || undefined,
       })
       .catch((err) =>
         this.fastify.log.error(err, "Failed to send confirmation email"),
@@ -232,6 +234,7 @@ export class BookingService {
           name: existingBooking.name,
           scheduledTime: new Date(existingBooking.when),
           meetingId,
+          service: updated.service || undefined,
         })
         .catch((err) =>
           this.fastify.log.error(err, "Failed to send confirmation email"),
@@ -261,6 +264,7 @@ export class BookingService {
           name: existingBooking.name,
           newTime,
           meetingId: existingBooking.meetingId || undefined,
+          service: updated.service || undefined,
         })
         .catch((err) =>
           this.fastify.log.error(err, "Failed to send reschedule email"),
