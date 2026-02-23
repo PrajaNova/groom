@@ -1,8 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 type User = {
@@ -18,10 +18,13 @@ type UsersAdminTableProps = {
   users: User[];
 };
 
-export default function UsersAdminTable({ users: initialUsers }: UsersAdminTableProps) {
+export default function UsersAdminTable({
+  users: initialUsers,
+}: UsersAdminTableProps) {
   const [users, setUsers] = useState<User[]>(initialUsers);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
+    useState(false);
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
@@ -36,7 +39,11 @@ export default function UsersAdminTable({ users: initialUsers }: UsersAdminTable
       return;
     }
 
-    if (!confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
+    if (
+      !confirm(
+        "Are you sure you want to delete this user? This action cannot be undone.",
+      )
+    ) {
       return;
     }
 
@@ -51,7 +58,7 @@ export default function UsersAdminTable({ users: initialUsers }: UsersAdminTable
         throw new Error(error.message || "Failed to delete user");
       }
 
-      setUsers(users.filter(u => u.id !== userId));
+      setUsers(users.filter((u) => u.id !== userId));
       toast.success("User deleted successfully");
       router.refresh();
     } catch (error: any) {
@@ -63,7 +70,7 @@ export default function UsersAdminTable({ users: initialUsers }: UsersAdminTable
 
   const handleResetPassword = async () => {
     if (!selectedUser) return;
-    
+
     if (!newPassword || newPassword.length < 8) {
       toast.error("Password must be at least 8 characters");
       return;
@@ -71,11 +78,14 @@ export default function UsersAdminTable({ users: initialUsers }: UsersAdminTable
 
     setLoading(true);
     try {
-      const response = await fetch(`/api/users/${selectedUser.id}/reset-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newPassword }),
-      });
+      const response = await fetch(
+        `/api/users/${selectedUser.id}/reset-password`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ newPassword }),
+        },
+      );
 
       if (!response.ok) {
         const error = await response.json();
@@ -102,7 +112,7 @@ export default function UsersAdminTable({ users: initialUsers }: UsersAdminTable
       const rolesResponse = await fetch("/api/roles");
       if (!rolesResponse.ok) throw new Error("Failed to fetch roles");
       const roles = await rolesResponse.json();
-      
+
       const role = roles.find((r: any) => r.name === selectedRole);
       if (!role) throw new Error("Role not found");
 
@@ -119,11 +129,13 @@ export default function UsersAdminTable({ users: initialUsers }: UsersAdminTable
       }
 
       // Update local state
-      setUsers(users.map(u => 
-        u.id === selectedUser.id 
-          ? { ...u, roles: [...new Set([...u.roles, selectedRole])] }
-          : u
-      ));
+      setUsers(
+        users.map((u) =>
+          u.id === selectedUser.id
+            ? { ...u, roles: [...new Set([...u.roles, selectedRole])] }
+            : u,
+        ),
+      );
 
       toast.success("Role assigned successfully");
       setIsRoleModalOpen(false);
@@ -142,8 +154,12 @@ export default function UsersAdminTable({ users: initialUsers }: UsersAdminTable
       <div className="card table-card">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-[#2C3531]">User Management</h1>
-            <p className="text-gray-600 mt-1">Manage user accounts, roles, and permissions</p>
+            <h1 className="text-3xl font-bold text-[#2C3531]">
+              User Management
+            </h1>
+            <p className="text-gray-600 mt-1">
+              Manage user accounts, roles, and permissions
+            </p>
           </div>
           <div className="text-sm text-gray-500">
             Total Users: <span className="font-semibold">{users.length}</span>
@@ -201,8 +217,21 @@ export default function UsersAdminTable({ users: initialUsers }: UsersAdminTable
                         className="icon-btn icon-btn-primary"
                         title="Manage Roles"
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          role="img"
+                          aria-labelledby="manage-roles-icon"
+                        >
+                          <title id="manage-roles-icon">Manage Roles</title>
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                          />
                         </svg>
                       </button>
                       <button
@@ -214,8 +243,21 @@ export default function UsersAdminTable({ users: initialUsers }: UsersAdminTable
                         className="icon-btn icon-btn-secondary"
                         title="Reset Password"
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          role="img"
+                          aria-labelledby="reset-password-icon"
+                        >
+                          <title id="reset-password-icon">Reset Password</title>
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                          />
                         </svg>
                       </button>
                       <button
@@ -223,10 +265,27 @@ export default function UsersAdminTable({ users: initialUsers }: UsersAdminTable
                         onClick={() => handleDeleteUser(user.id)}
                         disabled={loading || user.id === currentUser?.id}
                         className="icon-btn icon-btn-danger"
-                        title={user.id === currentUser?.id ? "Cannot delete your own account" : "Delete User"}
+                        title={
+                          user.id === currentUser?.id
+                            ? "Cannot delete your own account"
+                            : "Delete User"
+                        }
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          role="img"
+                          aria-labelledby="delete-user-icon"
+                        >
+                          <title id="delete-user-icon">Delete User</title>
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -238,9 +297,7 @@ export default function UsersAdminTable({ users: initialUsers }: UsersAdminTable
         </div>
 
         {users.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            No users found
-          </div>
+          <div className="text-center py-12 text-gray-500">No users found</div>
         )}
       </div>
 
@@ -311,7 +368,10 @@ export default function UsersAdminTable({ users: initialUsers }: UsersAdminTable
               )}
             </div>
             <div className="mb-4">
-              <label htmlFor="role-select" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="role-select"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Add Role
               </label>
               <select

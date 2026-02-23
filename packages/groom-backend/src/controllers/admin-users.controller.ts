@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@constants";
+import { ERROR_MESSAGES } from "@constants";
 import { AdminUsersService } from "@services/admin-users.service";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
@@ -63,7 +63,10 @@ export class AdminUsersController {
   }
 
   async resetPassword(
-    request: FastifyRequest<{ Params: { id: string }; Body: { newPassword: string } }>,
+    request: FastifyRequest<{
+      Params: { id: string };
+      Body: { newPassword: string };
+    }>,
     reply: FastifyReply,
   ) {
     if (!request.user) {

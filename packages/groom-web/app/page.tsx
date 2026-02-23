@@ -9,6 +9,7 @@ import ConfessionsPreviewSection from "../components/home/ConfessionsPreviewSect
 import FinalCTASection from "../components/home/FinalCTASection";
 import HeroSection from "../components/home/HeroSection";
 import ProcessSection from "../components/home/ProcessSection";
+import ServicesSection from "../components/home/ServicesSection";
 import TestimonialsSection from "../components/home/TestimonialsSection";
 
 const Home: React.FC = () => {
@@ -17,6 +18,7 @@ const Home: React.FC = () => {
       <HeroSection />
       <WhatIsMentalHealth />
       <WhyItsImportant />
+      <ServicesSection />
       <SignsOfStruggles />
       <MythsAndFacts />
       <ProcessSection />

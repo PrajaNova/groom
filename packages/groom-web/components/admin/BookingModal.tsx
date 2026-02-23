@@ -9,6 +9,7 @@ type Booking = {
   email?: string;
   time?: string | Date;
   when?: string | Date;
+  service?: string;
   link?: string;
   message?: string;
 };
@@ -95,6 +96,13 @@ export default function BookingModal({ booking, onClose }: Props) {
             <p className="block text-sm font-medium text-gray-700">Email</p>
             <div className="mt-1 p-3 bg-gray-50 rounded-md text-gray-700">
               {booking.email ?? "-"}
+            </div>
+          </div>
+
+          <div>
+            <p className="block text-sm font-medium text-gray-700">Service</p>
+            <div className="mt-1 p-3 bg-blue-50 text-blue-700 font-semibold rounded-md">
+              {booking.service ?? "Not specified"}
             </div>
           </div>
 

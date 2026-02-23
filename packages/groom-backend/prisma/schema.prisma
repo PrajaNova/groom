@@ -160,6 +160,7 @@ model Booking {
   email     String
   userId    String?
   when      DateTime
+  service   String?
   reason    String
   status    BookingStatus @default(pending)
   meetingId String?

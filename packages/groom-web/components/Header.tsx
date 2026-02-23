@@ -15,7 +15,8 @@ const Header: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const isAdmin = user?.roles?.includes("ADMIN") || user?.roles?.includes("SUPER_ADMIN");
+  const isAdmin =
+    user?.roles?.includes("ADMIN") || user?.roles?.includes("SUPER_ADMIN");
 
   const getInitials = (name: string) => {
     return name

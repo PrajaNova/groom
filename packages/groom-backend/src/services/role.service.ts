@@ -103,7 +103,7 @@ export class RoleService {
    */
   async ensureDefaultUserRole(): Promise<Role> {
     const userRole = await this.getRoleByName("USER");
-    
+
     if (userRole) {
       return userRole;
     }

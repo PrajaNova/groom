@@ -5,8 +5,14 @@ export interface Booking {
   name: string;
   email: string;
   when: string;
+  service?: string;
   reason: string;
-  status: "pending" | "payment_pending" | "confirmed" | "completed" | "cancelled";
+  status:
+    | "pending"
+    | "payment_pending"
+    | "confirmed"
+    | "completed"
+    | "cancelled";
   userId?: string;
   meetingId?: string;
   amount?: number;
@@ -19,6 +25,7 @@ export interface CreateBookingData {
   name: string;
   email: string;
   when: string;
+  serviceType?: string;
   reason: string;
   userId?: string;
   amount?: number;
@@ -64,17 +71,25 @@ class BookingService {
 
   // Manual create (admin or legacy)
   async create(data: CreateBookingData): Promise<Booking> {
+    const backendData = {
+      ...data,
+      service: data.serviceType,
+    };
     return fetchAPI(this.basePath, {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify(backendData),
     });
   }
 
   // Step 1: Initiate Booking & Payment Order
   async initiate(data: CreateBookingData): Promise<InitiateResponse> {
+    const backendData = {
+      ...data,
+      service: data.serviceType,
+    };
     return fetchAPI(`${this.basePath}/initiate`, {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify(backendData),
     });
   }
 

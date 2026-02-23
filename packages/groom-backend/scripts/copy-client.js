@@ -1,8 +1,8 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("node:fs");
+const path = require("node:path");
 
-const src = path.join(__dirname, '../src/generated');
-const dest = path.join(__dirname, '../dist/generated');
+const src = path.join(__dirname, "../src/generated");
+const dest = path.join(__dirname, "../dist/generated");
 
 function copyRecursiveSync(src, dest) {
   const exists = fs.existsSync(src);
@@ -16,7 +16,7 @@ function copyRecursiveSync(src, dest) {
     fs.readdirSync(src).forEach((childItemName) => {
       copyRecursiveSync(
         path.join(src, childItemName),
-        path.join(dest, childItemName)
+        path.join(dest, childItemName),
       );
     });
   } else {
@@ -25,8 +25,8 @@ function copyRecursiveSync(src, dest) {
 }
 
 if (fs.existsSync(src)) {
-    copyRecursiveSync(src, dest);
-    console.log(`Copied ${src} to ${dest}`);
+  copyRecursiveSync(src, dest);
+  console.log(`Copied ${src} to ${dest}`);
 } else {
-    console.warn(`Source ${src} does not exist, skipping copy.`);
+  console.warn(`Source ${src} does not exist, skipping copy.`);
 }

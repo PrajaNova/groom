@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useEffect, useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 
 interface UseProtectedRouteOptions {
