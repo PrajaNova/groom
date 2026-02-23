@@ -26,6 +26,7 @@ export class BookingService {
     name: string;
     email: string;
     when: string | Date;
+    service?: string;
     reason: string;
     userId?: string;
     status?: BookingStatus;
@@ -44,6 +45,7 @@ export class BookingService {
         name: data.name,
         email: data.email,
         when: new Date(data.when),
+        service: data.service,
         reason: data.reason ?? "No reason provided",
         userId: data.userId,
         status: data.status ?? "confirmed", // Auto-confirm
@@ -71,6 +73,7 @@ export class BookingService {
     name: string;
     email: string;
     when: string | Date;
+    service?: string;
     reason: string;
     userId?: string;
     amount?: number; // Optional amount override
@@ -94,6 +97,7 @@ export class BookingService {
         name: data.name,
         email: data.email,
         when: new Date(data.when),
+        service: data.service,
         reason: data.reason ?? "No reason provided",
         userId: data.userId,
         status: "payment_pending",
