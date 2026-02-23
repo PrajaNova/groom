@@ -37,12 +37,12 @@ function BookingPageContent() {
       if (!res.ok) {
         throw new Error(`Failed to fetch bookings: ${res.status}`);
       }
-      
+
       const responseData = await res.json();
-      
+
       // Handle both array and object responses
-      let data: BackendBooking[] = Array.isArray(responseData) 
-        ? responseData 
+      const data: BackendBooking[] = Array.isArray(responseData)
+        ? responseData
         : responseData?.bookings || responseData?.data || [];
 
       if (!Array.isArray(data)) {

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import GoogleAnalytics from "##/components/GoogleAnalytics";
+import { ToastContainer } from "react-toastify";
 import ConditionalLayout from "##/components/ConditionalLayout";
 import { WhatsAppButton } from "##/components/common/WhatsAppButton";
+import GoogleAnalytics from "##/components/GoogleAnalytics";
 import Modal from "##/components/Modal";
 import { AuthProvider } from "##/context/AuthContext";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.scss";
 import "./ui.scss";

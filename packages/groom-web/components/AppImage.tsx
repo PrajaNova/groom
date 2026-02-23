@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import type { FC } from "react";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 
 type Props = {
   src: string;
@@ -16,10 +16,10 @@ const FALLBACK_IMAGE = "/images/logo.png";
 
 const isValidImageUrl = (url: string): boolean => {
   if (!url || url.trim() === "") return false;
-  
+
   // Check if it's a local path (starts with /)
   if (url.startsWith("/")) return true;
-  
+
   // Check if it's a valid URL
   try {
     new URL(url);
@@ -41,10 +41,10 @@ const AppImage: FC<Props> = ({
   const imageSrc = useMemo(() => {
     // If error occurred, use fallback
     if (hasError) return FALLBACK_IMAGE;
-    
+
     // If src is invalid, use fallback immediately
     if (!isValidImageUrl(src)) return FALLBACK_IMAGE;
-    
+
     return src;
   }, [src, hasError]);
 

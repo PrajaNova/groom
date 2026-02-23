@@ -8,19 +8,20 @@ export const revalidate = 0;
 async function getConfessions() {
   try {
     // Use backend URL or fallback to localhost for server-side requests
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+    const backendUrl =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
     const res = await fetch(`${backendUrl}/api/confessions`, {
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",
       },
     });
-    
+
     if (!res.ok) {
       console.error("Failed to fetch confessions:", res.status, res.statusText);
       return [];
     }
-    
+
     return res.json();
   } catch (error) {
     console.error("Error fetching confessions:", error);

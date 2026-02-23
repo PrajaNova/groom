@@ -4,7 +4,7 @@ export class APIError extends Error {
   constructor(
     public statusCode: number,
     public message: string,
-    public originalError?: Error
+    public originalError?: Error,
   ) {
     super(message);
     this.name = "APIError";
@@ -83,7 +83,7 @@ export async function handleAsyncOperation<T>(
   options?: {
     onError?: (error: APIError) => void;
     showToast?: boolean;
-  }
+  },
 ): Promise<T | null> {
   try {
     return await operation();
@@ -104,7 +104,7 @@ export async function handleAsyncOperation<T>(
  */
 export function validateResponse<T>(
   data: unknown,
-  expectedKeys?: string[]
+  expectedKeys?: string[],
 ): data is T {
   if (!data || typeof data !== "object") {
     return false;

@@ -10,19 +10,20 @@ type Props = { params: Promise<{ slug: string }> };
 
 async function getBlog(slug: string) {
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+    const backendUrl =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
     const res = await fetch(`${backendUrl}/api/blogs/${slug}`, {
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",
       },
     });
-    
+
     if (!res.ok) {
       console.error(`Failed to fetch blog ${slug}:`, res.status);
       return null;
     }
-    
+
     return res.json();
   } catch (error) {
     console.error(`Error fetching blog ${slug}:`, error);

@@ -6,7 +6,12 @@ export interface Booking {
   email: string;
   when: string;
   reason: string;
-  status: "pending" | "payment_pending" | "confirmed" | "completed" | "cancelled";
+  status:
+    | "pending"
+    | "payment_pending"
+    | "confirmed"
+    | "completed"
+    | "cancelled";
   userId?: string;
   meetingId?: string;
   amount?: number;

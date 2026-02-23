@@ -1,13 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import BookingButton from "@/components/BookingButton";
 import { useAuth } from "@/context/AuthContext";
 import { useProtectedRoute } from "@/hooks/useProtectedRoute";
 import bookingService, { type Booking } from "@/services/bookingService";
 import { showErrorToast } from "@/utils/errorHandler";
-import { toast } from "react-toastify";
 import ModalManager from "@/utils/ModalManager";
 import RescheduleBookingModal from "../bookings/RescheduleBookingModal";
 
@@ -37,7 +36,7 @@ const MyBookingsPage = () => {
     if (isAuthorized && user) {
       fetchBookings();
     }
-  }, [isAuthorized, user]);
+  }, [isAuthorized, user, fetchBookings]);
 
   const handleReschedule = async (booking: Booking) => {
     const bookingData = {
@@ -64,7 +63,7 @@ const MyBookingsPage = () => {
           toast.success("Booking rescheduled successfully!");
           fetchBookings();
         }}
-      />
+      />,
     );
   };
 
@@ -92,7 +91,8 @@ const MyBookingsPage = () => {
     return null; // Redirect is handled by useProtectedRoute hook
   }
 
-  const isAdmin = user?.roles?.includes("ADMIN") || user?.roles?.includes("SUPER_ADMIN");
+  const isAdmin =
+    user?.roles?.includes("ADMIN") || user?.roles?.includes("SUPER_ADMIN");
 
   return (
     <main className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -102,7 +102,8 @@ const MyBookingsPage = () => {
       {isAdmin && (
         <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">
-            <strong>Admin View:</strong> You are viewing all bookings from all users.
+            <strong>Admin View:</strong> You are viewing all bookings from all
+            users.
           </p>
         </div>
       )}
@@ -110,12 +111,22 @@ const MyBookingsPage = () => {
       {/* Error Alert */}
       {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex gap-3">
-          <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+          <svg
+            className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
             <title>Error</title>
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            <path
+              fillRule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+              clipRule="evenodd"
+            />
           </svg>
           <div className="flex-1">
-            <p className="text-sm text-red-700 font-medium">Error loading bookings</p>
+            <p className="text-sm text-red-700 font-medium">
+              Error loading bookings
+            </p>
             <p className="text-sm text-red-600">{error}</p>
             <button
               onClick={fetchBookings}
@@ -198,7 +209,8 @@ const MyBookingsPage = () => {
                       <span className="font-medium">User:</span> {booking.name}
                     </p>
                     <p className="text-sm text-gray-600">
-                      <span className="font-medium">Email:</span> {booking.email}
+                      <span className="font-medium">Email:</span>{" "}
+                      {booking.email}
                     </p>
                   </div>
                 )}
@@ -217,8 +229,18 @@ const MyBookingsPage = () => {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-sm text-[#006442] hover:text-[#004d32] font-medium"
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
                         </svg>
                         Join Session
                       </a>
@@ -235,8 +257,18 @@ const MyBookingsPage = () => {
                     rel="noopener noreferrer"
                     className="px-4 py-2 text-sm font-medium text-white bg-[#006442] border border-[#006442] rounded-md hover:bg-[#004d32] transition-colors flex items-center gap-2"
                   >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
                     </svg>
                     Join Session
                   </a>
