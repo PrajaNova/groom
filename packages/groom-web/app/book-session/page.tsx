@@ -87,7 +87,10 @@ export default function BookSessionPage() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              role="img"
+              aria-labelledby="success-icon-title"
             >
+              <title id="success-icon-title">Success</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -136,7 +139,10 @@ export default function BookSessionPage() {
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    role="img"
+                    aria-labelledby="join-session-title"
                   >
+                    <title id="join-session-title">Join Session</title>
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -150,6 +156,7 @@ export default function BookSessionPage() {
             )}
           </div>
           <button
+            type="button"
             onClick={() => {
               ModalManager.close();
               router.push("/my-bookings");
@@ -210,10 +217,14 @@ export default function BookSessionPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="full-name"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Full Name
             </label>
             <input
+              id="full-name"
               type="text"
               name="name"
               value={formData.name}
@@ -225,10 +236,14 @@ export default function BookSessionPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="email-address"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Email Address
             </label>
             <input
+              id="email-address"
               type="email"
               name="email"
               value={formData.email}
@@ -240,10 +255,14 @@ export default function BookSessionPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="service-type"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Service Type
             </label>
             <select
+              id="service-type"
               name="serviceType"
               value={formData.serviceType}
               onChange={handleChange as any}
@@ -259,10 +278,14 @@ export default function BookSessionPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="preferred-date"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Preferred Date & Time
             </label>
             <input
+              id="preferred-date"
               type="datetime-local"
               name="when"
               value={formData.when}
@@ -277,10 +300,14 @@ export default function BookSessionPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="discussion-reason"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               What would you like to discuss?
             </label>
             <textarea
+              id="discussion-reason"
               name="reason"
               rows={4}
               value={formData.reason}

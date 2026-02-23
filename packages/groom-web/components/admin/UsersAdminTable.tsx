@@ -222,7 +222,10 @@ export default function UsersAdminTable({
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
+                          role="img"
+                          aria-labelledby="manage-roles-icon"
                         >
+                          <title id="manage-roles-icon">Manage Roles</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -245,7 +248,10 @@ export default function UsersAdminTable({
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
+                          role="img"
+                          aria-labelledby="reset-password-icon"
                         >
+                          <title id="reset-password-icon">Reset Password</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -270,7 +276,10 @@ export default function UsersAdminTable({
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
+                          role="img"
+                          aria-labelledby="delete-user-icon"
                         >
+                          <title id="delete-user-icon">Delete User</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"

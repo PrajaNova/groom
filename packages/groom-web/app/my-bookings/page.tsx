@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import BookingButton from "@/components/BookingButton";
 import { useAuth } from "@/context/AuthContext";
@@ -17,7 +17,7 @@ const MyBookingsPage = () => {
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchBookings = async () => {
+  const fetchBookings = useCallback(async () => {
     try {
       setFetching(true);
       setError(null);
@@ -30,7 +30,7 @@ const MyBookingsPage = () => {
     } finally {
       setFetching(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (isAuthorized && user) {
@@ -129,6 +129,7 @@ const MyBookingsPage = () => {
             </p>
             <p className="text-sm text-red-600">{error}</p>
             <button
+              type="button"
               onClick={fetchBookings}
               className="text-sm text-red-700 hover:text-red-900 underline mt-2"
             >
@@ -234,7 +235,10 @@ const MyBookingsPage = () => {
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
+                          role="img"
+                          aria-labelledby="join-session-icon-1"
                         >
+                          <title id="join-session-icon-1">Join Session</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -262,7 +266,10 @@ const MyBookingsPage = () => {
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
+                      role="img"
+                      aria-labelledby="join-session-icon-2"
                     >
+                      <title id="join-session-icon-2">Join Session</title>
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"

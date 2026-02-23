@@ -1,8 +1,8 @@
+import crypto from "node:crypto";
 import type { Booking, BookingStatus } from "@generated/client";
 import { EmailService } from "@services/email.service";
 import type { FastifyInstance } from "fastify";
 import Razorpay from "razorpay";
-import crypto from "node:crypto";
 
 export class BookingService {
   private emailService: EmailService;
@@ -10,14 +10,16 @@ export class BookingService {
 
   constructor(private fastify: FastifyInstance) {
     this.emailService = new EmailService(this.fastify);
-    
+
     if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
       this.razorpay = new Razorpay({
         key_id: process.env.RAZORPAY_KEY_ID,
         key_secret: process.env.RAZORPAY_KEY_SECRET,
       });
     } else {
-      this.fastify.log.warn("Razorpay credentials missing. Payment features disabled.");
+      this.fastify.log.warn(
+        "Razorpay credentials missing. Payment features disabled.",
+      );
     }
   }
 
@@ -37,7 +39,8 @@ export class BookingService {
     }
 
     // Generate meeting ID
-    const meetingId = data.meetingId || this.emailService.generateMeetingId(data.email);
+    const meetingId =
+      data.meetingId || this.emailService.generateMeetingId(data.email);
 
     // Auto-confirm booking (skip payment for now)
     const booking = await this.fastify.prisma.booking.create({
@@ -83,7 +86,7 @@ export class BookingService {
     }
 
     const amount = data.amount || 50000; // Default 500 INR (in paise)
-    
+
     // Create Razorpay Order
     const order = await this.razorpay.orders.create({
       amount,
@@ -121,10 +124,11 @@ export class BookingService {
     if (!booking) throw new Error("Booking not found");
     if (booking.status === "confirmed") return booking; // Already confirmed
 
-    if (!process.env.RAZORPAY_KEY_SECRET) throw new Error("Razorpay secret missing");
+    if (!process.env.RAZORPAY_KEY_SECRET)
+      throw new Error("Razorpay secret missing");
 
     // Verify Signature
-    const body = booking.orderId + "|" + data.razorpayPaymentId;
+    const body = `${booking.orderId}|${data.razorpayPaymentId}`;
     const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(body.toString())

@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import type React from "react";
 import BookingButton from "../BookingButton";
 
@@ -14,7 +13,10 @@ const services = [
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
+        role="img"
+        aria-labelledby="self-help-icon"
       >
+        <title id="self-help-icon">Self Help</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -35,7 +37,10 @@ const services = [
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
+        role="img"
+        aria-labelledby="couple-therapy-icon"
       >
+        <title id="couple-therapy-icon">Couple Therapy</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -56,7 +61,10 @@ const services = [
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
+        role="img"
+        aria-labelledby="career-consultation-icon"
       >
+        <title id="career-consultation-icon">Career Consultation</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -77,7 +85,10 @@ const services = [
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
+        role="img"
+        aria-labelledby="numerology-icon"
       >
+        <title id="numerology-icon">Numerology</title>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -105,9 +116,9 @@ const ServicesSection: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {services.map((service, index) => (
+          {services.map((service) => (
             <div
-              key={index}
+              key={service.title}
               className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group"
             >
               <div
@@ -128,7 +139,10 @@ const ServicesSection: React.FC = () => {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  role="img"
+                  aria-labelledby="book-now-arrow"
                 >
+                  <title id="book-now-arrow">Book Now</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"

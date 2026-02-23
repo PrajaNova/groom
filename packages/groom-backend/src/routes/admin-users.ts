@@ -2,7 +2,11 @@ import { USERS_ROUTES } from "@constants";
 import { AdminUsersController } from "@controllers/admin-users.controller";
 import { authGuard } from "@middleware/auth";
 import { roleGuard } from "@middleware/rbac";
-import { ErrorSchema, IdParamSchema, SuccessResponseSchema } from "@schemas/common";
+import {
+  ErrorSchema,
+  IdParamSchema,
+  SuccessResponseSchema,
+} from "@schemas/common";
 import { UserListResponseSchema } from "@schemas/user.schema";
 import { createRouteSchema } from "@utils/schema";
 import type { FastifyInstance } from "fastify";
@@ -78,6 +82,7 @@ export default async function adminUsersRoutes(fastify: FastifyInstance) {
         },
       }),
     },
-    async (request, reply) => adminUsersController.resetPassword(request, reply),
+    async (request, reply) =>
+      adminUsersController.resetPassword(request, reply),
   );
 }
