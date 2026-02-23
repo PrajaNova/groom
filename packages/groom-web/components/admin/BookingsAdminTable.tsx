@@ -12,6 +12,7 @@ type BookingRow = {
   name?: string;
   email?: string;
   when?: string | Date;
+  service?: string;
   link?: string;
   message?: string;
   meetingId?: string;
@@ -132,7 +133,7 @@ export default function BookingsAdminTable({ bookings }: Props) {
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Email</th>
+                <th>Service</th>
                 <th>Scheduled Time</th>
                 <th>Status</th>
                 <th>Meeting Link</th>
@@ -143,7 +144,11 @@ export default function BookingsAdminTable({ bookings }: Props) {
               {bookings.map((bk) => (
                 <tr key={bk.id} className="hover:bg-gray-50 transition-colors">
                   <td className="font-medium">{bk.name || "-"}</td>
-                  <td className="text-gray-600">{bk.email || "-"}</td>
+                  <td className="text-gray-600">
+                    <span className="px-2 py-1 bg-gray-100 rounded text-xs">
+                      {bk.service || "N/A"}
+                    </span>
+                  </td>
                   <td className="text-gray-600">
                     {bk.when ? new Date(bk.when).toLocaleString() : "-"}
                   </td>

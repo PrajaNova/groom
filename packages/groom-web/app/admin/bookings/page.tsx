@@ -18,6 +18,7 @@ export default async function AdminBookingsPage() {
     name: String(bk.name ?? ""),
     email: String(bk.email ?? ""),
     when: bk.when ? String(bk.when) : undefined,
+    service: String(bk.service ?? "Not specified"),
     link: String(bk.meetingId ?? ""),
     message: String(bk.reason ?? ""),
     meetingId: bk.meetingId ? String(bk.meetingId) : undefined,
