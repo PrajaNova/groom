@@ -168,7 +168,7 @@ export const loadConfig = (): AppConfig => {
     },
     email: {
       resendApiKey: getEnv("RESEND_API_KEY"),
-      from: getEnv("EMAIL_FROM", "Groom <noreply@groom.com>"),
+      from: getEnv("EMAIL_FROM", "Groom <noreply@groom.global>"),
     },
     app: {
       url: getEnv("APP_URL", "http://localhost:3000"),

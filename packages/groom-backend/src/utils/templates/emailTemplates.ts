@@ -25,7 +25,7 @@ export const baseTemplate = (content: string, title: string, headerColor = "line
               ${content}
               
               <p style="margin: 24px 0 16px; color: #44504b; font-size: 14px; line-height: 1.6;">
-                If you have any questions, please contact us at support@groom.com
+                If you have any questions, please contact us at support@groom.global
               </p>
               
               <p style="margin: 0; color: #44504b; font-size: 14px; line-height: 1.6;">
