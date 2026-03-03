@@ -77,11 +77,11 @@ export default async function bookingRoutes(fastify: FastifyInstance) {
     async (request, reply) => bookingController.getById(request as any, reply),
   );
 
-  // PUT /bookings/:id - Update booking (ADMIN only)
+  // PUT /bookings/:id - Update booking
   fastify.put(
     BOOKING_ROUTES.UPDATE,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
+      preHandler: [authGuard],
       schema: createRouteSchema({
         params: IdParamSchema,
         body: UpdateBookingRequestSchema,
@@ -91,11 +91,11 @@ export default async function bookingRoutes(fastify: FastifyInstance) {
     async (request, reply) => bookingController.update(request as any, reply),
   );
 
-  // DELETE /bookings/:id - Cancel booking (ADMIN only)
+  // DELETE /bookings/:id - Cancel booking
   fastify.delete(
     BOOKING_ROUTES.DELETE,
     {
-      preHandler: [authGuard, roleGuard(["ADMIN", "SUPER_ADMIN"])],
+      preHandler: [authGuard],
       schema: createRouteSchema({
         params: IdParamSchema,
       }),
