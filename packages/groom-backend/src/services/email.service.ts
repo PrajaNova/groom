@@ -4,6 +4,7 @@ import { Resend } from "resend";
 import {
   cancellationTemplate,
   confirmationTemplate,
+  receivedTemplate,
   updateTemplate,
 } from "../utils/templates/emailTemplates";
 
@@ -35,6 +36,51 @@ export class EmailService {
   private generateJitsiUrl(meetingId: string): string {
     const baseUrl = process.env.APP_URL || this.fastify.config?.app?.url;
     return `${baseUrl}/connect/${meetingId}`;
+  }
+
+  /**
+   * Send booking creation confirmation (Received)
+   */
+  async sendBookingReceivedEmail(params: {
+    to: string;
+    name: string;
+    scheduledTime: Date;
+    service?: string;
+  }) {
+    const { to, name, scheduledTime, service } = params;
+    const formattedTime = scheduledTime.toLocaleString("en-IN", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    try {
+      const fromEmail =
+        process.env.EMAIL_FROM || this.fastify.config?.email?.from;
+      const { data, error } = await this.resend.emails.send({
+        from: fromEmail || "Groom <onboarding@resend.dev>",
+        to: [to],
+        subject: "Booking Received - Groom",
+        html: receivedTemplate({
+          name,
+          scheduledTime: formattedTime,
+          service,
+        }),
+      });
+
+      if (error) {
+        this.fastify.log.error({ error }, "Resend received email error");
+        return { success: false, error };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      this.fastify.log.error({ error }, "Failed to send received email");
+      return { success: false, error };
+    }
   }
 
   /**

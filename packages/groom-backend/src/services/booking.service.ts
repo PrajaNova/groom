@@ -42,7 +42,7 @@ export class BookingService {
     const meetingId =
       data.meetingId || this.emailService.generateMeetingId(data.email);
 
-    // Auto-confirm booking (skip payment for now)
+    // Set status to pending (Admin needs to confirm)
     const booking = await this.fastify.prisma.booking.create({
       data: {
         name: data.name,
@@ -51,23 +51,24 @@ export class BookingService {
         service: data.service,
         reason: data.reason ?? "No reason provided",
         userId: data.userId,
-        status: data.status ?? "confirmed", // Auto-confirm
+        status: data.status ?? "pending",
         meetingId,
       },
     });
 
-    // Send confirmation email
+    // Send "Booking Received" email
     await this.emailService
-      .sendBookingConfirmationEmail({
+      .sendBookingReceivedEmail({
         to: booking.email,
         name: booking.name,
         scheduledTime: new Date(booking.when),
-        meetingId,
         service: booking.service || undefined,
       })
       .catch((err) =>
-        this.fastify.log.error(err, "Failed to send confirmation email"),
+        this.fastify.log.error(err, "Failed to send booking received email"),
       );
+
+    return booking;
 
     return booking;
   }

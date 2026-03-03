@@ -100,11 +100,12 @@ export default function BookSessionPage() {
             </svg>
           </div>
           <h3 className="text-2xl font-bold text-gray-900 mb-2">
-            Booking Confirmed!
+            Booking Received!
           </h3>
           <p className="text-gray-600 mb-6">
-            Your counseling session has been successfully booked. You will
-            receive a confirmation email shortly.
+            Your session request has been received. Our team will review and
+            confirm it shortly. You will receive a notification once it is
+            confirmed.
           </p>
           <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
             <p className="text-sm text-gray-700 mb-2">
@@ -112,7 +113,7 @@ export default function BookSessionPage() {
               {formData.serviceType}
             </p>
             <p className="text-sm text-gray-700 mb-2">
-              <span className="font-semibold">Session Date:</span>{" "}
+              <span className="font-semibold">Requested Date:</span>{" "}
               {new Date(booking.when).toLocaleString("en-IN", {
                 weekday: "long",
                 year: "numeric",
@@ -122,38 +123,12 @@ export default function BookSessionPage() {
                 minute: "2-digit",
               })}
             </p>
-            {booking.meetingId && (
-              <>
-                <p className="text-sm text-gray-700 mb-3">
-                  <span className="font-semibold">Meeting ID:</span>{" "}
-                  {booking.meetingId}
-                </p>
-                <a
-                  href={`/connect/${booking.meetingId}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm text-[#006442] hover:text-[#004d32] font-semibold"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    role="img"
-                    aria-labelledby="join-session-title"
-                  >
-                    <title id="join-session-title">Join Session</title>
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                    />
-                  </svg>
-                  Join Session Link
-                </a>
-              </>
-            )}
+            <p className="text-sm text-gray-700">
+              <span className="font-semibold">Status:</span>{" "}
+              <span className="text-yellow-600 font-medium italic">
+                Pending Approval
+              </span>
+            </p>
           </div>
           <button
             type="button"
