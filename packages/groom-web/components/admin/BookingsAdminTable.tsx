@@ -248,29 +248,31 @@ export default function BookingsAdminTable({ bookings }: Props) {
                       </button>
 
                       {/* Confirm - green */}
-                      <button
-                        type="button"
-                        className="px-2 py-1.5 text-xs rounded-md bg-green-600 text-white hover:bg-green-700 inline-flex items-center gap-1"
-                        onClick={() => handleConfirm(bk.id)}
-                        aria-label="Confirm booking"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-3.5 h-3.5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
+                      {bk.status !== "confirmed" && (
+                        <button
+                          type="button"
+                          className="px-2 py-1.5 text-xs rounded-md bg-green-600 text-white hover:bg-green-700 inline-flex items-center gap-1"
+                          onClick={() => handleConfirm(bk.id)}
+                          aria-label="Confirm booking"
                         >
-                          <title>Confirm</title>
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                        Confirm
-                      </button>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-3.5 h-3.5"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                          >
+                            <title>Confirm</title>
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                          Confirm
+                        </button>
+                      )}
 
                       {/* View - dark */}
                       <button

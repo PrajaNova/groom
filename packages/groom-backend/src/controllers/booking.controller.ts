@@ -153,23 +153,50 @@ export class BookingController {
     }>,
     reply: FastifyReply,
   ) {
+    if (!request.user) {
+      return reply.unauthorized(ERROR_MESSAGES.UNAUTHORIZED);
+    }
+
     try {
       const bookingService = new BookingService(this.fastify);
+      const booking = await bookingService.getBookingById(request.params.id);
+
+      if (!booking) {
+        return reply.notFound("Booking not found");
+      }
+
+      const isAdmin =
+        request.user.roles?.includes("ADMIN") ||
+        request.user.roles?.includes("SUPER_ADMIN");
+      const isOwner =
+        booking.userId === request.user.id ||
+        booking.email === request.user.email;
+
+      if (!isAdmin && !isOwner) {
+        return reply.forbidden(ERROR_MESSAGES.FORBIDDEN);
+      }
+
+      // Business Rule: Non-admins can only update/cancel PENDING bookings
+      if (!isAdmin && booking.status !== "pending") {
+        return reply.forbidden(
+          "You can only reschedule or cancel pending bookings. Please contact support for assistance.",
+        );
+      }
+
       const updateData = {
         ...request.body,
-        status: request.body.status as BookingStatus | undefined,
+        status: isAdmin
+          ? (request.body.status as BookingStatus | undefined)
+          : undefined, // Non-admins cannot change status
         when: request.body.when ? new Date(request.body.when) : undefined,
       };
 
-      const booking = await bookingService.updateBooking(
+      const updated = await bookingService.updateBooking(
         request.params.id,
         updateData,
       );
-      return reply.send(booking);
+      return reply.send(updated);
     } catch (error) {
-      if (error instanceof Error && error.message === "Booking not found") {
-        return reply.notFound(error.message);
-      }
       return reply.badRequest(
         error instanceof Error ? error.message : String(error),
       );
@@ -180,14 +207,39 @@ export class BookingController {
     request: FastifyRequest<{ Params: { id: string } }>,
     reply: FastifyReply,
   ) {
+    if (!request.user) {
+      return reply.unauthorized(ERROR_MESSAGES.UNAUTHORIZED);
+    }
+
     try {
       const bookingService = new BookingService(this.fastify);
+      const booking = await bookingService.getBookingById(request.params.id);
+
+      if (!booking) {
+        return reply.notFound("Booking not found");
+      }
+
+      const isAdmin =
+        request.user.roles?.includes("ADMIN") ||
+        request.user.roles?.includes("SUPER_ADMIN");
+      const isOwner =
+        booking.userId === request.user.id ||
+        booking.email === request.user.email;
+
+      if (!isAdmin && !isOwner) {
+        return reply.forbidden(ERROR_MESSAGES.FORBIDDEN);
+      }
+
+      // Business Rule: Non-admins can only cancel PENDING bookings
+      if (!isAdmin && booking.status !== "pending") {
+        return reply.forbidden(
+          "You can only cancel pending bookings. Please contact support for assistance.",
+        );
+      }
+
       const result = await bookingService.cancelBooking(request.params.id);
       return reply.send(result);
     } catch (error) {
-      if (error instanceof Error && error.message === "Booking not found") {
-        return reply.notFound(error.message);
-      }
       return reply.badRequest(
         error instanceof Error ? error.message : String(error),
       );
