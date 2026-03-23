@@ -53,9 +53,7 @@ export class BookingController {
     request: FastifyRequest<{
       Body: {
         bookingId: string;
-        razorpayPaymentId: string;
-        razorpayOrderId: string;
-        razorpaySignature: string;
+        paypalOrderId: string;
       };
     }>,
     reply: FastifyReply,

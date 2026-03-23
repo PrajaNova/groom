@@ -1,4 +1,8 @@
-export const baseTemplate = (content: string, title: string, headerColor = "#006442") => `
+export const baseTemplate = (
+  content: string,
+  title: string,
+  headerColor = "#006442",
+) => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,6 +66,8 @@ export const confirmationTemplate = (params: {
   meetingUrl: string;
   meetingId: string;
   service?: string;
+  amount?: number;
+  currency?: string;
 }) => {
   const content = `
     <div style="text-align: center; margin-bottom: 32px;">
@@ -85,7 +91,9 @@ export const confirmationTemplate = (params: {
       <p style="margin: 0 0 16px; color: #9CA3AF; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Session Details</p>
       
       <table role="presentation" style="width: 100%; border-collapse: collapse;">
-        ${params.service ? `
+        ${
+          params.service
+            ? `
         <tr>
           <td style="padding: 0 0 16px; vertical-align: top; width: 32px;">💆</td>
           <td style="padding: 0 0 16px;">
@@ -93,7 +101,9 @@ export const confirmationTemplate = (params: {
             <p style="margin: 2px 0 0; color: #111827; font-size: 16px; font-weight: 600;">${params.service}</p>
           </td>
         </tr>
-        ` : ""}
+        `
+            : ""
+        }
         <tr>
           <td style="padding: 0 0 16px; vertical-align: top; width: 32px;">📅</td>
           <td style="padding: 0 0 16px;">
@@ -108,6 +118,19 @@ export const confirmationTemplate = (params: {
             <p style="margin: 2px 0 0; color: #111827; font-size: 15px; font-family: monospace;">${params.meetingId}</p>
           </td>
         </tr>
+        ${
+          params.amount
+            ? `
+        <tr>
+          <td style="padding: 16px 0 0; vertical-align: top; width: 32px; border-top: 1px solid #E5E7EB;">💰</td>
+          <td style="padding: 16px 0 0; border-top: 1px solid #E5E7EB;">
+            <p style="margin: 0; color: #6B7280; font-size: 13px;">Amount Paid</p>
+            <p style="margin: 2px 0 0; color: #111827; font-size: 16px; font-weight: 600;">${params.amount} ${params.currency || "USD"}</p>
+          </td>
+        </tr>
+        `
+            : ""
+        }
       </table>
     </div>
     
@@ -157,7 +180,9 @@ export const updateTemplate = (params: {
     
     <div style="background-color: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 24px; margin-bottom: 32px;">
       <table role="presentation" style="width: 100%; border-collapse: collapse;">
-        ${params.service ? `
+        ${
+          params.service
+            ? `
         <tr>
           <td style="padding: 0 0 16px; vertical-align: top; width: 32px;">💆</td>
           <td style="padding: 0 0 16px;">
@@ -165,7 +190,9 @@ export const updateTemplate = (params: {
             <p style="margin: 2px 0 0; color: #111827; font-size: 16px; font-weight: 600;">${params.service}</p>
           </td>
         </tr>
-        ` : ""}
+        `
+            : ""
+        }
         <tr>
           <td style="vertical-align: top; width: 32px;">📅</td>
           <td>
@@ -176,13 +203,17 @@ export const updateTemplate = (params: {
       </table>
     </div>
     
-    ${params.showLink ? `
+    ${
+      params.showLink
+        ? `
     <div style="text-align: center; margin-bottom: 24px;">
       <a href="${params.meetingUrl}" style="display: inline-block; padding: 16px 40px; background-color: #006442; color: #ffffff; text-decoration: none; border-radius: 10px; font-size: 16px; font-weight: 700;">
         Join Your Session
       </a>
     </div>
-    ` : ""}
+    `
+        : ""
+    }
     
     <p style="margin: 0; color: #6B7280; font-size: 14px; text-align: center;">
       If this new time doesn't work for you, please reach out to us.
@@ -248,7 +279,9 @@ export const receivedTemplate = (params: {
     
     <div style="background-color: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 24px; margin-bottom: 32px;">
       <table role="presentation" style="width: 100%; border-collapse: collapse;">
-        ${params.service ? `
+        ${
+          params.service
+            ? `
         <tr>
           <td style="padding: 0 0 16px; vertical-align: top; width: 32px;">💆</td>
           <td style="padding: 0 0 16px;">
@@ -256,7 +289,9 @@ export const receivedTemplate = (params: {
             <p style="margin: 2px 0 0; color: #111827; font-size: 16px; font-weight: 600;">${params.service}</p>
           </td>
         </tr>
-        ` : ""}
+        `
+            : ""
+        }
         <tr>
           <td style="vertical-align: top; width: 32px;">📅</td>
           <td>

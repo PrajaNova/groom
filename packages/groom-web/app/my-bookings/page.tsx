@@ -299,8 +299,7 @@ const MyBookingsPage = () => {
                   </>
                 )}
                 {isAdmin &&
-                  booking.status === "confirmed" &&
-                  booking.status !== "completed" && (
+                  booking.status === "confirmed" && (
                     <>
                       <button
                         type="button"

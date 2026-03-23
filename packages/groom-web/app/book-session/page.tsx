@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
 import bookingService from "@/services/bookingService";
 import ModalManager from "@/utils/ModalManager";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 export default function BookSessionPage() {
   const { user, isLoading } = useAuth();
@@ -20,6 +21,10 @@ export default function BookSessionPage() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [paymentStage, setPaymentStage] = useState<{
+    orderId: string;
+    bookingId: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -77,7 +82,29 @@ export default function BookSessionPage() {
     setError("");
 
     try {
-      const booking = await bookingService.create(formData);
+      const response = await bookingService.initiate(formData);
+      setPaymentStage({
+        orderId: response.order.id,
+        bookingId: response.booking.id,
+      });
+    } catch (err: any) {
+      const message =
+        err.message || "Failed to initiate booking. Please try again.";
+      setError(message);
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePaymentSuccess = async (paypalOrderId: string) => {
+    setLoading(true);
+    setError("");
+    try {
+      const booking = await bookingService.verify({
+        bookingId: paymentStage!.bookingId,
+        paypalOrderId,
+      });
 
       ModalManager.open(
         <div className="text-center py-4">
@@ -100,12 +127,11 @@ export default function BookSessionPage() {
             </svg>
           </div>
           <h3 className="text-2xl font-bold text-gray-900 mb-2">
-            Booking Received!
+            Booking Confirmed!
           </h3>
           <p className="text-gray-600 mb-6">
-            Your session request has been received. Our team will review and
-            confirm it shortly. You will receive a notification once it is
-            confirmed.
+            Your session is confirmed. You will receive an email shortly with
+            the meeting link and receipt.
           </p>
           <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
             <p className="text-sm text-gray-700 mb-2">
@@ -125,8 +151,8 @@ export default function BookSessionPage() {
             </p>
             <p className="text-sm text-gray-700">
               <span className="font-semibold">Status:</span>{" "}
-              <span className="text-yellow-600 font-medium italic">
-                Pending Approval
+              <span className="text-green-600 font-medium italic">
+                Confirmed
               </span>
             </p>
           </div>
@@ -144,7 +170,7 @@ export default function BookSessionPage() {
       );
     } catch (err: any) {
       const message =
-        err.message || "Failed to create booking. Please try again.";
+        err.message || "Failed to verify payment. Please contact support.";
       setError(message);
       toast.error(message);
     } finally {
@@ -167,7 +193,7 @@ export default function BookSessionPage() {
   return (
     <div className="max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold text-[#2C3531] mb-8 text-center">
-        Book Your Session
+        {paymentStage ? "Complete Payment" : "Book Your Session"}
       </h1>
 
       <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
@@ -190,117 +216,159 @@ export default function BookSessionPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label
-              htmlFor="full-name"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Full Name
-            </label>
-            <input
-              id="full-name"
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
-              placeholder="Enter your full name"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="email-address"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Email Address
-            </label>
-            <input
-              id="email-address"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
-              placeholder="Enter your email"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="service-type"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Service Type
-            </label>
-            <select
-              id="service-type"
-              name="serviceType"
-              value={formData.serviceType}
-              onChange={handleChange as any}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition bg-white"
-            >
-              <option value="">Select a service</option>
-              <option value="Self Help">Self Help</option>
-              <option value="Couple Therapy">Couple Therapy</option>
-              <option value="Career Consultation">Career Consultation</option>
-              <option value="Numerology">Numerology</option>
-            </select>
-          </div>
-
-          <div>
-            <label
-              htmlFor="preferred-date"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Preferred Date & Time
-            </label>
-            <input
-              id="preferred-date"
-              type="datetime-local"
-              name="when"
-              value={formData.when}
-              onChange={handleChange}
-              min={new Date().toISOString().slice(0, 16)}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Please select a date at least 24 hours in advance
+        {paymentStage ? (
+          <div className="space-y-6">
+            <p className="text-gray-600 mb-4 text-center">
+              Please complete your payment via PayPal to confirm your booking.
             </p>
+            {loading ? (
+              <div className="text-center py-4">Processing...</div>
+            ) : (
+              <div className="relative z-0 min-h-[150px]">
+                <PayPalScriptProvider
+                  options={{
+                    clientId:
+                      process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test",
+                    currency: "USD",
+                  }}
+                >
+                  <PayPalButtons
+                    style={{ layout: "vertical" }}
+                    createOrder={(data, actions) => Promise.resolve(paymentStage.orderId)}
+                    onApprove={async (data, actions) => {
+                      if (data.orderID) {
+                        await handlePaymentSuccess(data.orderID);
+                      }
+                    }}
+                    onCancel={() => {
+                      setError("Payment was cancelled. You can try again.");
+                      setPaymentStage(null);
+                    }}
+                    onError={(err) => {
+                      console.error(err);
+                      setError(
+                        "An error occurred with PayPal checkout. Please try again.",
+                      );
+                      setPaymentStage(null);
+                    }}
+                  />
+                </PayPalScriptProvider>
+              </div>
+            )}
           </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label
+                htmlFor="full-name"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Full Name
+              </label>
+              <input
+                id="full-name"
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
+                placeholder="Enter your full name"
+              />
+            </div>
 
-          <div>
-            <label
-              htmlFor="discussion-reason"
-              className="block text-sm font-medium text-gray-700 mb-1"
+            <div>
+              <label
+                htmlFor="email-address"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Email Address
+              </label>
+              <input
+                id="email-address"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
+                placeholder="Enter your email"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="service-type"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Service Type
+              </label>
+              <select
+                id="service-type"
+                name="serviceType"
+                value={formData.serviceType}
+                onChange={handleChange as any}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition bg-white"
+              >
+                <option value="">Select a service</option>
+                <option value="Self Help">Self Help</option>
+                <option value="Couple Therapy">Couple Therapy</option>
+                <option value="Career Consultation">Career Consultation</option>
+                <option value="Numerology">Numerology</option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                htmlFor="preferred-date"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Preferred Date & Time
+              </label>
+              <input
+                id="preferred-date"
+                type="datetime-local"
+                name="when"
+                value={formData.when}
+                onChange={handleChange}
+                min={new Date().toISOString().slice(0, 16)}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Please select a date at least 24 hours in advance
+              </p>
+            </div>
+
+            <div>
+              <label
+                htmlFor="discussion-reason"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                What would you like to discuss?
+              </label>
+              <textarea
+                id="discussion-reason"
+                name="reason"
+                rows={4}
+                value={formData.reason}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
+                placeholder="Tell us about your situation..."
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[#006442] text-white py-3 rounded-lg font-semibold hover:bg-[#004d32] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              What would you like to discuss?
-            </label>
-            <textarea
-              id="discussion-reason"
-              name="reason"
-              rows={4}
-              value={formData.reason}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
-              placeholder="Tell us about your situation..."
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-[#006442] text-white py-3 rounded-lg font-semibold hover:bg-[#004d32] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? "Booking..." : "Book Session"}
-          </button>
-        </form>
+              {loading ? "Booking..." : "Book Session"}
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );

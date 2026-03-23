@@ -2,23 +2,50 @@ import crypto from "node:crypto";
 import type { Booking, BookingStatus } from "@generated/client";
 import { EmailService } from "@services/email.service";
 import type { FastifyInstance } from "fastify";
-import Razorpay from "razorpay";
 
 export class BookingService {
   private emailService: EmailService;
-  private razorpay?: Razorpay;
+
+  // PayPal Helper methods
+  private get paypalApiUrl() {
+    return process.env.PAYPAL_API_URL || "https://api-m.sandbox.paypal.com";
+  }
+
+  private async getPayPalAccessToken(): Promise<string> {
+    const clientId = process.env.PAYPAL_CLIENT_ID;
+    const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+
+    if (!clientId || !clientSecret) {
+      throw new Error("PayPal credentials missing");
+    }
+
+    const auth = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
+
+    const response = await fetch(`${this.paypalApiUrl}/v1/oauth2/token`, {
+      method: "POST",
+      body: "grant_type=client_credentials",
+      headers: {
+        Authorization: `Basic ${auth}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      this.fastify.log.error({ details: error }, "Failed to get PayPal token");
+      throw new Error("Failed to authenticate with PayPal");
+    }
+
+    const data = (await response.json()) as { access_token: string };
+    return data.access_token;
+  }
 
   constructor(private fastify: FastifyInstance) {
     this.emailService = new EmailService(this.fastify);
 
-    if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
-      this.razorpay = new Razorpay({
-        key_id: process.env.RAZORPAY_KEY_ID,
-        key_secret: process.env.RAZORPAY_KEY_SECRET,
-      });
-    } else {
+    if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) {
       this.fastify.log.warn(
-        "Razorpay credentials missing. Payment features disabled.",
+        "PayPal credentials missing. Payment features disabled.",
       );
     }
   }
@@ -83,18 +110,50 @@ export class BookingService {
     userId?: string;
     amount?: number; // Optional amount override
   }): Promise<{ booking: Booking; order: any }> {
-    if (!this.razorpay) {
+    if (!process.env.PAYPAL_CLIENT_ID) {
       throw new Error("Payment gateway not configured");
     }
 
-    const amount = data.amount || 50000; // Default 500 INR (in paise)
+    // PayPal typically uses standard string decimals for amount (e.g., "50.00")
+    // If incoming data.amount is provided (maybe in cents or paise), we should standardize to a human-readable decimal.
+    // Let's use USD with a standard $50 for default, format: "50.00"
+    const standardAmount = data.amount
+      ? (data.amount / 100).toFixed(2)
+      : "50.00";
+    const currency = "USD";
 
-    // Create Razorpay Order
-    const order = await this.razorpay.orders.create({
-      amount,
-      currency: "INR",
-      receipt: `booking_${Date.now()}`,
-    });
+    // Create PayPal Order
+    const accessToken = await this.getPayPalAccessToken();
+    const orderResponse = await fetch(
+      `${this.paypalApiUrl}/v2/checkout/orders`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          intent: "CAPTURE",
+          purchase_units: [
+            {
+              reference_id: `booking_${Date.now()}`,
+              amount: {
+                currency_code: currency,
+                value: standardAmount,
+              },
+            },
+          ],
+        }),
+      },
+    );
+
+    if (!orderResponse.ok) {
+      const errorText = await orderResponse.text();
+      this.fastify.log.error({ details: errorText }, "Failed to create PayPal order");
+      throw new Error("Failed to create PayPal order");
+    }
+
+    const order = (await orderResponse.json()) as any;
 
     // Create Booking (Payment Pending)
     const booking = await this.fastify.prisma.booking.create({
@@ -107,8 +166,8 @@ export class BookingService {
         userId: data.userId,
         status: "payment_pending",
         orderId: order.id,
-        amount: amount,
-        currency: "INR",
+        amount: Math.round(parseFloat(standardAmount) * 100), // store internally as cents/paise
+        currency: currency,
       },
     });
 
@@ -118,27 +177,38 @@ export class BookingService {
   // New Payment Flow: Step 2 - Verify & Confirm
   async verifyPayment(data: {
     bookingId: string;
-    razorpayPaymentId: string;
-    razorpayOrderId: string;
-    razorpaySignature: string;
+    paypalOrderId: string;
   }): Promise<Booking> {
     const booking = await this.getBookingById(data.bookingId);
     if (!booking) throw new Error("Booking not found");
     if (booking.status === "confirmed") return booking; // Already confirmed
 
-    if (!process.env.RAZORPAY_KEY_SECRET)
-      throw new Error("Razorpay secret missing");
+    // Capture PayPal Order
+    const accessToken = await this.getPayPalAccessToken();
+    const captureResponse = await fetch(
+      `${this.paypalApiUrl}/v2/checkout/orders/${data.paypalOrderId}/capture`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
 
-    // Verify Signature
-    const body = `${booking.orderId}|${data.razorpayPaymentId}`;
-    const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(body.toString())
-      .digest("hex");
-
-    if (expectedSignature !== data.razorpaySignature) {
-      throw new Error("Invalid payment signature");
+    if (!captureResponse.ok) {
+      const errorText = await captureResponse.text();
+      this.fastify.log.error({ details: errorText }, "Failed to capture PayPal order");
+      throw new Error("Payment capture failed. Try again.");
     }
+
+    const captureData = (await captureResponse.json()) as any;
+
+    if (captureData.status !== "COMPLETED") {
+      throw new Error("Payment is not completed in PayPal");
+    }
+
+    const paymentId = captureData.purchase_units[0]?.payments?.captures[0]?.id;
 
     // Generate Meeting ID
     const meetingId = this.emailService.generateMeetingId(booking.email);
@@ -148,7 +218,7 @@ export class BookingService {
       where: { id: booking.id },
       data: {
         status: "confirmed",
-        paymentId: data.razorpayPaymentId,
+        paymentId: paymentId || data.paypalOrderId,
         meetingId,
       },
     });
@@ -161,6 +231,8 @@ export class BookingService {
         scheduledTime: new Date(updated.when),
         meetingId,
         service: updated.service || undefined,
+        amount: (booking.amount || 0) / 100,
+        currency: booking.currency || "USD",
       })
       .catch((err) =>
         this.fastify.log.error(err, "Failed to send confirmation email"),

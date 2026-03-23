@@ -92,8 +92,10 @@ export class EmailService {
     scheduledTime: Date;
     meetingId: string;
     service?: string;
+    amount?: number;
+    currency?: string;
   }) {
-    const { to, name, scheduledTime, meetingId, service } = params;
+    const { to, name, scheduledTime, meetingId, service, amount, currency } = params;
     const meetingUrl = this.generateJitsiUrl(meetingId);
     const formattedTime = scheduledTime.toLocaleString("en-IN", {
       weekday: "long",
@@ -117,6 +119,8 @@ export class EmailService {
           meetingUrl,
           meetingId,
           service,
+          amount,
+          currency,
         }),
       });
 

@@ -39,19 +39,7 @@ export interface UpdateBookingData {
 
 export interface InitiateResponse {
   booking: Booking;
-  order: {
-    id: string;
-    entity: string;
-    amount: number;
-    amount_paid: number;
-    amount_due: number;
-    currency: string;
-    receipt: string;
-    status: string;
-    attempts: number;
-    notes: any[];
-    created_at: number;
-  };
+  order: any;
 }
 
 class BookingService {
@@ -96,9 +84,7 @@ class BookingService {
   // Step 2: Verify Payment
   async verify(data: {
     bookingId: string;
-    razorpayPaymentId: string;
-    razorpayOrderId: string;
-    razorpaySignature: string;
+    paypalOrderId: string;
   }): Promise<Booking> {
     return fetchAPI(`${this.basePath}/verify`, {
       method: "POST",

@@ -42,6 +42,9 @@ catalogs:
     '@neondatabase/serverless':
       specifier: ^1.0.2
       version: 1.0.2
+    '@paypal/react-paypal-js':
+      specifier: ^8.5.0
+      version: 8.9.2
     '@preact-signals/safe-react':
       specifier: ^0.9.0
       version: 0.9.0
@@ -120,9 +123,6 @@ catalogs:
     prisma:
       specifier: ^6.19.2
       version: 6.19.2
-    razorpay:
-      specifier: ^2.9.6
-      version: 2.9.6
     react:
       specifier: 19.1.0
       version: 19.1.0
@@ -272,9 +272,6 @@ importers:
       pkce-challenge:
         specifier: 'catalog:'
         version: 4.1.0
-      razorpay:
-        specifier: 'catalog:'
-        version: 2.9.6
       resend:
         specifier: 'catalog:'
         version: 6.9.1(@react-email/render@0.0.16(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
@@ -327,6 +324,9 @@ importers:
       '@neondatabase/serverless':
         specifier: 'catalog:'
         version: 1.0.2
+      '@paypal/react-paypal-js':
+        specifier: 'catalog:'
+        version: 8.9.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@preact-signals/safe-react':
         specifier: 'catalog:'
         version: 0.9.0(@babel/core@7.28.6)(@swc/helpers@0.5.15)(react@19.1.0)
@@ -1342,6 +1342,18 @@ packages:
   '@parcel/watcher@2.5.6':
     resolution: {integrity: sha512-tmmZ3lQxAe/k/+rNnXQRawJ4NjxO2hqiOLTHvWchtGZULp4RyFeh6aU4XdOYBFe2KE1oShQTv4AblOs2iOrNnQ==, tarball: https://registry.npmjs.org/@parcel/watcher/-/watcher-2.5.6.tgz}
     engines: {node: '>= 10.0.0'}
+
+  '@paypal/paypal-js@9.4.1':
+    resolution: {integrity: sha512-NOrfmY8k/45cBEhB6LStle1EPYiq0XhoSGbh9i4mEBVArPBtHuQ5mHFvvruDOmvVM1mahjJqQKParUW7ZXh8iQ==, tarball: https://registry.npmjs.org/@paypal/paypal-js/-/paypal-js-9.4.1.tgz}
+
+  '@paypal/react-paypal-js@8.9.2':
+    resolution: {integrity: sha512-z1GoA7KAkhFCSmpIsRxe9aseXRvfOMgF6vCJ2Mym0VOSYJm8bZSC3Ui4SjONnglfV8S4P8djpe5QB7FtKsDXrQ==, tarball: https://registry.npmjs.org/@paypal/react-paypal-js/-/react-paypal-js-8.9.2.tgz}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
+      react-dom: ^16.8.0 || ^17 || ^18 || ^19
+
+  '@paypal/sdk-constants@1.0.157':
+    resolution: {integrity: sha512-BjxWT9rK6dM1AOffSpvHYY47/8BY775jgEYYiwH6eL4YaqU5Epcw7zOtwQ8L4UaEn4FCAjZ2EWxaS83dCN7SpA==, tarball: https://registry.npmjs.org/@paypal/sdk-constants/-/sdk-constants-1.0.157.tgz}
 
   '@pinojs/redact@0.4.0':
     resolution: {integrity: sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg==}
@@ -2451,6 +2463,9 @@ packages:
   help-me@5.0.0:
     resolution: {integrity: sha512-7xgomUX6ADmcYzFik0HzAxh/73YlKR9bmFzf51CZwR+b6YtzU2m0u49hQCqV6SvlqIqsaxovfwdvbnsw3b/zpg==}
 
+  hi-base32@0.5.1:
+    resolution: {integrity: sha512-EmBBpvdYh/4XxsnUybsPag6VikPYnN30td+vQk+GI3qpahVEG9+gTkG0aXVxTjBqQ5T6ijbWIu77O+C5WFWsnA==, tarball: https://registry.npmjs.org/hi-base32/-/hi-base32-0.5.1.tgz}
+
   hotscript@1.0.13:
     resolution: {integrity: sha512-C++tTF1GqkGYecL+2S1wJTfoH6APGAsbb7PAWQ3iVIwgG/EFseAfEVOKFgAFq4yK3+6j1EjUD4UQ9dRJHX/sSQ==}
 
@@ -3210,6 +3225,9 @@ packages:
   process-warning@5.0.0:
     resolution: {integrity: sha512-a39t9ApHNx2L4+HBnQKqxxHNs1r7KF+Intd8Q/g1bUh6q0WIp9voPXJ/x0j+ZL45KF1pJd9+q2jLIRMfvEshkA==}
 
+  promise-polyfill@8.3.0:
+    resolution: {integrity: sha512-H5oELycFml5yto/atYqmjyigJoAo3+OXwolYiH7OfQuYlAqhxNvTfiNMbV9hsC6Yp83yE5r2KTVmtrG6R9i6Pg==, tarball: https://registry.npmjs.org/promise-polyfill/-/promise-polyfill-8.3.0.tgz}
+
   property-information@7.1.0:
     resolution: {integrity: sha512-TwEZ+X+yCJmYfL7TPUOcvBZ4QfoT5YenQiJuX//0th53DE6w0xxLEtfK3iyryQFddXuvkIk51EEgrJQ0WJkOmQ==}
 
@@ -3238,9 +3256,6 @@ packages:
 
   quick-format-unescaped@4.0.4:
     resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
-
-  razorpay@2.9.6:
-    resolution: {integrity: sha512-zsHAQzd6e1Cc6BNoCNZQaf65ElL6O6yw0wulxmoG5VQDr363fZC90Mp1V5EktVzG45yPyNomNXWlf4cQ3622gQ==, tarball: https://registry.npmjs.org/razorpay/-/razorpay-2.9.6.tgz}
 
   rc9@2.1.2:
     resolution: {integrity: sha512-btXCnMmRIBINM2LDZoEmOogIZU7Qe7zn4BpomSKZ/ykbLObuBdvG+mFq11DL6fjH1DRwHhrlgtYWG96bJiC7Cg==}
@@ -4642,6 +4657,21 @@ snapshots:
       '@parcel/watcher-win32-x64': 2.5.6
     optional: true
 
+  '@paypal/paypal-js@9.4.1':
+    dependencies:
+      promise-polyfill: 8.3.0
+
+  '@paypal/react-paypal-js@8.9.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      '@paypal/paypal-js': 9.4.1
+      '@paypal/sdk-constants': 1.0.157
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+
+  '@paypal/sdk-constants@1.0.157':
+    dependencies:
+      hi-base32: 0.5.1
+
   '@pinojs/redact@0.4.0': {}
 
   '@pkgjs/parseargs@0.11.0':
@@ -5779,6 +5809,8 @@ snapshots:
 
   help-me@5.0.0: {}
 
+  hi-base32@0.5.1: {}
+
   hotscript@1.0.13: {}
 
   html-to-text@9.0.5:
@@ -6741,6 +6773,8 @@ snapshots:
 
   process-warning@5.0.0: {}
 
+  promise-polyfill@8.3.0: {}
+
   property-information@7.1.0: {}
 
   proto-list@1.2.4:
@@ -6762,12 +6796,6 @@ snapshots:
   queue-microtask@1.2.3: {}
 
   quick-format-unescaped@4.0.4: {}
-
-  razorpay@2.9.6:
-    dependencies:
-      axios: 1.13.5
-    transitivePeerDependencies:
-      - debug
 
   rc9@2.1.2:
     dependencies:
