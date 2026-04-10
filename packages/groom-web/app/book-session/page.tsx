@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
 import bookingService from "@/services/bookingService";
@@ -21,14 +21,14 @@ export default function BookSessionPage() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [paymentStage, setPaymentStage] = useState<{
-    orderId: string;
-    bookingId: string;
-  } | null>(null);
+  const [showPayment, setShowPayment] = useState(false);
+  const [formValid, setFormValid] = useState(false);
+
+  // Store the booking context from the initiate call
+  const bookingRef = useRef<{ orderId: string; bookingId: string } | null>(null);
 
   useEffect(() => {
     if (!isLoading && !user) {
-      // Redirect to login if not authenticated
       router.push("/login?redirect=/book-session");
       return;
     }
@@ -50,6 +50,7 @@ export default function BookSessionPage() {
     setError("");
   };
 
+  // Validate form before showing PayPal buttons
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -78,31 +79,42 @@ export default function BookSessionPage() {
       return;
     }
 
-    setLoading(true);
     setError("");
+    setFormValid(true);
+    setShowPayment(true);
+  };
 
+  // Called by PayPal SDK when user clicks the PayPal button
+  const handleCreateOrder = async (): Promise<string> => {
     try {
       const response = await bookingService.initiate(formData);
-      setPaymentStage({
+      bookingRef.current = {
         orderId: response.order.id,
         bookingId: response.booking.id,
-      });
+      };
+      return response.order.id;
     } catch (err: any) {
       const message =
         err.message || "Failed to initiate booking. Please try again.";
       setError(message);
       toast.error(message);
-    } finally {
-      setLoading(false);
+      throw err; // Let PayPal SDK handle the error
     }
   };
 
+  // Called by PayPal SDK after user approves the payment
   const handlePaymentSuccess = async (paypalOrderId: string) => {
+    if (!bookingRef.current) {
+      setError("Booking context lost. Please try again.");
+      setShowPayment(false);
+      return;
+    }
+
     setLoading(true);
     setError("");
     try {
       const booking = await bookingService.verify({
-        bookingId: paymentStage!.bookingId,
+        bookingId: bookingRef.current.bookingId,
         paypalOrderId,
       });
 
@@ -190,10 +202,12 @@ export default function BookSessionPage() {
     return null; // Redirect is handled in useEffect
   }
 
+  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+
   return (
     <div className="max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold text-[#2C3531] mb-8 text-center">
-        {paymentStage ? "Complete Payment" : "Book Your Session"}
+        {showPayment ? "Complete Payment" : "Book Your Session"}
       </h1>
 
       <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
@@ -216,45 +230,61 @@ export default function BookSessionPage() {
           </div>
         )}
 
-        {paymentStage ? (
+        {showPayment ? (
           <div className="space-y-6">
             <p className="text-gray-600 mb-4 text-center">
               Please complete your payment via PayPal to confirm your booking.
             </p>
             {loading ? (
               <div className="text-center py-4">Processing...</div>
+            ) : !paypalClientId ? (
+              <div className="text-center py-4 text-red-600">
+                Payment gateway is not configured. Please contact support.
+              </div>
             ) : (
               <div className="relative z-0 min-h-[150px]">
                 <PayPalScriptProvider
                   options={{
-                    clientId:
-                      process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test",
+                    clientId: paypalClientId,
                     currency: "USD",
+                    intent: "capture",
                   }}
                 >
                   <PayPalButtons
                     style={{ layout: "vertical" }}
-                    createOrder={(data, actions) => Promise.resolve(paymentStage.orderId)}
-                    onApprove={async (data, actions) => {
+                    createOrder={handleCreateOrder}
+                    onApprove={async (data) => {
                       if (data.orderID) {
                         await handlePaymentSuccess(data.orderID);
                       }
                     }}
                     onCancel={() => {
                       setError("Payment was cancelled. You can try again.");
-                      setPaymentStage(null);
+                      bookingRef.current = null;
                     }}
                     onError={(err) => {
-                      console.error(err);
+                      console.error("PayPal SDK error:", err);
                       setError(
                         "An error occurred with PayPal checkout. Please try again.",
                       );
-                      setPaymentStage(null);
+                      bookingRef.current = null;
+                      setShowPayment(false);
                     }}
                   />
                 </PayPalScriptProvider>
               </div>
             )}
+            <button
+              type="button"
+              onClick={() => {
+                setShowPayment(false);
+                bookingRef.current = null;
+                setError("");
+              }}
+              className="w-full text-gray-500 py-2 text-sm hover:text-gray-700 transition-colors"
+            >
+              ← Back to booking form
+            </button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -373,3 +403,4 @@ export default function BookSessionPage() {
     </div>
   );
 }
+

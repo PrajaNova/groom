@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
 import userService, { type AuthResponse } from "@/services/userService";
@@ -19,8 +19,13 @@ export default function LoginContent() {
   const [loading, setLoading] = useState(false);
 
   // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      router.push("/my-bookings");
+    }
+  }, [user, router]);
+
   if (user) {
-    router.push("/my-bookings");
     return null;
   }
 
