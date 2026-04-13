@@ -21,7 +21,6 @@
     "jsonwebtoken": "catalog:",
     "lucide-react": "catalog:",
     "next": "^15.5.12",
-    "@paypal/react-paypal-js": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-intersection-observer": "catalog:",
