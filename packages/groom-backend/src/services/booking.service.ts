@@ -149,7 +149,10 @@ export class BookingService {
 
     if (!orderResponse.ok) {
       const errorText = await orderResponse.text();
-      this.fastify.log.error({ details: errorText }, "Failed to create PayPal order");
+      this.fastify.log.error(
+        { details: errorText },
+        "Failed to create PayPal order",
+      );
       throw new Error("Failed to create PayPal order");
     }
 
@@ -198,7 +201,10 @@ export class BookingService {
 
     if (!captureResponse.ok) {
       const errorText = await captureResponse.text();
-      this.fastify.log.error({ details: errorText }, "Failed to capture PayPal order");
+      this.fastify.log.error(
+        { details: errorText },
+        "Failed to capture PayPal order",
+      );
       throw new Error("Payment capture failed. Try again.");
     }
 

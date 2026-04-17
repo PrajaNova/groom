@@ -25,7 +25,9 @@ export default function BookSessionPage() {
   const [formValid, setFormValid] = useState(false);
 
   // Store the booking context from the initiate call
-  const bookingRef = useRef<{ orderId: string; bookingId: string } | null>(null);
+  const bookingRef = useRef<{ orderId: string; bookingId: string } | null>(
+    null,
+  );
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -403,4 +405,3 @@ export default function BookSessionPage() {
     </div>
   );
 }
-

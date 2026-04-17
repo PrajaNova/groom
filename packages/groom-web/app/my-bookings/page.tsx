@@ -298,25 +298,24 @@ const MyBookingsPage = () => {
                     </button>
                   </>
                 )}
-                {isAdmin &&
-                  booking.status === "confirmed" && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => handleReschedule(booking)}
-                        className="px-4 py-2 text-sm font-medium text-[#006442] bg-white border border-[#006442] rounded-md hover:bg-green-50 transition-colors"
-                      >
-                        Reschedule
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleCancel(booking.id)}
-                        className="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 transition-colors"
-                      >
-                        Cancel
-                      </button>
-                    </>
-                  )}
+                {isAdmin && booking.status === "confirmed" && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => handleReschedule(booking)}
+                      className="px-4 py-2 text-sm font-medium text-[#006442] bg-white border border-[#006442] rounded-md hover:bg-green-50 transition-colors"
+                    >
+                      Reschedule
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleCancel(booking.id)}
+                      className="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           ))}
