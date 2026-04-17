@@ -13,6 +13,7 @@
   "dependencies": {
     "@jitsi/react-sdk": "catalog:",
     "@neondatabase/serverless": "catalog:",
+    "@paypal/react-paypal-js": "catalog:",
     "@preact-signals/safe-react": "catalog:",
     "@prisma/adapter-neon": "catalog:",
     "@prisma/client": "catalog:",

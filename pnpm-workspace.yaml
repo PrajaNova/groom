@@ -1,15 +1,5 @@
 packages:
   - packages/*
-onlyBuiltDependencies:
-  - "@parcel/watcher"
-  - "@prisma/client"
-  - "@prisma/engines"
-  - "@swc/core"
-  - bcrypt
-  - esbuild
-  - prisma
-  - sharp
-  - unrs-resolver
 catalog:
   "@apollo/client": ^4.0.11
   "@asteasolutions/zod-to-openapi": 8.2.0
@@ -26,6 +16,7 @@ catalog:
   "@graphile/depth-limit": ^0.3.1
   "@jitsi/react-sdk": ^1.4.4
   "@neondatabase/serverless": ^1.0.2
+  "@paypal/react-paypal-js": ^8.9.2
   "@preact-signals/safe-react": ^0.9.0
   "@prisma/adapter-neon": ^6.19.2
   "@prisma/client": ^6.19.2
@@ -81,7 +72,6 @@ catalog:
   pkce-challenge: ^4.1.0
   postcss: ^8.5.6
   prisma: ^6.19.2
-  "@paypal/react-paypal-js": ^8.5.0
   react: 19.1.0
   react-dom: 19.1.0
   react-hot-toast: ^2.6.0
@@ -114,3 +104,13 @@ catalog:
   yaml: ^2.8.2
   zod: 4.2.1
   zod-to-json-schema: 3.25.1
+onlyBuiltDependencies:
+  - "@parcel/watcher"
+  - "@prisma/client"
+  - "@prisma/engines"
+  - "@swc/core"
+  - bcrypt
+  - esbuild
+  - prisma
+  - sharp
+  - unrs-resolver

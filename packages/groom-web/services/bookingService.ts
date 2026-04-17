@@ -62,10 +62,7 @@ class BookingService {
     const backendData = {
       ...data,
       service: data.serviceType,
-      verifyPayment: async (paymentData: any) => {
-    const response = await api.post('/bookings/verify-payment', paymentData);
-    return response.data;
-  },
+    };
     return fetchAPI(this.basePath, {
       method: "POST",
       body: JSON.stringify(backendData),
