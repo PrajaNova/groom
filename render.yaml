@@ -1,0 +1,45 @@
+services:
+  # ---------------------------------------------------------
+  # Backend Service Configuration (Node.js)
+  # ---------------------------------------------------------
+  - type: web
+    name: groom-backend
+    env: node
+    # The root of your monorepo
+    rootDir: .
+    # Install pnpm, then install dependencies, then build the backend package
+    buildCommand: npm install -g pnpm && pnpm install && pnpm --filter groom-backend build
+    # Start the backend server
+    startCommand: pnpm --filter groom-backend start
+    # Define environment variables
+    envVars:
+      # Static variables that are safe to check into source control
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      
+      # Secrets (sync: false means Render won't overwrite them if you set them in the dashboard)
+      # You MUST provide the actual values for these in the Render Dashboard!
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      
+      # OAuth Variables (Set these in Render Dashboard)
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+
+    # Preview Environments configuration (For PRs)
+    previewPlan: starter
+    previewEnvVars:
+      - key: NODE_ENV
+        value: development
+      - key: DATABASE_URL
+        sync: false # Set a dedicated Preview DB URL in the Render Dashboard settings for PRs
