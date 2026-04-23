@@ -27,6 +27,26 @@ export interface CreateConfessionData {
   isAnonymous?: boolean;
 }
 
+export interface Service {
+  id: string;
+  title: string;
+  description: string;
+  iconType: string;
+  colorType: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 class GroomService {
   // Blog methods
   async getBlogs(): Promise<RenderBlog[]> {
@@ -47,6 +67,16 @@ class GroomService {
       method: "POST",
       body: JSON.stringify(data),
     });
+  }
+
+  // Service methods
+  async getServices(): Promise<Service[]> {
+    return fetchAPI("/api/services", { cache: "no-store" });
+  }
+
+  // FAQ methods
+  async getFAQs(): Promise<FAQ[]> {
+    return fetchAPI("/api/faqs", { cache: "no-store" });
   }
 
   // JaaS Token
