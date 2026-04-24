@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import bookingService from "@/services/bookingService";
 import ModalManager from "@/utils/ModalManager";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { bookingsContent } from "##/content/bookings/bookings";
 
 export default function BookSessionPage() {
   const { user, isLoading } = useAuth();
@@ -141,19 +142,18 @@ export default function BookSessionPage() {
             </svg>
           </div>
           <h3 className="text-2xl font-bold text-gray-900 mb-2">
-            Booking Confirmed!
+            {bookingsContent.success.title}
           </h3>
           <p className="text-gray-600 mb-6">
-            Your session is confirmed. You will receive an email shortly with
-            the meeting link and receipt.
+            {bookingsContent.success.message}
           </p>
           <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
             <p className="text-sm text-gray-700 mb-2">
-              <span className="font-semibold">Service:</span>{" "}
+              <span className="font-semibold">{bookingsContent.success.labels.service}</span>{" "}
               {formData.serviceType}
             </p>
             <p className="text-sm text-gray-700 mb-2">
-              <span className="font-semibold">Requested Date:</span>{" "}
+              <span className="font-semibold">{bookingsContent.success.labels.date}</span>{" "}
               {new Date(booking.when).toLocaleString("en-IN", {
                 weekday: "long",
                 year: "numeric",
@@ -164,9 +164,9 @@ export default function BookSessionPage() {
               })}
             </p>
             <p className="text-sm text-gray-700">
-              <span className="font-semibold">Status:</span>{" "}
+              <span className="font-semibold">{bookingsContent.success.labels.status}</span>{" "}
               <span className="text-green-600 font-medium italic">
-                Confirmed
+                {bookingsContent.success.statusText}
               </span>
             </p>
           </div>
@@ -178,7 +178,7 @@ export default function BookSessionPage() {
             }}
             className="w-full bg-[#006442] text-white py-3 rounded-lg font-semibold hover:bg-[#004d32] transition-colors"
           >
-            View My Bookings
+            {bookingsContent.success.viewBookingsButton}
           </button>
         </div>,
       );
@@ -209,7 +209,7 @@ export default function BookSessionPage() {
   return (
     <div className="max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold text-[#2C3531] mb-8 text-center">
-        {showPayment ? "Complete Payment" : "Book Your Session"}
+        {showPayment ? bookingsContent.header.paymentTitle : bookingsContent.header.bookTitle}
       </h1>
 
       <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
@@ -235,13 +235,13 @@ export default function BookSessionPage() {
         {showPayment ? (
           <div className="space-y-6">
             <p className="text-gray-600 mb-4 text-center">
-              Please complete your payment via PayPal to confirm your booking.
+              {bookingsContent.payment.instruction}
             </p>
             {loading ? (
-              <div className="text-center py-4">Processing...</div>
+              <div className="text-center py-4">{bookingsContent.payment.processing}</div>
             ) : !paypalClientId ? (
               <div className="text-center py-4 text-red-600">
-                Payment gateway is not configured. Please contact support.
+                {bookingsContent.payment.errorGateway}
               </div>
             ) : (
               <div className="relative z-0 min-h-[150px]">
@@ -285,7 +285,7 @@ export default function BookSessionPage() {
               }}
               className="w-full text-gray-500 py-2 text-sm hover:text-gray-700 transition-colors"
             >
-              ← Back to booking form
+              {bookingsContent.payment.backButton}
             </button>
           </div>
         ) : (
@@ -295,7 +295,7 @@ export default function BookSessionPage() {
                 htmlFor="full-name"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Full Name
+                {bookingsContent.form.labels.name}
               </label>
               <input
                 id="full-name"
@@ -305,7 +305,7 @@ export default function BookSessionPage() {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
-                placeholder="Enter your full name"
+                placeholder={bookingsContent.form.placeholders.name}
               />
             </div>
 
@@ -314,7 +314,7 @@ export default function BookSessionPage() {
                 htmlFor="email-address"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Email Address
+                {bookingsContent.form.labels.email}
               </label>
               <input
                 id="email-address"
@@ -324,7 +324,7 @@ export default function BookSessionPage() {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
-                placeholder="Enter your email"
+                placeholder={bookingsContent.form.placeholders.email}
               />
             </div>
 
@@ -333,7 +333,7 @@ export default function BookSessionPage() {
                 htmlFor="service-type"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Service Type
+                {bookingsContent.form.labels.service}
               </label>
               <select
                 id="service-type"
@@ -343,7 +343,7 @@ export default function BookSessionPage() {
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition bg-white"
               >
-                <option value="">Select a service</option>
+                <option value="">{bookingsContent.form.placeholders.service}</option>
                 <option value="Self Help">Self Help</option>
                 <option value="Couple Therapy">Couple Therapy</option>
                 <option value="Career Consultation">Career Consultation</option>
@@ -356,7 +356,7 @@ export default function BookSessionPage() {
                 htmlFor="preferred-date"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Preferred Date & Time
+                {bookingsContent.form.labels.date}
               </label>
               <input
                 id="preferred-date"
@@ -369,7 +369,7 @@ export default function BookSessionPage() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
               />
               <p className="text-xs text-gray-500 mt-1">
-                Please select a date at least 24 hours in advance
+                {bookingsContent.form.helpText}
               </p>
             </div>
 
@@ -378,7 +378,7 @@ export default function BookSessionPage() {
                 htmlFor="discussion-reason"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                What would you like to discuss?
+                {bookingsContent.form.labels.reason}
               </label>
               <textarea
                 id="discussion-reason"
@@ -388,7 +388,7 @@ export default function BookSessionPage() {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
-                placeholder="Tell us about your situation..."
+                placeholder={bookingsContent.form.placeholders.reason}
               />
             </div>
 
@@ -397,7 +397,7 @@ export default function BookSessionPage() {
               disabled={loading}
               className="w-full bg-[#006442] text-white py-3 rounded-lg font-semibold hover:bg-[#004d32] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Booking..." : "Book Session"}
+              {loading ? bookingsContent.form.loadingButton : bookingsContent.form.submitButton}
             </button>
           </form>
         )}
