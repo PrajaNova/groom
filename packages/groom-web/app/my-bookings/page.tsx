@@ -8,6 +8,7 @@ import { useProtectedRoute } from "@/hooks/useProtectedRoute";
 import bookingService, { type Booking } from "@/services/bookingService";
 import { showErrorToast } from "@/utils/errorHandler";
 import ModalManager from "@/utils/ModalManager";
+import { showConfirm } from "@/utils/modalHelpers";
 import RescheduleBookingModal from "../bookings/RescheduleBookingModal";
 import { myBookingsContent } from "##/content/my-bookings/my-bookings";
 
@@ -69,7 +70,7 @@ const MyBookingsPage = () => {
   };
 
   const handleCancel = async (bookingId: string) => {
-    if (confirm(myBookingsContent.card.confirms.cancel)) {
+    showConfirm(myBookingsContent.card.confirms.cancel, async () => {
       try {
         await bookingService.delete(bookingId);
         toast.success(myBookingsContent.card.successMessages.cancel);
@@ -77,7 +78,7 @@ const MyBookingsPage = () => {
       } catch (err) {
         showErrorToast(err);
       }
-    }
+    });
   };
 
   if (authLoading || fetching) {
