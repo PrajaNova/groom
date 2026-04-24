@@ -1,6 +1,7 @@
 import ScrollAnimation from "##/components/common/ScrollAnimation";
 import ConfessionForm from "##/components/confession/ConfessionForm";
 import ConfessionList from "##/components/confession/ConfessionLIst";
+import { confessionsContent } from "##/content/confessions/confessions";
 
 // Revalidate every 0 seconds to show new confessions immediately on refresh
 export const revalidate = 0;
@@ -37,12 +38,11 @@ const ConfessionPage = async () => {
       <ScrollAnimation>
         <header className="text-center mb-16">
           <h2 className="text-5xl font-extrabold text-[#2C3531] mb-4">
-            The Quiet Corner
+            {confessionsContent.header.title}
           </h2>
           <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-            This is a space for quiet release. Share your feelings, fears, or
-            reflections anonymously.{" "}
-            <strong>No names, no tracking, just release.</strong>
+            {confessionsContent.header.subtitle}{" "}
+            <strong>{confessionsContent.header.emphasis}</strong>
           </p>
         </header>
       </ScrollAnimation>
@@ -56,7 +56,7 @@ const ConfessionPage = async () => {
       <section>
         <ScrollAnimation delay={200}>
           <h3 className="text-3xl font-bold text-[#2C3531] mb-8 text-center">
-            What the Community is Sharing
+            {confessionsContent.list.title}
           </h3>
         </ScrollAnimation>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
