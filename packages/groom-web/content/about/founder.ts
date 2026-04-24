@@ -1,0 +1,8 @@
+export const founderContent = {
+  sectionTitle: "Meet the Founder",
+  name: "SATWIKK ARORA",
+  bioParagraph1: "The author is a distinguished professional with a unique blend of expertise in finance, numerology, and mental health counselling. Holding an MBA from the prestigious Great Lakes Institute of Management, Chennai, he has built a successful career as a Corporate Banker, where he navigates the dynamic world of finance with precision and strategic insight. Beyond his corporate endeavors, the author is a certified Numerologist, trained at one of the most esteemed institutes of Occult Sciences. In addition to that, he is a certified Relationship and Marriage Counsellor. This specialized knowledge enables him to delve into the intricate connections between numbers, human behavior, and life’s patterns. Driven by a passion for making a meaningful difference, the author has cultivated a keen interest in Mental Health, Life coaching, Relationship counseling and Numerology. His empathetic approach and nuanced understanding of human emotions make him an insightful guide for those navigating the complexities of modern relationships and self-discovery.",
+  bioParagraph2: "With a background in understanding an individual's journey and identifying deep routed issues, Satwikk established \"Groom\" to move beyond generic advice. He focuses on creating deeply personalized plans that respect the unique pace and context of every client.",
+  quote: "My belief is that you already possess the wisdom you need. My role is simply to help you meet yourself.",
+  ctaText: "Connect with Satwikk",
+};

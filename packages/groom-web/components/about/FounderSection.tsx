@@ -1,5 +1,6 @@
 import AppImage from "../AppImage";
 import BookingButton from "../BookingButton";
+import { founderContent } from "##/content/about/founder";
 
 const FounderSection: React.FC = () => {
   return (
@@ -12,7 +13,7 @@ const FounderSection: React.FC = () => {
               height={400}
               width={300}
               src="/images/founder.jpg"
-              alt="Satwikk Arora, Founder"
+              alt={`${founderContent.name}, Founder`}
               className="rounded-lg shadow-lg object-cover aspect-[3/4]"
             />
           </div>
@@ -21,40 +22,21 @@ const FounderSection: React.FC = () => {
       <div className="space-y-6">
         <div>
           <h3 className="text-sm font-bold uppercase tracking-widest text-[#006442] mb-1">
-            Meet the Founder
+            {founderContent.sectionTitle}
           </h3>
-          <h4 className="text-4xl font-bold text-[#2C3531]">SATWIKK ARORA</h4>
+          <h4 className="text-4xl font-bold text-[#2C3531]">{founderContent.name}</h4>
         </div>
         <p className="text-lg text-gray-700 leading-relaxed">
-          The author is a distinguished professional with a unique blend of
-          expertise in finance, numerology, and mental health counselling.
-          Holding an MBA from the prestigious Great Lakes Institute of
-          Management, Chennai, he has built a successful career as a Corporate
-          Banker, where he navigates the dynamic world of finance with precision
-          and strategic insight. Beyond his corporate endeavors, the author is a
-          certified Numerologist, trained at one of the most esteemed institutes
-          of Occult Sciences. In addition to that, he is a certified
-          Relationship and Marriage Counsellor. This specialized knowledge
-          enables him to delve into the intricate connections between numbers,
-          human behavior, and life’s patterns. Driven by a passion for making a
-          meaningful difference, the author has cultivated a keen interest in
-          Mental Health, Life coaching, Relationship counseling and Numerology.
-          His empathetic approach and nuanced understanding of human emotions
-          make him an insightful guide for those navigating the complexities of
-          modern relationships and self-discovery.
+          {founderContent.bioParagraph1}
         </p>
         <p className="text-lg text-gray-700 leading-relaxed">
-          With a background in understanding an individual's journey and
-          identifying deep routed issues, Satwikk established "Groom" to move
-          beyond generic advice. He focuses on creating deeply personalized
-          plans that respect the unique pace and context of every client.
+          {founderContent.bioParagraph2}
         </p>
         <blockquote className="text-lg text-gray-700 italic border-l-4 border-[#8C2D3A] pl-6">
-          "My belief is that you already possess the wisdom you need. My role is
-          simply to help you meet yourself."
+          "{founderContent.quote}"
         </blockquote>
         <BookingButton className="bg-[#2C3531] text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-[1.02] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#B48B7F]">
-          Connect with Satwikk
+          {founderContent.ctaText}
         </BookingButton>
       </div>
     </section>

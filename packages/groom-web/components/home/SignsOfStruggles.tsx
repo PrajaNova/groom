@@ -1,5 +1,6 @@
 import type React from "react";
 import AppImage from "../AppImage";
+import { signsOfStrugglesContent } from "##/content/home/signs-of-struggles";
 
 const HeartCheckIcon = () => (
   <svg
@@ -33,23 +34,17 @@ const SignsOfStruggles: React.FC = () => {
     <section id="signs" className="bg-white py-24 px-4">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-extrabold text-center mb-16 uppercase tracking-wide">
-          Signs of Mental Health Struggles
+          {signsOfStrugglesContent.title}
         </h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
             <p className="font-script text-base italic  text-[#8C2D3A] text-center mb-6">
-              It's okay to not be okay—but it's also okay to seek help.
+              {signsOfStrugglesContent.quote}
             </p>
-            <StruggleCard>
-              Feeling overwhelmed, anxious, or sad for long periods
-            </StruggleCard>
-            <StruggleCard>
-              Trouble sleeping or losing interest in things you love
-            </StruggleCard>
-            <StruggleCard>
-              Feeling isolated or struggling with daily tasks
-            </StruggleCard>
+            {signsOfStrugglesContent.signs.map((sign, index) => (
+              <StruggleCard key={index}>{sign}</StruggleCard>
+            ))}
           </div>
 
           <div className="relative h-[400px]">

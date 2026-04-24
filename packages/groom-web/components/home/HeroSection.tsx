@@ -4,6 +4,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import AppImage from "../AppImage";
 import BookingButton from "../BookingButton";
+import { heroContent } from "##/content/home/hero";
 
 const HeroSection: React.FC = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -33,7 +34,7 @@ const HeroSection: React.FC = () => {
               height={100}
               width={100}
             />
-            Transform Today, Lead Tomorrow
+            {heroContent.tagline}
           </p>
           <h2
             className={`text-5xl md:text-6xl font-extrabold text-[#2C3531] leading-tight ${getAnimationClasses(
@@ -41,9 +42,9 @@ const HeroSection: React.FC = () => {
             )}`}
             style={{ transitionDelay: "200ms" }}
           >
-            Find your solitude and&nbsp;
-            <span className="text-[#B48B7F]">Meet Yourself</span>
-            &nbsp;in the crowd
+            {heroContent.titleLine1}
+            <span className="text-[#B48B7F]">{heroContent.titleHighlight}</span>
+            {heroContent.titleLine2}
           </h2>
           <p
             className={`text-xl text-gray-700 max-w-lg ${getAnimationClasses(
@@ -51,15 +52,14 @@ const HeroSection: React.FC = () => {
             )}`}
             style={{ transitionDelay: "350ms" }}
           >
-            We provide personalized, private 1:1 sessions focusing on your
-            personal journey and identifying deep wounds/ issues for resolution.
+            {heroContent.description}
           </p>
           <div
             className={getAnimationClasses("delay-500")}
             style={{ transitionDelay: "500ms" }}
           >
             <BookingButton className="btn-primary">
-              Book Your Discovery Call
+              {heroContent.ctaText}
             </BookingButton>
           </div>
         </div>
