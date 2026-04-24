@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
 import bookingService from "@/services/bookingService";
+import groomService, { type Service } from "@/services/groomService";
 import ModalManager from "@/utils/ModalManager";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { bookingsContent } from "##/content/bookings/bookings";
@@ -20,6 +21,7 @@ export default function BookSessionPage() {
     when: "",
     reason: "",
   });
+  const [services, setServices] = useState<Service[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
@@ -43,6 +45,17 @@ export default function BookSessionPage() {
         email: user.email || prev.email,
       }));
     }
+
+    // Fetch services
+    const fetchServices = async () => {
+      try {
+        const data = await groomService.getServices();
+        setServices(data.sort((a, b) => a.order - b.order));
+      } catch (err) {
+        console.error("Failed to fetch services:", err);
+      }
+    };
+    fetchServices();
   }, [user, isLoading, router]);
 
   const handleChange = (
@@ -344,10 +357,11 @@ export default function BookSessionPage() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition bg-white"
               >
                 <option value="">{bookingsContent.form.placeholders.service}</option>
-                <option value="Self Help">Self Help</option>
-                <option value="Couple Therapy">Couple Therapy</option>
-                <option value="Career Consultation">Career Consultation</option>
-                <option value="Numerology">Numerology</option>
+                {services.map((service) => (
+                  <option key={service.id} value={service.title}>
+                    {service.title}
+                  </option>
+                ))}
               </select>
             </div>
 

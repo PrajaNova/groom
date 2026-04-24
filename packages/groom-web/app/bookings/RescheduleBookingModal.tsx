@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ModalManager from "##/utils/ModalManager";
 import { showAlert } from "##/utils/modalHelpers";
+import bookingService from "##/services/bookingService";
 
 interface Booking {
   id: string;
@@ -65,13 +66,7 @@ const RescheduleBookingModal: React.FC<Props> = ({
       const when = new Date(dateTime).toISOString();
 
       // booking should exist in reschedule mode
-      const res = await fetch(`/api/bookings/${booking?.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ when }),
-      });
-
-      if (!res.ok) throw new Error("Failed to reschedule booking");
+      await bookingService.update(booking?.id as string, { when });
 
       onSuccess?.();
       ModalManager.close();
