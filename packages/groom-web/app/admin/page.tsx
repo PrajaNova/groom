@@ -5,11 +5,13 @@ import { fetchServer } from "@/services/serverApi";
 export const revalidate = 60;
 
 export default async function AdminDashboard() {
-  const [blogs, bookings, confessions, users] = await Promise.all([
+  const [blogs, bookings, confessions, users, services, faqs] = await Promise.all([
     fetchServer<any[]>("/api/blogs"),
     fetchServer<any[]>("/api/bookings"),
     fetchServer<any[]>("/api/confessions"),
     fetchServer<any[]>("/api/users"),
+    fetchServer<any[]>("/api/services"),
+    fetchServer<any[]>("/api/faqs"),
   ]);
 
   const stats = [
@@ -58,9 +60,9 @@ export default async function AdminDashboard() {
       color: "from-blue-500 to-blue-600",
     },
     {
-      label: "Total Bookings",
-      value: bookings.length,
-      href: "/admin/bookings",
+      label: "Total Services",
+      value: services.length,
+      href: "/admin/services",
       icon: (
         <svg
           className="w-8 h-8"
@@ -68,21 +70,21 @@ export default async function AdminDashboard() {
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          <title>Bookings</title>
+          <title>Services</title>
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth="2"
-            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547a3.374 3.374 0 00-.83 1.57h-1.387a3.374 3.374 0 00-.83-1.57l-.548-.547z"
           />
         </svg>
       ),
       color: "from-green-500 to-green-600",
     },
     {
-      label: "Total Confessions",
-      value: confessions.length,
-      href: "/admin/confessions",
+      label: "Total FAQs",
+      value: faqs.length,
+      href: "/admin/faqs",
       icon: (
         <svg
           className="w-8 h-8"
@@ -90,12 +92,12 @@ export default async function AdminDashboard() {
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          <title>Confessions</title>
+          <title>FAQs</title>
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth="2"
-            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4-8 9-8s9 3.582 9 8z"
+            d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
           />
         </svg>
       ),

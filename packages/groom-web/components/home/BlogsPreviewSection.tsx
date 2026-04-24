@@ -4,31 +4,24 @@ import AppImage from "../AppImage";
 import Card from "../common/Card";
 import ScrollAnimation from "../common/ScrollAnimation";
 
-const blogPreviews = [
-  {
-    imageSeed: "mindful",
-    category: "Mindfulness",
-    title: "5 Simple Ways to Start Your Day Mindfully",
-    excerpt:
-      "A brief guide to integrating quick, effective mindfulness practices into your morning routine for a centered day...",
-  },
-  {
-    imageSeed: "stress",
-    category: "Stress Management",
-    title: "Understanding and Halting the Stress Cycle",
-    excerpt:
-      "We break down the physical and emotional loop of stress and offer three practical interrupt techniques...",
-  },
-  {
-    imageSeed: "selfcare",
-    category: "Self-Care",
-    title: "The Power of Boundaries in Digital Age Self-Care",
-    excerpt:
-      "Setting limits is a crucial act of self-love. Learn how to establish healthy digital and emotional boundaries...",
-  },
-];
+interface Blog {
+  id: string;
+  slug: string;
+  title: string;
+  content: string;
+  excerpt: string | null;
+  readTime: number | null;
+  imageSeed: string;
+  category: string | null;
+  format: string;
+  author: string | null;
+  publishedAt: string;
+}
 
-const BlogsPreviewSection: React.FC = () => {
+const BlogsPreviewSection: React.FC<{ blogs: Blog[] }> = async ({ blogs }) => {
+  // Use first 3 blogs
+  const displayedBlogs = blogs.slice(0, 3);
+
   return (
     <section
       id="blogs-section"
@@ -41,28 +34,28 @@ const BlogsPreviewSection: React.FC = () => {
           </h3>
         </ScrollAnimation>
         <div className="grid md:grid-cols-3 gap-8">
-          {blogPreviews.map((blog, index) => (
-            <ScrollAnimation key={blog.imageSeed} delay={index * 150}>
+          {displayedBlogs.map((blog, index) => (
+            <ScrollAnimation key={blog.id} delay={index * 150}>
               <Card className="overflow-hidden hover:shadow-2xl transition duration-300 h-full">
                 <AppImage
                   src={`https://picsum.photos/seed/${blog.imageSeed}/600/400`}
-                  alt={blog.category}
+                  alt={blog.category || "Blog"}
                   width={600}
                   height={400}
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-6">
                   <p className="text-sm text-[#B48B7F] font-semibold mb-1">
-                    {blog.category}
+                    {blog.category || "General"}
                   </p>
                   <h4 className="text-xl font-semibold mb-2 text-[#2C3531]">
                     {blog.title}
                   </h4>
                   <p className="text-gray-600 text-sm line-clamp-3">
-                    {blog.excerpt}
+                    {blog.excerpt || "Read more..."}
                   </p>
                   <Link
-                    href="/blogs"
+                    href={`/blogs/${blog.slug}`}
                     className="inline-block mt-3 text-[#B48B7F] font-medium hover:text-[#2C3531] transition duration-300"
                   >
                     Read More →

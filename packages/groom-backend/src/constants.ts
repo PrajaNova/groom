@@ -94,6 +94,8 @@ export const ERROR_MESSAGES = {
   BLOG_NOT_FOUND: "Blog not found",
   CONFESSION_NOT_FOUND: "Confession not found",
   TESTIMONIAL_NOT_FOUND: "Testimonial not found",
+  SERVICE_NOT_FOUND: "Service not found",
+  FAQ_NOT_FOUND: "FAQ not found",
 
   // RBAC Errors
   FORBIDDEN: "Insufficient permissions",
@@ -109,6 +111,8 @@ export const SUCCESS_MESSAGES = {
   CONFESSION_DELETED: "Confession deleted successfully",
   TESTIMONIAL_DELETED: "Testimonial deleted successfully",
   USER_DELETED: "User deleted successfully",
+  SERVICE_DELETED: "Service deleted successfully",
+  FAQ_DELETED: "FAQ deleted successfully",
 } as const;
 
 // Audit Events
@@ -191,7 +195,9 @@ export const ENDPOINT_DOCS = {
   BOOKINGS: "/bookings - Booking CRUD",
   BLOGS: "/blogs - Blog CMS",
   CONFESSIONS: "/confessions - Anonymous confessions",
-  TESTIMONIALS: "/testimonials - Testimonials",
+  TESTIMONIALS: "/testimonials - Testimonials CRUD",
+  SERVICES: "/services - Services CRUD",
+  FAQS: "/faqs - FAQs CRUD",
   HEALTH_CHECK: "/health - Service health check",
 } as const;
 
@@ -264,6 +270,24 @@ export const TESTIMONIAL_ROUTES = {
   BY_ID: "/testimonials/:id",
   UPDATE: "/testimonials/:id",
   DELETE: "/testimonials/:id",
+} as const;
+
+// Service Routes
+export const SERVICE_ROUTES = {
+  LIST: "/services",
+  CREATE: "/services",
+  BY_ID: "/services/:id",
+  UPDATE: "/services/:id",
+  DELETE: "/services/:id",
+} as const;
+
+// FAQ Routes
+export const FAQ_ROUTES = {
+  LIST: "/faqs",
+  CREATE: "/faqs",
+  BY_ID: "/faqs/:id",
+  UPDATE: "/faqs/:id",
+  DELETE: "/faqs/:id",
 } as const;
 
 // System Routes

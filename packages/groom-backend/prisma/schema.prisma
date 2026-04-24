@@ -235,3 +235,29 @@ model Testimonial {
   @@map("testimonials")
   @@schema("groom")
 }
+
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  iconType    String
+  colorType   String
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("services")
+  @@schema("groom")
+}
+
+model FAQ {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("faqs")
+  @@schema("groom")
+}
