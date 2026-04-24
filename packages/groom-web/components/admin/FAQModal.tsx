@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { fetchAPI } from "@/services/api";
 
 type FAQ = {
   id?: string;
@@ -23,6 +24,7 @@ export default function FAQModal({ isOpen, onClose, faq }: Props) {
   const [answer, setAnswer] = useState("");
   const [order, setOrder] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (faq) {
@@ -34,6 +36,7 @@ export default function FAQModal({ isOpen, onClose, faq }: Props) {
       setAnswer("");
       setOrder(0);
     }
+    setFieldErrors({});
   }, [faq, isOpen]);
 
   if (!isOpen) return null;
@@ -41,27 +44,31 @@ export default function FAQModal({ isOpen, onClose, faq }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    setFieldErrors({});
     try {
       const payload = { question, answer, order };
       const url = faq?.id ? `/api/faqs/${faq.id}` : "/api/faqs";
       const method = faq?.id ? "PUT" : "POST";
 
-      const res = await fetch(url, {
+      await fetchAPI(url, {
         method,
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.message || "Failed to save FAQ");
-      }
 
       toast.success(faq?.id ? "FAQ updated" : "FAQ created");
       onClose();
       router.refresh();
-    } catch (err) {
-      toast.error(String(err));
+    } catch (err: any) {
+      if (err.details && Array.isArray(err.details)) {
+        const errors: Record<string, string> = {};
+        for (const detail of err.details) {
+          errors[detail.field] = detail.message;
+        }
+        setFieldErrors(errors);
+        toast.error("Please fix the errors in the form");
+      } else {
+        toast.error(err.message || "Failed to save FAQ");
+      }
     } finally {
       setLoading(false);
     }
@@ -96,8 +103,13 @@ export default function FAQModal({ isOpen, onClose, faq }: Props) {
               required
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F]"
+              className={`mt-1 block w-full px-3 py-2 border rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F] ${
+                fieldErrors.question ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {fieldErrors.question && (
+              <p className="mt-1 text-xs text-red-500">{fieldErrors.question}</p>
+            )}
           </div>
 
           <div>
@@ -107,8 +119,13 @@ export default function FAQModal({ isOpen, onClose, faq }: Props) {
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
               rows={4}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F]"
+              className={`mt-1 block w-full px-3 py-2 border rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F] ${
+                fieldErrors.answer ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {fieldErrors.answer && (
+              <p className="mt-1 text-xs text-red-500">{fieldErrors.answer}</p>
+            )}
           </div>
 
           <div>
@@ -117,8 +134,13 @@ export default function FAQModal({ isOpen, onClose, faq }: Props) {
               type="number"
               value={order}
               onChange={(e) => setOrder(Number(e.target.value))}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F]"
+              className={`mt-1 block w-full px-3 py-2 border rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F] ${
+                fieldErrors.order ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {fieldErrors.order && (
+              <p className="mt-1 text-xs text-red-500">{fieldErrors.order}</p>
+            )}
           </div>
 
           <div className="flex justify-end gap-3 mt-6">

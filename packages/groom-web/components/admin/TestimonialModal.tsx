@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { fetchAPI } from "@/services/api";
 
 type Testimonial = {
   id?: string;
@@ -21,6 +22,7 @@ export default function TestimonialModal({ isOpen, onClose, testimonial }: Props
   const [quote, setQuote] = useState("");
   const [author, setAuthor] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (testimonial) {
@@ -30,6 +32,7 @@ export default function TestimonialModal({ isOpen, onClose, testimonial }: Props
       setQuote("");
       setAuthor("");
     }
+    setFieldErrors({});
   }, [testimonial, isOpen]);
 
   if (!isOpen) return null;
@@ -37,27 +40,31 @@ export default function TestimonialModal({ isOpen, onClose, testimonial }: Props
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    setFieldErrors({});
     try {
       const payload = { quote, author };
       const url = testimonial?.id ? `/api/testimonials/${testimonial.id}` : "/api/testimonials";
       const method = testimonial?.id ? "PUT" : "POST";
 
-      const res = await fetch(url, {
+      await fetchAPI(url, {
         method,
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.message || "Failed to save testimonial");
-      }
 
       toast.success(testimonial?.id ? "Testimonial updated" : "Testimonial created");
       onClose();
       router.refresh();
-    } catch (err) {
-      toast.error(String(err));
+    } catch (err: any) {
+      if (err.details && Array.isArray(err.details)) {
+        const errors: Record<string, string> = {};
+        for (const detail of err.details) {
+          errors[detail.field] = detail.message;
+        }
+        setFieldErrors(errors);
+        toast.error("Please fix the errors in the form");
+      } else {
+        toast.error(err.message || "Failed to save testimonial");
+      }
     } finally {
       setLoading(false);
     }
@@ -93,8 +100,13 @@ export default function TestimonialModal({ isOpen, onClose, testimonial }: Props
               value={quote}
               onChange={(e) => setQuote(e.target.value)}
               rows={4}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F]"
+              className={`mt-1 block w-full px-3 py-2 border rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F] ${
+                fieldErrors.quote ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {fieldErrors.quote && (
+              <p className="mt-1 text-xs text-red-500">{fieldErrors.quote}</p>
+            )}
           </div>
 
           <div>
@@ -103,8 +115,13 @@ export default function TestimonialModal({ isOpen, onClose, testimonial }: Props
               required
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F]"
+              className={`mt-1 block w-full px-3 py-2 border rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F] ${
+                fieldErrors.author ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {fieldErrors.author && (
+              <p className="mt-1 text-xs text-red-500">{fieldErrors.author}</p>
+            )}
           </div>
 
           <div className="flex justify-end gap-3 mt-6">

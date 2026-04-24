@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { fetchAPI } from "@/services/api";
 
 type Service = {
   id?: string;
@@ -41,6 +42,7 @@ export default function ServiceModal({ isOpen, onClose, service }: Props) {
   const [colorType, setColorType] = useState(COLOR_TYPES[0].value);
   const [order, setOrder] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (service) {
@@ -56,6 +58,7 @@ export default function ServiceModal({ isOpen, onClose, service }: Props) {
       setColorType(COLOR_TYPES[0].value);
       setOrder(0);
     }
+    setFieldErrors({});
   }, [service, isOpen]);
 
   if (!isOpen) return null;
@@ -63,27 +66,31 @@ export default function ServiceModal({ isOpen, onClose, service }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    setFieldErrors({});
     try {
       const payload = { title, description, iconType, colorType, order };
       const url = service?.id ? `/api/services/${service.id}` : "/api/services";
       const method = service?.id ? "PUT" : "POST";
 
-      const res = await fetch(url, {
+      await fetchAPI(url, {
         method,
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.message || "Failed to save service");
-      }
 
       toast.success(service?.id ? "Service updated" : "Service created");
       onClose();
       router.refresh();
-    } catch (err) {
-      toast.error(String(err));
+    } catch (err: any) {
+      if (err.details && Array.isArray(err.details)) {
+        const errors: Record<string, string> = {};
+        for (const detail of err.details) {
+          errors[detail.field] = detail.message;
+        }
+        setFieldErrors(errors);
+        toast.error("Please fix the errors in the form");
+      } else {
+        toast.error(err.message || "Failed to save service");
+      }
     } finally {
       setLoading(false);
     }
@@ -118,8 +125,13 @@ export default function ServiceModal({ isOpen, onClose, service }: Props) {
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F]"
+              className={`mt-1 block w-full px-3 py-2 border rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F] ${
+                fieldErrors.title ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {fieldErrors.title && (
+              <p className="mt-1 text-xs text-red-500">{fieldErrors.title}</p>
+            )}
           </div>
 
           <div>
@@ -129,8 +141,13 @@ export default function ServiceModal({ isOpen, onClose, service }: Props) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F]"
+              className={`mt-1 block w-full px-3 py-2 border rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F] ${
+                fieldErrors.description ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {fieldErrors.description && (
+              <p className="mt-1 text-xs text-red-500">{fieldErrors.description}</p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -139,7 +156,9 @@ export default function ServiceModal({ isOpen, onClose, service }: Props) {
               <select
                 value={iconType}
                 onChange={(e) => setIconType(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F]"
+                className={`mt-1 block w-full px-3 py-2 border rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F] ${
+                  fieldErrors.iconType ? "border-red-500" : "border-gray-300"
+                }`}
               >
                 {ICON_TYPES.map((t) => (
                   <option key={t.value} value={t.value}>
@@ -147,13 +166,18 @@ export default function ServiceModal({ isOpen, onClose, service }: Props) {
                   </option>
                 ))}
               </select>
+              {fieldErrors.iconType && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.iconType}</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Color Type</label>
               <select
                 value={colorType}
                 onChange={(e) => setColorType(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F]"
+                className={`mt-1 block w-full px-3 py-2 border rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F] ${
+                  fieldErrors.colorType ? "border-red-500" : "border-gray-300"
+                }`}
               >
                 {COLOR_TYPES.map((t) => (
                   <option key={t.value} value={t.value}>
@@ -161,6 +185,9 @@ export default function ServiceModal({ isOpen, onClose, service }: Props) {
                   </option>
                 ))}
               </select>
+              {fieldErrors.colorType && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.colorType}</p>
+              )}
             </div>
           </div>
 
@@ -170,8 +197,13 @@ export default function ServiceModal({ isOpen, onClose, service }: Props) {
               type="number"
               value={order}
               onChange={(e) => setOrder(Number(e.target.value))}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F]"
+              className={`mt-1 block w-full px-3 py-2 border rounded-md focus:ring-[#B48B7F] focus:border-[#B48B7F] ${
+                fieldErrors.order ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {fieldErrors.order && (
+              <p className="mt-1 text-xs text-red-500">{fieldErrors.order}</p>
+            )}
           </div>
 
           <div className="flex justify-end gap-3 mt-6">

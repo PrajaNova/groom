@@ -535,16 +535,24 @@ export class AuthController {
       return reply.unauthorized(ERROR_MESSAGES.UNAUTHORIZED);
     }
 
+    const userId = request.user.id;
+    const sessionId = request.session.sessionId;
+
+    // Delete session from database
     const sessionService = new SessionService(this.fastify);
-    await sessionService.deleteSession(request.session.sessionId);
+    await sessionService.deleteSession(sessionId);
+
+    // Delete provider tokens (Google, etc.) to ensure fresh login next time
+    const tokenService = new TokenService(this.fastify);
+    await tokenService.deleteUserTokens(userId);
 
     reply.clearCookie(COOKIE_CONFIG.SESSION_NAME);
 
     const auditService = new AuditService(this.fastify);
     await auditService.log(
       AUDIT_EVENTS.LOGOUT,
-      { sessionId: request.session.sessionId },
-      request.user.id,
+      { sessionId },
+      userId,
       request.ip,
       getUserAgent(request.headers),
     );
