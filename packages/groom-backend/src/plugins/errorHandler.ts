@@ -24,6 +24,18 @@ export default fp(async (fastify) => {
         );
       }
 
+      if (error.validation) {
+        return reply.status(400).send({
+          error: "Validation Error",
+          message: "The data provided is invalid",
+          statusCode: 400,
+          details: error.validation.map((err: any) => ({
+            field: err.instancePath.replace("/", "") || err.params?.missingProperty || "unknown",
+            message: err.message,
+          })),
+        });
+      }
+
       reply.status(error.statusCode || 500).send({
         error: error.name,
         message: error.message,

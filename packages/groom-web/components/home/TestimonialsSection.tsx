@@ -12,30 +12,6 @@ interface Testimonial {
 const TestimonialsSection: React.FC<{ testimonials: Testimonial[] }> = ({ testimonials }) => {
   if (!testimonials || testimonials.length === 0) return null;
 
-  // Fallback to hardcoded testimonials if none are provided by the backend
-  const displayedTestimonials = testimonials.length > 0 
-    ? testimonials.slice(0, 3) 
-    : [
-        {
-          id: "fallback-1",
-          quote: "The clarity I found in just three sessions was transformative. It felt like talking to a deeply intuitive friend who is also a professional expert.",
-          author: "Anya S.",
-          createdAt: new Date().toISOString(),
-        },
-        {
-          id: "fallback-2",
-          quote: "This space is truly quiet and non-judgemental. It helped me process complex feelings without the pressure of having to perform.",
-          author: "David P.",
-          createdAt: new Date().toISOString(),
-        },
-        {
-          id: "fallback-3",
-          quote: "I highly recommend the 1:1 sessions. The practical tools given were easy to apply to my everyday stress. A real anchor.",
-          author: "Emi J.",
-          createdAt: new Date().toISOString(),
-        },
-      ];
-
   return (
     <section id="reviews" className="py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -45,7 +21,7 @@ const TestimonialsSection: React.FC<{ testimonials: Testimonial[] }> = ({ testim
           </h3>
         </ScrollAnimation>
         <div className="grid md:grid-cols-3 gap-8">
-          {displayedTestimonials.map((testimonial, index) => (
+          {testimonials.map((testimonial, index) => (
             <ScrollAnimation
               key={testimonial.id}
               delay={index * 150}

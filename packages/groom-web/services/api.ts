@@ -46,8 +46,18 @@ export async function fetchAPI<T>(
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`API Error: ${response.status} - ${error}`);
+    let errorData;
+    try {
+      errorData = await response.json();
+    } catch {
+      const errorText = await response.text();
+      throw new Error(`API Error: ${response.status} - ${errorText}`);
+    }
+    
+    const error = new Error(errorData.message || "An unexpected error occurred");
+    (error as any).statusCode = response.status;
+    (error as any).details = errorData.details;
+    throw error;
   }
 
   return response.json();

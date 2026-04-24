@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { fetchAPI } from "@/services/api";
 
 type Props = {
   isOpen: boolean;
@@ -23,6 +24,22 @@ export default function AddBlogModal({ isOpen, onClose }: Props) {
   const [contentFileName, setContentFileName] = useState<string | null>(null);
   const [contentText, setContentText] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (isOpen) {
+      setTitle("");
+      setSlug("");
+      setExcerpt("");
+      setCategory("");
+      setAuthor("");
+      setReadTime("");
+      setImageSeed("");
+      setContentFileName(null);
+      setContentText("");
+      setFieldErrors({});
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -41,6 +58,7 @@ export default function AddBlogModal({ isOpen, onClose }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    setFieldErrors({});
     try {
       const payload: Record<string, unknown> = {
         title,
@@ -55,22 +73,25 @@ export default function AddBlogModal({ isOpen, onClose }: Props) {
         publishedAt: new Date().toISOString(),
       };
 
-      const res = await fetch("/api/blogs", {
+      await fetchAPI("/api/blogs", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error || "Failed to create blog");
-      }
 
       toast.success("Blog created");
       onClose();
       router.refresh();
-    } catch (err) {
-      toast.error(String(err));
+    } catch (err: any) {
+      if (err.details && Array.isArray(err.details)) {
+        const errors: Record<string, string> = {};
+        for (const detail of err.details) {
+          errors[detail.field] = detail.message;
+        }
+        setFieldErrors(errors);
+        toast.error("Please fix the errors in the form");
+      } else {
+        toast.error(err.message || "Failed to create blog");
+      }
     } finally {
       setLoading(false);
     }
@@ -125,8 +146,13 @@ export default function AddBlogModal({ isOpen, onClose }: Props) {
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#B48B7F] focus:border-[#B48B7F] sm:text-sm"
+                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#B48B7F] focus:border-[#B48B7F] sm:text-sm ${
+                  fieldErrors.title ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {fieldErrors.title && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.title}</p>
+              )}
             </div>
 
             <div>
@@ -141,8 +167,13 @@ export default function AddBlogModal({ isOpen, onClose }: Props) {
                 required
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#B48B7F] focus:border-[#B48B7F] sm:text-sm"
+                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#B48B7F] focus:border-[#B48B7F] sm:text-sm ${
+                  fieldErrors.slug ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {fieldErrors.slug && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.slug}</p>
+              )}
             </div>
           </div>
 
@@ -158,8 +189,13 @@ export default function AddBlogModal({ isOpen, onClose }: Props) {
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
               rows={3}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#B48B7F] focus:border-[#B48B7F] sm:text-sm"
+              className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#B48B7F] focus:border-[#B48B7F] sm:text-sm ${
+                fieldErrors.excerpt ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {fieldErrors.excerpt && (
+              <p className="mt-1 text-xs text-red-500">{fieldErrors.excerpt}</p>
+            )}
           </div>
 
           <div>
@@ -179,7 +215,9 @@ export default function AddBlogModal({ isOpen, onClose }: Props) {
               />
               <label
                 htmlFor="blog-content"
-                className="flex items-center justify-between cursor-pointer border-2 border-dashed border-gray-200 rounded-md px-4 py-6 hover:bg-gray-50"
+                className={`flex items-center justify-between cursor-pointer border-2 border-dashed rounded-md px-4 py-6 hover:bg-gray-50 ${
+                  fieldErrors.content ? "border-red-500" : "border-gray-200"
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <svg
@@ -205,6 +243,9 @@ export default function AddBlogModal({ isOpen, onClose }: Props) {
                 </div>
                 <div className="text-sm text-teal-600">Browse</div>
               </label>
+              {fieldErrors.content && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.content}</p>
+              )}
               {contentFileName && (
                 <div className="text-sm text-gray-500 mt-2">
                   Loaded: {contentFileName}
@@ -231,8 +272,13 @@ export default function AddBlogModal({ isOpen, onClose }: Props) {
                     e.target.value === "" ? "" : Number(e.target.value),
                   )
                 }
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#B48B7F] focus:border-[#B48B7F] sm:text-sm"
+                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#B48B7F] focus:border-[#B48B7F] sm:text-sm ${
+                  fieldErrors.readTime ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {fieldErrors.readTime && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.readTime}</p>
+              )}
             </div>
 
             <div>
@@ -246,8 +292,13 @@ export default function AddBlogModal({ isOpen, onClose }: Props) {
                 id="blog-image"
                 value={imageSeed}
                 onChange={(e) => setImageSeed(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#B48B7F] focus:border-[#B48B7F] sm:text-sm"
+                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#B48B7F] focus:border-[#B48B7F] sm:text-sm ${
+                  fieldErrors.imageSeed ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {fieldErrors.imageSeed && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.imageSeed}</p>
+              )}
             </div>
 
             <div>
@@ -261,8 +312,13 @@ export default function AddBlogModal({ isOpen, onClose }: Props) {
                 id="blog-category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#B48B7F] focus:border-[#B48B7F] sm:text-sm"
+                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#B48B7F] focus:border-[#B48B7F] sm:text-sm ${
+                  fieldErrors.category ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {fieldErrors.category && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.category}</p>
+              )}
             </div>
 
             <div>
@@ -276,8 +332,13 @@ export default function AddBlogModal({ isOpen, onClose }: Props) {
                 id="blog-author"
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#B48B7F] focus:border-[#B48B7F] sm:text-sm"
+                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#B48B7F] focus:border-[#B48B7F] sm:text-sm ${
+                  fieldErrors.author ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {fieldErrors.author && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.author}</p>
+              )}
             </div>
           </div>
 
