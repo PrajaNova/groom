@@ -2,10 +2,10 @@
 
 const BuyBookButton = () => {
   const onClick = () => {
-    window.open(
-      "https://wa.me/919999999999?text=I%20would%20like%20to%20buy%20the%20book%20'Finding%20Your%20Ground'%20by%20Satwikk%20Arora.",
-      "_blank",
-    );
+    const whatsappUrl =
+      process.env.NEXT_PUBLIC_WHATSAPP_BUY_BOOK_URL ||
+      "https://wa.me/919999999999?text=I%20would%20like%20to%20buy%20the%20book%20'Finding%20Your%20Ground'%20by%20Satwikk%20Arora.";
+    window.open(whatsappUrl, "_blank");
   };
   return (
     <div className="flex flex-col sm:flex-row gap-4">

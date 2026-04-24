@@ -1,9 +1,13 @@
 import Link from "next/link";
 
 export const WhatsAppButton = () => {
+  const communityUrl =
+    process.env.NEXT_PUBLIC_WHATSAPP_COMMUNITY_URL ||
+    "https://chat.whatsapp.com/FHlOuZrQTvv0ujGg4QriM1";
+
   return (
     <Link
-      href="https://chat.whatsapp.com/FHlOuZrQTvv0ujGg4QriM1"
+      href={communityUrl}
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white hover:bg-gray-50 text-slate-900 px-5 py-3 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.15)] transition-all hover:scale-105 border border-gray-100"
