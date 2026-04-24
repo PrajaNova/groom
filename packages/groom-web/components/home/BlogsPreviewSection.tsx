@@ -19,6 +19,8 @@ interface Blog {
 }
 
 const BlogsPreviewSection: React.FC<{ blogs: Blog[] }> = async ({ blogs }) => {
+  if (!blogs || blogs.length === 0) return null;
+
   // Use first 3 blogs
   const displayedBlogs = blogs.slice(0, 3);
 

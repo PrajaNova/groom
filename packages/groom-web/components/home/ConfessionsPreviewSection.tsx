@@ -11,6 +11,8 @@ interface Confession {
 }
 
 const ConfessionsPreviewSection: React.FC<{ confessions: Confession[] }> = async ({ confessions }) => {
+  if (!confessions || confessions.length === 0) return null;
+
   // Use first 2 confessions
   const displayedConfessions = confessions.slice(0, 2);
 

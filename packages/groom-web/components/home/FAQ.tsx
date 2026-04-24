@@ -40,6 +40,8 @@ const FaqItem: React.FC<{ question: string; answer: string }> = ({
 );
 
 const FAQ: React.FC<{ faqs: FAQ[] }> = async ({ faqs }) => {
+  if (!faqs || faqs.length === 0) return null;
+
   // Sort by order field, default to 0 if not set
   const sortedFAQs = [...faqs].sort((a, b) => (a.order || 0) - (b.order || 0));
 

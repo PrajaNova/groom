@@ -12,6 +12,8 @@ interface Service {
 }
 
 const ServicesSection: React.FC<{ services: Service[] }> = async ({ services }) => {
+  if (!services || services.length === 0) return null;
+
   // Sort services by order field, default to 0 if not set
   const sortedServices = [...services].sort((a, b) => (a.order || 0) - (b.order || 0));
 
