@@ -1,5 +1,6 @@
 import type React from "react";
 import AppImage from "../AppImage";
+import { whyImportantContent } from "##/content/home/why-important";
 
 const ListItem: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <li className="flex items-start">
@@ -37,22 +38,12 @@ const WhyItsImportant: React.FC = () => {
         </div>
         <div>
           <h2 className="text-4xl md:text-5xl font-extrabold mb-8 uppercase tracking-wide">
-            Why It's Important
+            {whyImportantContent.title}
           </h2>
           <ul className="space-y-4">
-            <ListItem>
-              Good mental health helps us enjoy life and the people in it.
-            </ListItem>
-            <ListItem>
-              It provides the resilience to cope with stress and adversity.
-            </ListItem>
-            <ListItem>
-              Strong mental health is key to healthy relationships and good
-              communication.
-            </ListItem>
-            <ListItem>
-              It helps you reach your full potential in work, school, and life.
-            </ListItem>
+            {whyImportantContent.points.map((point, index) => (
+              <ListItem key={index}>{point}</ListItem>
+            ))}
           </ul>
         </div>
       </div>
