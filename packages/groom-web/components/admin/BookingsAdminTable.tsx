@@ -25,11 +25,47 @@ export default function BookingsAdminTable({ bookings }: Props) {
   const router = useRouter();
   const [openBooking, setOpenBooking] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("active");
-  const [dateFilter, setDateFilter] = useState<string>("");
+  const [dateRangeType, setDateRangeType] = useState<string>("all");
+  const [customStartDate, setCustomStartDate] = useState<string>("");
+  const [customEndDate, setCustomEndDate] = useState<string>("");
 
   const booking = bookings.find((b) => b.id === openBooking) ?? null;
 
   const filteredBookings = useMemo(() => {
+    const now = new Date();
+    const todayStr = now.toISOString().split("T")[0];
+
+    const getYesterdayStr = () => {
+      const d = new Date();
+      d.setDate(d.getDate() - 1);
+      return d.toISOString().split("T")[0];
+    };
+
+    const getThisWeekRange = () => {
+      const start = new Date();
+      const day = start.getDay();
+      const diff = start.getDate() - day + (day === 0 ? -6 : 1); // Monday
+      const startOfWeek = new Date(start.setDate(diff));
+      startOfWeek.setHours(0, 0, 0, 0);
+
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(endOfWeek.getDate() + 6);
+      endOfWeek.setHours(23, 59, 59, 999);
+
+      return { start: startOfWeek, end: endOfWeek };
+    };
+
+    const getThisMonthRange = () => {
+      const start = new Date();
+      start.setDate(1);
+      start.setHours(0, 0, 0, 0);
+
+      const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+      end.setHours(23, 59, 59, 999);
+
+      return { start, end };
+    };
+
     return bookings.filter((bk) => {
       // Status Filter
       if (statusFilter === "active") {
@@ -39,14 +75,37 @@ export default function BookingsAdminTable({ bookings }: Props) {
       }
 
       // Date Filter
-      if (dateFilter && bk.when) {
-        const bookingDate = new Date(bk.when).toISOString().split("T")[0];
-        if (bookingDate !== dateFilter) return false;
+      if (dateRangeType !== "all" && bk.when) {
+        const bookingDate = new Date(bk.when);
+        const bookingDateStr = bookingDate.toISOString().split("T")[0];
+
+        if (dateRangeType === "today") {
+          if (bookingDateStr !== todayStr) return false;
+        } else if (dateRangeType === "yesterday") {
+          if (bookingDateStr !== getYesterdayStr()) return false;
+        } else if (dateRangeType === "this-week") {
+          const { start, end } = getThisWeekRange();
+          if (bookingDate < start || bookingDate > end) return false;
+        } else if (dateRangeType === "this-month") {
+          const { start, end } = getThisMonthRange();
+          if (bookingDate < start || bookingDate > end) return false;
+        } else if (dateRangeType === "custom") {
+          if (customStartDate) {
+            const start = new Date(customStartDate);
+            start.setHours(0, 0, 0, 0);
+            if (bookingDate < start) return false;
+          }
+          if (customEndDate) {
+            const end = new Date(customEndDate);
+            end.setHours(23, 59, 59, 999);
+            if (bookingDate > end) return false;
+          }
+        }
       }
 
       return true;
     });
-  }, [bookings, statusFilter, dateFilter]);
+  }, [bookings, statusFilter, dateRangeType, customStartDate, customEndDate]);
 
   async function handleCancel(id: string) {
     showConfirm(
@@ -132,7 +191,7 @@ export default function BookingsAdminTable({ bookings }: Props) {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200">
+        <div className="flex flex-wrap items-end gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200">
           <div className="flex flex-col">
             <label htmlFor="status-filter" className="text-xs font-semibold text-gray-500 mb-1 ml-1">Status</label>
             <select
@@ -151,30 +210,61 @@ export default function BookingsAdminTable({ bookings }: Props) {
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="date-filter" className="text-xs font-semibold text-gray-500 mb-1 ml-1">Date</label>
-            <div className="flex items-center gap-2">
-              <input
-                id="date-filter"
-                type="date"
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
-                className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-[#B48B7F] focus:border-[#B48B7F] outline-none"
-              />
-              {dateFilter && (
-                <button
-                  type="button"
-                  onClick={() => setDateFilter("")}
-                  className="text-gray-400 hover:text-gray-600 p-1"
-                  title="Clear date"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <title>Clear</title>
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
-            </div>
+            <label htmlFor="date-range-type" className="text-xs font-semibold text-gray-500 mb-1 ml-1">Time Period</label>
+            <select
+              id="date-range-type"
+              value={dateRangeType}
+              onChange={(e) => setDateRangeType(e.target.value)}
+              className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-[#B48B7F] focus:border-[#B48B7F] outline-none min-w-[120px]"
+            >
+              <option value="all">All Time</option>
+              <option value="today">Today</option>
+              <option value="yesterday">Yesterday</option>
+              <option value="this-week">This Week</option>
+              <option value="this-month">This Month</option>
+              <option value="custom">Custom Range</option>
+            </select>
           </div>
+
+          {dateRangeType === "custom" && (
+            <>
+              <div className="flex flex-col">
+                <label htmlFor="start-date" className="text-xs font-semibold text-gray-500 mb-1 ml-1">Start Date</label>
+                <input
+                  id="start-date"
+                  type="date"
+                  value={customStartDate}
+                  onChange={(e) => setCustomStartDate(e.target.value)}
+                  className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-[#B48B7F] focus:border-[#B48B7F] outline-none"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="end-date" className="text-xs font-semibold text-gray-500 mb-1 ml-1">End Date</label>
+                <input
+                  id="end-date"
+                  type="date"
+                  value={customEndDate}
+                  onChange={(e) => setCustomEndDate(e.target.value)}
+                  className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-[#B48B7F] focus:border-[#B48B7F] outline-none"
+                />
+              </div>
+            </>
+          )}
+
+          {(statusFilter !== "active" || dateRangeType !== "all") && (
+             <button
+                type="button"
+                onClick={() => {
+                  setStatusFilter("active");
+                  setDateRangeType("all");
+                  setCustomStartDate("");
+                  setCustomEndDate("");
+                }}
+                className="px-3 py-2 text-sm text-gray-500 hover:text-[#B48B7F] font-medium"
+              >
+                Clear
+              </button>
+          )}
         </div>
       </div>
 
@@ -196,12 +286,14 @@ export default function BookingsAdminTable({ bookings }: Props) {
             />
           </svg>
           <p className="text-gray-500">No bookings found for the selected filters</p>
-          {(statusFilter !== "active" || dateFilter !== "") && (
+          {(statusFilter !== "active" || dateRangeType !== "all") && (
             <button
               type="button"
               onClick={() => {
                 setStatusFilter("active");
-                setDateFilter("");
+                setDateRangeType("all");
+                setCustomStartDate("");
+                setCustomEndDate("");
               }}
               className="mt-4 text-[#B48B7F] font-semibold hover:underline"
             >
