@@ -30,13 +30,19 @@ export async function fetchAPI<T>(
     url += `?${searchParams.toString()}`;
   }
 
+  const headers: Record<string, string> = {
+    ...((fetchOptions.headers as Record<string, string>) || {}),
+  };
+
+  // Only set Content-Type: application/json if there's a body and it's not already set
+  if (fetchOptions.body && !headers["Content-Type"]) {
+    headers["Content-Type"] = "application/json";
+  }
+
   const response = await fetch(url, {
     ...fetchOptions,
     credentials: "include", // Important for session cookies
-    headers: {
-      "Content-Type": "application/json",
-      ...fetchOptions.headers,
-    },
+    headers,
   });
 
   if (!response.ok) {
