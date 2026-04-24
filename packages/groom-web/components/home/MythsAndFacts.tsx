@@ -1,5 +1,6 @@
 import type React from "react";
 import AppImage from "../AppImage";
+import { mythsAndFactsContent } from "##/content/home/myths-and-facts";
 
 interface MythFactCardProps {
   myth: string;
@@ -21,34 +22,19 @@ const MythFactCard: React.FC<MythFactCardProps> = ({ myth, fact }) => (
 );
 
 const MythsAndFacts: React.FC = () => {
-  const data = [
-    {
-      myth: "Mental health issues are rare.",
-      fact: "1 in 4 people experience mental health challenges.",
-    },
-    {
-      myth: "Just be positive, and you'll be fine.",
-      fact: "Mental health struggles need care, not just positive vibes.",
-    },
-    {
-      myth: "Therapy is only for serious problems.",
-      fact: "Therapy is for everyone—it's like a gym for your mind!",
-    },
-  ];
-
   return (
     <section id="myths" className=" py-24 px-4">
       <div className="max-w-6xl mx-auto text-center">
         <h2 className="text-4xl md:text-5xl font-extrabold mb-4 uppercase tracking-wide">
-          Common Myths & Facts
+          {mythsAndFactsContent.title}
         </h2>
         <i className="font-script text-2xl md:text-base text-[#8C2D3A] ">
-          The truth about mental health is simple: it matters, and so do you.
+          {mythsAndFactsContent.quote}
         </i>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mt-16">
           <div className="text-left space-y-8">
-            {data.map((item) => (
+            {mythsAndFactsContent.data.map((item) => (
               <MythFactCard key={item.myth} myth={item.myth} fact={item.fact} />
             ))}
           </div>

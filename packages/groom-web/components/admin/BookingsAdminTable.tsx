@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import BookingModal from "##/components/admin/BookingModal";
 import ModalManager from "##/utils/ModalManager";
 import { showAlert, showConfirm } from "##/utils/modalHelpers";
@@ -24,7 +24,88 @@ type Props = { bookings: BookingRow[] };
 export default function BookingsAdminTable({ bookings }: Props) {
   const router = useRouter();
   const [openBooking, setOpenBooking] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string>("active");
+  const [dateRangeType, setDateRangeType] = useState<string>("all");
+  const [customStartDate, setCustomStartDate] = useState<string>("");
+  const [customEndDate, setCustomEndDate] = useState<string>("");
+
   const booking = bookings.find((b) => b.id === openBooking) ?? null;
+
+  const filteredBookings = useMemo(() => {
+    const now = new Date();
+    const todayStr = now.toISOString().split("T")[0];
+
+    const getYesterdayStr = () => {
+      const d = new Date();
+      d.setDate(d.getDate() - 1);
+      return d.toISOString().split("T")[0];
+    };
+
+    const getThisWeekRange = () => {
+      const start = new Date();
+      const day = start.getDay();
+      const diff = start.getDate() - day + (day === 0 ? -6 : 1); // Monday
+      const startOfWeek = new Date(start.setDate(diff));
+      startOfWeek.setHours(0, 0, 0, 0);
+
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(endOfWeek.getDate() + 6);
+      endOfWeek.setHours(23, 59, 59, 999);
+
+      return { start: startOfWeek, end: endOfWeek };
+    };
+
+    const getThisMonthRange = () => {
+      const start = new Date();
+      start.setDate(1);
+      start.setHours(0, 0, 0, 0);
+
+      const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+      end.setHours(23, 59, 59, 999);
+
+      return { start, end };
+    };
+
+    return bookings.filter((bk) => {
+      // Status Filter
+      if (statusFilter === "active") {
+        if (bk.status !== "pending" && bk.status !== "confirmed") return false;
+      } else if (statusFilter !== "all") {
+        if (bk.status !== statusFilter) return false;
+      }
+
+      // Date Filter
+      if (dateRangeType !== "all" && bk.when) {
+        const bookingDate = new Date(bk.when);
+        const bookingDateStr = bookingDate.toISOString().split("T")[0];
+
+        if (dateRangeType === "today") {
+          if (bookingDateStr !== todayStr) return false;
+        } else if (dateRangeType === "yesterday") {
+          if (bookingDateStr !== getYesterdayStr()) return false;
+        } else if (dateRangeType === "this-week") {
+          const { start, end } = getThisWeekRange();
+          if (bookingDate < start || bookingDate > end) return false;
+        } else if (dateRangeType === "this-month") {
+          const { start, end } = getThisMonthRange();
+          if (bookingDate < start || bookingDate > end) return false;
+        } else if (dateRangeType === "custom") {
+          if (customStartDate) {
+            const start = new Date(customStartDate);
+            start.setHours(0, 0, 0, 0);
+            if (bookingDate < start) return false;
+          }
+          if (customEndDate) {
+            const end = new Date(customEndDate);
+            end.setHours(23, 59, 59, 999);
+            if (bookingDate > end) return false;
+          }
+        }
+      }
+
+      return true;
+    });
+  }, [bookings, statusFilter, dateRangeType, customStartDate, customEndDate]);
 
   async function handleCancel(id: string) {
     showConfirm(
@@ -101,14 +182,93 @@ export default function BookingsAdminTable({ bookings }: Props) {
 
   return (
     <div className="card table-card">
-      <div className="mb-6">
-        <h3 className="text-3xl font-bold text-[#B48B7F]">Bookings</h3>
-        <p className="text-sm text-gray-500 mt-1">
-          Manage user session bookings and appointments
-        </p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+          <h3 className="text-3xl font-bold text-[#B48B7F]">Bookings</h3>
+          <p className="text-sm text-gray-500 mt-1">
+            Manage user session bookings and appointments
+          </p>
+        </div>
+
+        {/* Filters */}
+        <div className="flex flex-wrap items-end gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200">
+          <div className="flex flex-col">
+            <label htmlFor="status-filter" className="text-xs font-semibold text-gray-500 mb-1 ml-1">Status</label>
+            <select
+              id="status-filter"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-[#B48B7F] focus:border-[#B48B7F] outline-none"
+            >
+              <option value="active">Active (Pending/Confirmed)</option>
+              <option value="all">All Statuses</option>
+              <option value="pending">Pending Only</option>
+              <option value="confirmed">Confirmed Only</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col">
+            <label htmlFor="date-range-type" className="text-xs font-semibold text-gray-500 mb-1 ml-1">Time Period</label>
+            <select
+              id="date-range-type"
+              value={dateRangeType}
+              onChange={(e) => setDateRangeType(e.target.value)}
+              className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-[#B48B7F] focus:border-[#B48B7F] outline-none min-w-[120px]"
+            >
+              <option value="all">All Time</option>
+              <option value="today">Today</option>
+              <option value="yesterday">Yesterday</option>
+              <option value="this-week">This Week</option>
+              <option value="this-month">This Month</option>
+              <option value="custom">Custom Range</option>
+            </select>
+          </div>
+
+          {dateRangeType === "custom" && (
+            <>
+              <div className="flex flex-col">
+                <label htmlFor="start-date" className="text-xs font-semibold text-gray-500 mb-1 ml-1">Start Date</label>
+                <input
+                  id="start-date"
+                  type="date"
+                  value={customStartDate}
+                  onChange={(e) => setCustomStartDate(e.target.value)}
+                  className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-[#B48B7F] focus:border-[#B48B7F] outline-none"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="end-date" className="text-xs font-semibold text-gray-500 mb-1 ml-1">End Date</label>
+                <input
+                  id="end-date"
+                  type="date"
+                  value={customEndDate}
+                  onChange={(e) => setCustomEndDate(e.target.value)}
+                  className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-[#B48B7F] focus:border-[#B48B7F] outline-none"
+                />
+              </div>
+            </>
+          )}
+
+          {(statusFilter !== "active" || dateRangeType !== "all") && (
+             <button
+                type="button"
+                onClick={() => {
+                  setStatusFilter("active");
+                  setDateRangeType("all");
+                  setCustomStartDate("");
+                  setCustomEndDate("");
+                }}
+                className="px-3 py-2 text-sm text-gray-500 hover:text-[#B48B7F] font-medium"
+              >
+                Clear
+              </button>
+          )}
+        </div>
       </div>
 
-      {bookings.length === 0 ? (
+      {filteredBookings.length === 0 ? (
         <div className="text-center py-12">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -125,7 +285,21 @@ export default function BookingsAdminTable({ bookings }: Props) {
               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
             />
           </svg>
-          <p className="text-gray-500">No bookings yet</p>
+          <p className="text-gray-500">No bookings found for the selected filters</p>
+          {(statusFilter !== "active" || dateRangeType !== "all") && (
+            <button
+              type="button"
+              onClick={() => {
+                setStatusFilter("active");
+                setDateRangeType("all");
+                setCustomStartDate("");
+                setCustomEndDate("");
+              }}
+              className="mt-4 text-[#B48B7F] font-semibold hover:underline"
+            >
+              Reset Filters
+            </button>
+          )}
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -141,7 +315,7 @@ export default function BookingsAdminTable({ bookings }: Props) {
               </tr>
             </thead>
             <tbody>
-              {bookings.map((bk) => (
+              {filteredBookings.map((bk) => (
                 <tr key={bk.id} className="hover:bg-gray-50 transition-colors">
                   <td className="font-medium">{bk.name || "-"}</td>
                   <td className="text-gray-600">
@@ -160,7 +334,9 @@ export default function BookingsAdminTable({ bookings }: Props) {
                           ? "bg-green-100 text-green-800"
                           : bk.status === "completed"
                             ? "bg-blue-100 text-blue-800"
-                            : "bg-yellow-100 text-yellow-800"
+                            : bk.status === "cancelled"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-yellow-100 text-yellow-800"
                       }`}
                     >
                       {bk.status || "pending"}

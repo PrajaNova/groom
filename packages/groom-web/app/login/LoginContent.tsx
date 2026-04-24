@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
 import userService, { type AuthResponse } from "@/services/userService";
+import { loginContent } from "##/content/auth/login";
 
 export default function LoginContent() {
   const router = useRouter();
@@ -80,18 +81,18 @@ export default function LoginContent() {
     window.location.href = `${apiUrl}/api/auth/google/start?state=${encodeURIComponent(redirectPath)}`;
   };
 
+  const currentContent = isLogin ? loginContent.login : loginContent.register;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F0F2EF] to-[#E5E9E6] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-[#2C3531] mb-2">
-            {isLogin ? "Welcome Back" : "Join Us"}
+            {currentContent.title}
           </h1>
           <p className="text-gray-600">
-            {isLogin
-              ? "Sign in to your account to continue"
-              : "Create an account to get started"}
+            {currentContent.subtitle}
           </p>
         </div>
 
@@ -122,7 +123,7 @@ export default function LoginContent() {
                 htmlFor="name"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Full Name
+                {loginContent.common.labels.name}
               </label>
               <input
                 id="name"
@@ -130,7 +131,7 @@ export default function LoginContent() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
-                placeholder="Enter your full name"
+                placeholder={loginContent.common.placeholders.name}
                 disabled={loading}
               />
             </div>
@@ -141,7 +142,7 @@ export default function LoginContent() {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Email Address
+              {loginContent.common.labels.email}
             </label>
             <input
               id="email"
@@ -149,7 +150,7 @@ export default function LoginContent() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
-              placeholder="Enter your email"
+              placeholder={loginContent.common.placeholders.email}
               disabled={loading}
             />
           </div>
@@ -159,7 +160,7 @@ export default function LoginContent() {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Password
+              {loginContent.common.labels.password}
             </label>
             <input
               id="password"
@@ -167,7 +168,7 @@ export default function LoginContent() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#006442] focus:border-transparent transition"
-              placeholder="Enter your password"
+              placeholder={loginContent.common.placeholders.password}
               disabled={loading}
             />
           </div>
@@ -177,7 +178,7 @@ export default function LoginContent() {
             disabled={loading}
             className="w-full bg-[#006442] text-white py-2 rounded-lg font-medium hover:bg-[#004d32] transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Loading..." : isLogin ? "Sign In" : "Create Account"}
+            {loading ? "Loading..." : currentContent.submitButton}
           </button>
         </form>
 
@@ -188,7 +189,7 @@ export default function LoginContent() {
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="px-2 bg-white text-gray-500">
-              Or continue with
+              {loginContent.common.divider}
             </span>
           </div>
         </div>
@@ -219,13 +220,13 @@ export default function LoginContent() {
               fill="#EA4335"
             />
           </svg>
-          <span className="text-gray-700 font-medium">Google</span>
+          <span className="text-gray-700 font-medium">{loginContent.common.googleButton}</span>
         </button>
 
         {/* Toggle Auth Mode */}
         <div className="text-center mt-6">
           <p className="text-gray-600">
-            {isLogin ? "Don't have an account? " : "Already have an account? "}
+            {currentContent.togglePrompt}
             <button
               type="button"
               onClick={() => {
@@ -237,7 +238,7 @@ export default function LoginContent() {
               }}
               className="text-[#006442] font-medium hover:underline"
             >
-              {isLogin ? "Sign up" : "Sign in"}
+              {currentContent.toggleAction}
             </button>
           </p>
         </div>
@@ -245,7 +246,7 @@ export default function LoginContent() {
         {/* Back Link */}
         <div className="text-center mt-4">
           <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">
-            Back to home
+            {loginContent.common.backToHome}
           </Link>
         </div>
       </div>

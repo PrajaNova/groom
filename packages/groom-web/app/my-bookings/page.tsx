@@ -8,7 +8,9 @@ import { useProtectedRoute } from "@/hooks/useProtectedRoute";
 import bookingService, { type Booking } from "@/services/bookingService";
 import { showErrorToast } from "@/utils/errorHandler";
 import ModalManager from "@/utils/ModalManager";
+import { showConfirm } from "@/utils/modalHelpers";
 import RescheduleBookingModal from "../bookings/RescheduleBookingModal";
+import { myBookingsContent } from "##/content/my-bookings/my-bookings";
 
 const MyBookingsPage = () => {
   const { isLoading: authLoading, isAuthorized } = useProtectedRoute();
@@ -60,7 +62,7 @@ const MyBookingsPage = () => {
         booking={bookingData}
         mode="reschedule"
         onSuccess={() => {
-          toast.success("Booking rescheduled successfully!");
+          toast.success(myBookingsContent.card.successMessages.reschedule);
           fetchBookings();
         }}
       />,
@@ -68,15 +70,15 @@ const MyBookingsPage = () => {
   };
 
   const handleCancel = async (bookingId: string) => {
-    if (confirm("Are you sure you want to cancel this booking?")) {
+    showConfirm(myBookingsContent.card.confirms.cancel, async () => {
       try {
         await bookingService.delete(bookingId);
-        toast.success("Booking cancelled successfully!");
+        toast.success(myBookingsContent.card.successMessages.cancel);
         fetchBookings();
       } catch (err) {
         showErrorToast(err);
       }
-    }
+    });
   };
 
   if (authLoading || fetching) {
@@ -97,13 +99,12 @@ const MyBookingsPage = () => {
   return (
     <main className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold mb-8 text-[#2C3531]">
-        {isAdmin ? "All Bookings" : "My Bookings"}
+        {isAdmin ? myBookingsContent.header.adminTitle : myBookingsContent.header.userTitle}
       </h1>
       {isAdmin && (
         <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">
-            <strong>Admin View:</strong> You are viewing all bookings from all
-            users.
+            <strong>{myBookingsContent.header.adminAlert.title}</strong> {myBookingsContent.header.adminAlert.message}
           </p>
         </div>
       )}
@@ -125,7 +126,7 @@ const MyBookingsPage = () => {
           </svg>
           <div className="flex-1">
             <p className="text-sm text-red-700 font-medium">
-              Error loading bookings
+              {myBookingsContent.error.title}
             </p>
             <p className="text-sm text-red-600">{error}</p>
             <button
@@ -133,7 +134,7 @@ const MyBookingsPage = () => {
               onClick={fetchBookings}
               className="text-sm text-red-700 hover:text-red-900 underline mt-2"
             >
-              Try again
+              {myBookingsContent.error.retryButton}
             </button>
           </div>
         </div>
@@ -147,7 +148,7 @@ const MyBookingsPage = () => {
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <title>No bookings yet</title>
+            <title>{myBookingsContent.empty.title}</title>
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -156,12 +157,14 @@ const MyBookingsPage = () => {
             />
           </svg>
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            No bookings yet
+            {myBookingsContent.empty.title}
           </h3>
           <p className="text-gray-500 mb-6 max-w-sm mx-auto">
-            You haven't made any bookings. Start your journey with us today.
+            {myBookingsContent.empty.message}
           </p>
-          <BookingButton className="bg-[#006442] text-white hover:bg-[#004d32] px-6 py-2 rounded-lg font-medium inline-block" />
+          <BookingButton className="bg-[#006442] text-white hover:bg-[#004d32] px-6 py-2 rounded-lg font-medium inline-block">
+            {myBookingsContent.empty.ctaLabel}
+          </BookingButton>
         </div>
       ) : (
         <div className="space-y-6">
@@ -207,10 +210,10 @@ const MyBookingsPage = () => {
                 {isAdmin && (
                   <div className="mb-2 space-y-1">
                     <p className="text-sm text-gray-700">
-                      <span className="font-medium">User:</span> {booking.name}
+                      <span className="font-medium">{myBookingsContent.card.labels.user}</span> {booking.name}
                     </p>
                     <p className="text-sm text-gray-600">
-                      <span className="font-medium">Email:</span>{" "}
+                      <span className="font-medium">{myBookingsContent.card.labels.email}</span>{" "}
                       {booking.email}
                     </p>
                   </div>
@@ -218,7 +221,7 @@ const MyBookingsPage = () => {
                 {booking.meetingId && (
                   <div className="space-y-1">
                     <p className="text-sm text-gray-600">
-                      Meeting ID:{" "}
+                      {myBookingsContent.card.labels.meetingId}{" "}
                       <span className="font-mono text-gray-700">
                         {booking.meetingId}
                       </span>
@@ -238,7 +241,7 @@ const MyBookingsPage = () => {
                           role="img"
                           aria-labelledby="join-session-icon-1"
                         >
-                          <title id="join-session-icon-1">Join Session</title>
+                          <title id="join-session-icon-1">{myBookingsContent.card.actions.join}</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -246,7 +249,7 @@ const MyBookingsPage = () => {
                             d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
                           />
                         </svg>
-                        Join Session
+                        {myBookingsContent.card.actions.join}
                       </a>
                     )}
                   </div>
@@ -269,7 +272,7 @@ const MyBookingsPage = () => {
                       role="img"
                       aria-labelledby="join-session-icon-2"
                     >
-                      <title id="join-session-icon-2">Join Session</title>
+                      <title id="join-session-icon-2">{myBookingsContent.card.actions.join}</title>
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -277,7 +280,7 @@ const MyBookingsPage = () => {
                         d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
                       />
                     </svg>
-                    Join Session
+                    {myBookingsContent.card.actions.join}
                   </a>
                 )}
                 {booking.status === "pending" && (
@@ -287,14 +290,14 @@ const MyBookingsPage = () => {
                       onClick={() => handleReschedule(booking)}
                       className="px-4 py-2 text-sm font-medium text-[#006442] bg-white border border-[#006442] rounded-md hover:bg-green-50 transition-colors"
                     >
-                      Reschedule
+                      {myBookingsContent.card.actions.reschedule}
                     </button>
                     <button
                       type="button"
                       onClick={() => handleCancel(booking.id)}
                       className="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 transition-colors"
                     >
-                      Cancel
+                      {myBookingsContent.card.actions.cancel}
                     </button>
                   </>
                 )}
@@ -305,14 +308,14 @@ const MyBookingsPage = () => {
                       onClick={() => handleReschedule(booking)}
                       className="px-4 py-2 text-sm font-medium text-[#006442] bg-white border border-[#006442] rounded-md hover:bg-green-50 transition-colors"
                     >
-                      Reschedule
+                      {myBookingsContent.card.actions.reschedule}
                     </button>
                     <button
                       type="button"
                       onClick={() => handleCancel(booking.id)}
                       className="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 transition-colors"
                     >
-                      Cancel
+                      {myBookingsContent.card.actions.cancel}
                     </button>
                   </>
                 )}

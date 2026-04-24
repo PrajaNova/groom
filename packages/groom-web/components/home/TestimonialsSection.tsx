@@ -10,6 +10,8 @@ interface Testimonial {
 }
 
 const TestimonialsSection: React.FC<{ testimonials: Testimonial[] }> = ({ testimonials }) => {
+  if (!testimonials || testimonials.length === 0) return null;
+
   // Fallback to hardcoded testimonials if none are provided by the backend
   const displayedTestimonials = testimonials.length > 0 
     ? testimonials.slice(0, 3) 

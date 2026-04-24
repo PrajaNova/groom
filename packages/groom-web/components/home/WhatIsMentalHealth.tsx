@@ -1,5 +1,6 @@
 import { Heart } from "lucide-react";
 import AppImage from "../AppImage";
+import { whatIsMHContent } from "##/content/home/what-is-mh";
 
 function WhatIsMentalHealthSection() {
   return (
@@ -7,44 +8,35 @@ function WhatIsMentalHealthSection() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-16 w-full flex flex-col">
           <h2 className="text-5xl lg:text-6xl font-bold text-slate-800 text-center">
-            What is Mental Health?
+            {whatIsMHContent.title}
           </h2>
           <i className="font-script text-xs md:text-base text-center text-[#8C2D3A]">
-            It's not just about feeling good—it's about feeling whole.
+            {whatIsMHContent.quote}
           </i>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <div className="bg-white p-6 rounded-2xl shadow-md border">
-              <p className="text-slate-700 text-lg leading-relaxed">
-                Mental health is about how we think, feel, and handle life's ups
-                and downs.
-              </p>
-            </div>
-            <div className=" p-6 rounded-2xl shadow-md border">
-              <div className="flex items-start gap-3">
-                <Heart
-                  className="text-rose-500 fill-rose-500 flex-shrink-0 mt-1"
-                  size={24}
-                />
-                <p className="text-slate-700 text-lg">
-                  It affects our relationships, work, and overall well-being.
-                </p>
+            {whatIsMHContent.points.map((point, index) => (
+              <div
+                key={index}
+                className={`${
+                  index === 3 ? "bg-sage-100" : "bg-white"
+                } p-6 rounded-2xl shadow-md border`}
+              >
+                <div className="flex items-start gap-3">
+                  {index === 1 && (
+                    <Heart
+                      className="text-rose-500 fill-rose-500 flex-shrink-0 mt-1"
+                      size={24}
+                    />
+                  )}
+                  <p className="text-slate-700 text-lg leading-relaxed">
+                    {point}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className=" bg-white p-6 rounded-2xl shadow-md border">
-              <p className="text-slate-700 text-lg">
-                It's just as important as physical health—let's normalize taking
-                care of it.
-              </p>
-            </div>
-            <div className="bg-sage-100 p-6 rounded-2xl shadow-md border ">
-              <p className="text-slate-700 text-lg">
-                Good mental health helps us enjoy life, handle challenges, and
-                connect with others.
-              </p>
-            </div>
+            ))}
           </div>
           <div className="relative h-[500px] w-full">
             <AppImage
