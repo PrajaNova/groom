@@ -207,27 +207,32 @@ export class AuthController {
       const query = request.query as any;
       const state = query.state;
 
-      // In production, we append the token to the redirect URL as a fallback
-      // because cookies might fail across different domains (Vercel/Render)
-      const authSuccessUrl = `${frontendUrl}${
-        isProd ? `/?auth=success&token=${jwt}` : "/?auth=success"
-      }`;
-
-      // Security check: only allow relative paths or paths starting with /
-      // to prevent open redirect vulnerabilities
       if (
         state &&
         typeof state === "string" &&
         state.startsWith("/") &&
         !state.startsWith("//")
       ) {
-        const redirectPath = isProd
-          ? `${state}${state.includes("?") ? "&" : "?"}token=${jwt}`
-          : state;
-        return reply.redirect(`${frontendUrl}${redirectPath}`);
+        this.fastify.log.info(
+          {
+            provider,
+            state,
+            frontendUrl,
+          },
+          LOG_MESSAGES.REDIRECTING_TO_FRONTEND,
+        );
+        return reply.code(201).redirect(`${frontendUrl}${state}`);
       }
 
-      return reply.redirect(authSuccessUrl);
+      this.fastify.log.info(
+        {
+          provider,
+          frontendUrl,
+        },
+        LOG_MESSAGES.REDIRECTING_TO_FRONTEND,
+      );
+
+      return reply.code(201).redirect(`${frontendUrl}/?auth=success`);
     } catch (error: any) {
       this.fastify.log.error(
         {

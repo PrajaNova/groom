@@ -156,6 +156,7 @@ export const USER_AGENT = {
 // Log Messages
 export const LOG_MESSAGES = {
   OAUTH_CALLBACK_RECEIVED: "OAuth callback received",
+  REDIRECTING_TO_FRONTEND: "Redirecting to frontend",
 } as const;
 
 // HTTP Status Codes
