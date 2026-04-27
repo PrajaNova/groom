@@ -54,5 +54,8 @@
     "tsx": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }

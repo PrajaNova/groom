@@ -59,13 +59,18 @@ class UserService {
   }
 
   // OAuth
-  getGoogleAuthUrl(): string {
+  getGoogleAuthUrl(state?: string): string {
     const baseURL =
       typeof window === "undefined"
         ? process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
         : "";
     // Note: The backend handles the redirect to Google
-    return `${baseURL}/api/auth/google/start`;
+    // Adding prompt=select_account ensures Google shows the account picker
+    let url = `${baseURL}/api/auth/google/start?prompt=select_account`;
+    if (state) {
+      url += `&state=${encodeURIComponent(state)}`;
+    }
+    return url;
   }
 }
 

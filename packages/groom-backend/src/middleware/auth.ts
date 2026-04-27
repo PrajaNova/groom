@@ -5,7 +5,15 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 
 export async function authGuard(request: FastifyRequest, reply: FastifyReply) {
   try {
-    const token = request.cookies[COOKIE_CONFIG.SESSION_NAME];
+    let token = request.cookies[COOKIE_CONFIG.SESSION_NAME];
+
+    // Fallback to Authorization header if cookie is missing
+    if (!token && request.headers.authorization) {
+      const parts = request.headers.authorization.split(" ");
+      if (parts.length === 2 && parts[0] === "Bearer") {
+        token = parts[1];
+      }
+    }
 
     if (!token) {
       return reply.unauthorized(ERROR_MESSAGES.NO_SESSION_TOKEN);
@@ -48,7 +56,15 @@ export async function authGuard(request: FastifyRequest, reply: FastifyReply) {
 
 export async function optionalAuth(request: FastifyRequest, _: FastifyReply) {
   try {
-    const token = request.cookies[COOKIE_CONFIG.SESSION_NAME];
+    let token = request.cookies[COOKIE_CONFIG.SESSION_NAME];
+
+    // Fallback to Authorization header if cookie is missing
+    if (!token && request.headers.authorization) {
+      const parts = request.headers.authorization.split(" ");
+      if (parts.length === 2 && parts[0] === "Bearer") {
+        token = parts[1];
+      }
+    }
 
     if (!token) return;
 

@@ -31,6 +31,14 @@ const getEnv = (key: string, defaultValue: string = ""): string => {
   return process.env[key] || defaultValue;
 };
 
+const getRequiredEnv = (key: string): string => {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`${key} environment variable is not set`);
+  }
+  return value;
+};
+
 const getBoolEnv = (key: string, defaultValue: boolean = false): boolean => {
   const value = process.env[key];
   if (value === undefined) return defaultValue;
@@ -53,11 +61,8 @@ export const loadConfig = (): AppConfig => {
       logLevel: getEnv("LOG_LEVEL", "info"),
     },
     security: {
-      cookieSecret: getEnv(
-        "COOKIE_SECRET",
-        "your-super-secret-cookie-key-min-32-chars",
-      ),
-      jwtSecret: getEnv("JWT_SECRET", "your-super-secret-jwt-key-min-32-chars"),
+      cookieSecret: getRequiredEnv("COOKIE_SECRET"),
+      jwtSecret: getRequiredEnv("JWT_SECRET"),
       sessionExpiryHours: getNumberEnv("SESSION_EXPIRY_HOURS", 24),
       allowedOrigins: parseOrigins(process.env.ALLOWED_ORIGINS),
       frontendUrl: getEnv("FRONTEND_URL", "http://localhost:3000"),

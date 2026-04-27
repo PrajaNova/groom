@@ -17,6 +17,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const { login } = useAuth();
 
   if (!isOpen) return null;
@@ -24,6 +25,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setFieldErrors({});
 
     try {
       let response: AuthResponse;
@@ -42,15 +44,24 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         throw new Error(response.message || "Authentication failed");
       }
     } catch (err: any) {
-      // Extract error message from API error if possible
-      const message =
-        err.message?.replace("API Error: 401 - ", "") || err.message;
-      setError(message);
+      if (err.details && Array.isArray(err.details)) {
+        const errors: Record<string, string> = {};
+        for (const detail of err.details) {
+          errors[detail.field] = detail.message;
+        }
+        setFieldErrors(errors);
+        setError("Please fix the errors below.");
+      } else {
+        // Extract error message from API error if possible
+        const message =
+          err.message?.replace("API Error: 401 - ", "") || err.message;
+        setError(message);
+      }
     }
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = userService.getGoogleAuthUrl();
+    window.location.href = userService.getGoogleAuthUrl(window.location.pathname);
   };
 
   const toggleMode = () => {
@@ -105,10 +116,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 id="name"
                 type="text"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#B48B7F]"
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#B48B7F] ${
+                  fieldErrors.name ? "border-red-500" : "border-gray-300"
+                }`}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
+              {fieldErrors.name && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.name}</p>
+              )}
             </div>
           )}
           <div>
@@ -122,10 +138,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               id="email"
               type="email"
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#B48B7F]"
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#B48B7F] ${
+                fieldErrors.email ? "border-red-500" : "border-gray-300"
+              }`}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            {fieldErrors.email && (
+              <p className="mt-1 text-xs text-red-500">{fieldErrors.email}</p>
+            )}
           </div>
           <div>
             <label
@@ -138,10 +159,17 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               id="password"
               type="password"
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#B48B7F]"
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#B48B7F] ${
+                fieldErrors.password ? "border-red-500" : "border-gray-300"
+              }`}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {fieldErrors.password && (
+              <p className="mt-1 text-xs text-red-500">
+                {fieldErrors.password}
+              </p>
+            )}
           </div>
           <button
             type="submit"

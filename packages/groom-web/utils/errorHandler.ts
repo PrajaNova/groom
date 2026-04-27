@@ -4,6 +4,7 @@ export class APIError extends Error {
   constructor(
     public statusCode: number,
     public message: string,
+    public details?: Array<{ field: string; message: string }>,
     public originalError?: Error,
   ) {
     super(message);
@@ -20,18 +21,23 @@ export function parseApiError(error: unknown): APIError {
   }
 
   if (error instanceof Error) {
-    // Check if it's an API error message
-    const message = error.message;
+    const err = error as any;
+    
+    // If it's already a structured error from fetchAPI
+    if (err.statusCode) {
+      return new APIError(err.statusCode, err.message, err.details, error);
+    }
 
-    // Extract status code from "API Error: 401 - message" format
+    // Check if it's an API error message (legacy format)
+    const message = error.message;
     const match = message.match(/API Error: (\d+) - (.+)/);
     if (match) {
       const statusCode = parseInt(match[1], 10);
       const errorMessage = match[2];
-      return new APIError(statusCode, errorMessage, error);
+      return new APIError(statusCode, errorMessage, undefined, error);
     }
 
-    return new APIError(500, message, error);
+    return new APIError(500, message, undefined, error);
   }
 
   return new APIError(500, "An unexpected error occurred", undefined);
