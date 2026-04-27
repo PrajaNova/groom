@@ -150,6 +150,7 @@ export class AuthController {
         await oauthClient?.getAccessTokenFromAuthorizationCodeFlow(request);
 
       if (!token) {
+        this.fastify.log.error({ provider }, "OAuth token exchange returned null");
         return reply.badRequest(ERROR_MESSAGES.MISSING_TOKEN);
       }
 
@@ -183,11 +184,12 @@ export class AuthController {
 
       const jwt = await sessionService.generateJWT(session);
 
-      const isProd = this.fastify.config.server.nodeEnv === ENV.PRODUCTION;
+      const nodeEnv = this.fastify.config.server.nodeEnv;
+      const isProdLike = nodeEnv !== "development" && nodeEnv !== "test";
       reply.setCookie(COOKIE_CONFIG.SESSION_NAME, jwt, {
         httpOnly: true,
-        secure: isProd,
-        sameSite: isProd ? "none" : "lax",
+        secure: isProdLike,
+        sameSite: isProdLike ? "none" : "lax",
         maxAge:
           this.fastify.config.security.sessionExpiryHours *
           MISC.SECONDS_PER_HOUR,
@@ -207,10 +209,10 @@ export class AuthController {
       const query = request.query as any;
       const state = query.state;
 
-      // In production, we append the token to the redirect URL as a fallback
+      // In production/preview, we append the token to the redirect URL as a fallback
       // because cookies might fail across different domains (Vercel/Render)
       const authSuccessUrl = `${frontendUrl}${
-        isProd ? `/?auth=success&token=${jwt}` : "/?auth=success"
+        isProdLike ? `/?auth=success&token=${jwt}` : "/?auth=success"
       }`;
 
       // Security check: only allow relative paths or paths starting with /
@@ -221,7 +223,7 @@ export class AuthController {
         state.startsWith("/") &&
         !state.startsWith("//")
       ) {
-        const redirectPath = isProd
+        const redirectPath = isProdLike
           ? `${state}${state.includes("?") ? "&" : "?"}token=${jwt}`
           : state;
         return reply.redirect(`${frontendUrl}${redirectPath}`);
@@ -234,7 +236,8 @@ export class AuthController {
           provider,
           error: error.message,
           stack: error.stack,
-          response: error.response?.data || error.response?.body,
+          rawError: error,
+          response: error.response?.data || error.response?.body || error.data,
         },
         `${provider} OAuth callback error`,
       );
@@ -442,11 +445,12 @@ export class AuthController {
 
       const jwt = await sessionService.generateJWT(session);
 
-      const isProd = this.fastify.config.server.nodeEnv === ENV.PRODUCTION;
+      const nodeEnv = this.fastify.config.server.nodeEnv;
+      const isProdLike = nodeEnv !== "development" && nodeEnv !== "test";
       reply.setCookie(COOKIE_CONFIG.SESSION_NAME, jwt, {
         httpOnly: true,
-        secure: isProd,
-        sameSite: isProd ? "none" : "lax",
+        secure: isProdLike,
+        sameSite: isProdLike ? "none" : "lax",
         maxAge:
           this.fastify.config.security.sessionExpiryHours *
           MISC.SECONDS_PER_HOUR,
@@ -511,11 +515,12 @@ export class AuthController {
 
       const jwt = await sessionService.generateJWT(session);
 
-      const isProd = this.fastify.config.server.nodeEnv === ENV.PRODUCTION;
+      const nodeEnv = this.fastify.config.server.nodeEnv;
+      const isProdLike = nodeEnv !== "development" && nodeEnv !== "test";
       reply.setCookie(COOKIE_CONFIG.SESSION_NAME, jwt, {
         httpOnly: true,
-        secure: isProd,
-        sameSite: isProd ? "none" : "lax",
+        secure: isProdLike,
+        sameSite: isProdLike ? "none" : "lax",
         maxAge:
           this.fastify.config.security.sessionExpiryHours *
           MISC.SECONDS_PER_HOUR,
