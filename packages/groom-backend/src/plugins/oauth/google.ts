@@ -22,6 +22,8 @@ export default fp(async (fastify) => {
     return;
   }
 
+  const isProd = fastify.config.server.nodeEnv === "production";
+
   await fastify.register(oauthPlugin, {
     name: OAUTH_PLUGIN_NAMES.GOOGLE,
     scope: config.scopes,
@@ -34,6 +36,15 @@ export default fp(async (fastify) => {
     },
     startRedirectPath: OAUTH_START_PATHS.GOOGLE,
     callbackUri: config.callbackUrl,
+    // Ensure the state cookie is sent back over HTTPS in production.
+    // Without secure:true, browsers silently drop cookies on HTTPS sites,
+    // causing the state comparison to fail ("Invalid state" error).
+    cookie: {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      path: "/",
+    },
   });
 
   fastify.log.info(PLUGIN_LOG_MESSAGES.GOOGLE_REGISTERED);
