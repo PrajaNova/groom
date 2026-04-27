@@ -54,7 +54,7 @@ export default function LoginContent() {
       }
 
       if (response.success) {
-        login(response.user);
+        login(response.user, (response as any).token);
         toast.success(
           isLogin ? "Login successful!" : "Registration successful!",
         );
