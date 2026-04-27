@@ -5,12 +5,14 @@ import fp from "fastify-plugin";
  * This plugin adds cookie support to Fastify
  */
 export default fp(async (fastify) => {
+  const isProd = fastify.config.server.nodeEnv === "production";
+  
   await fastify.register(cookie, {
     secret: fastify.config.security.cookieSecret,
     parseOptions: {
       httpOnly: true,
-      secure: fastify.config.server.nodeEnv === "production",
-      sameSite: "lax",
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
       path: "/",
     },
   });

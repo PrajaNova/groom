@@ -118,16 +118,16 @@ export class AuthController {
     oauthClient: OAuth2Namespace | undefined,
     getUserInfo: (token: OAuthToken) => Promise<ProviderUserInfo>,
   ) {
-    const { code, error, error_description } =
-      request.query as OAuthCallbackQuery;
-
     const query = request.query as any;
+    const { code, error, error_description, state: receivedState } = query;
+
     this.fastify.log.info(
       {
         provider,
         hasCode: !!code,
-        hasState: !!query.state,
-        receivedState: query.state,
+        hasState: !!receivedState,
+        receivedState,
+        callbackUrl: this.fastify.config.providers[provider as keyof typeof this.fastify.config.providers]?.callbackUrl,
         cookies: Object.keys(request.cookies),
       },
       LOG_MESSAGES.OAUTH_CALLBACK_RECEIVED,
@@ -183,10 +183,11 @@ export class AuthController {
 
       const jwt = await sessionService.generateJWT(session);
 
+      const isProd = this.fastify.config.server.nodeEnv === ENV.PRODUCTION;
       reply.setCookie(COOKIE_CONFIG.SESSION_NAME, jwt, {
         httpOnly: true,
-        secure: this.fastify.config.server.nodeEnv === ENV.PRODUCTION,
-        sameSite: COOKIE_CONFIG.SAME_SITE,
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
         maxAge:
           this.fastify.config.security.sessionExpiryHours *
           MISC.SECONDS_PER_HOUR,
@@ -206,6 +207,12 @@ export class AuthController {
       const query = request.query as any;
       const state = query.state;
 
+      // In production, we append the token to the redirect URL as a fallback
+      // because cookies might fail across different domains (Vercel/Render)
+      const authSuccessUrl = `${frontendUrl}${
+        isProd ? `/?auth=success&token=${jwt}` : "/?auth=success"
+      }`;
+
       // Security check: only allow relative paths or paths starting with /
       // to prevent open redirect vulnerabilities
       if (
@@ -214,10 +221,13 @@ export class AuthController {
         state.startsWith("/") &&
         !state.startsWith("//")
       ) {
-        return reply.redirect(`${frontendUrl}${state}`);
+        const redirectPath = isProd
+          ? `${state}${state.includes("?") ? "&" : "?"}token=${jwt}`
+          : state;
+        return reply.redirect(`${frontendUrl}${redirectPath}`);
       }
 
-      return reply.redirect(`${frontendUrl}/?auth=success`);
+      return reply.redirect(authSuccessUrl);
     } catch (error: any) {
       this.fastify.log.error(
         {
@@ -432,10 +442,11 @@ export class AuthController {
 
       const jwt = await sessionService.generateJWT(session);
 
+      const isProd = this.fastify.config.server.nodeEnv === ENV.PRODUCTION;
       reply.setCookie(COOKIE_CONFIG.SESSION_NAME, jwt, {
         httpOnly: true,
-        secure: this.fastify.config.server.nodeEnv === ENV.PRODUCTION,
-        sameSite: COOKIE_CONFIG.SAME_SITE,
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
         maxAge:
           this.fastify.config.security.sessionExpiryHours *
           MISC.SECONDS_PER_HOUR,
@@ -454,6 +465,7 @@ export class AuthController {
       return reply.code(201).send({
         success: true,
         user,
+        token: jwt,
         message: "Registration successful",
       });
     } catch (error) {
@@ -499,10 +511,11 @@ export class AuthController {
 
       const jwt = await sessionService.generateJWT(session);
 
+      const isProd = this.fastify.config.server.nodeEnv === ENV.PRODUCTION;
       reply.setCookie(COOKIE_CONFIG.SESSION_NAME, jwt, {
         httpOnly: true,
-        secure: this.fastify.config.server.nodeEnv === ENV.PRODUCTION,
-        sameSite: COOKIE_CONFIG.SAME_SITE,
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
         maxAge:
           this.fastify.config.security.sessionExpiryHours *
           MISC.SECONDS_PER_HOUR,
@@ -521,6 +534,7 @@ export class AuthController {
       return reply.send({
         success: true,
         user,
+        token: jwt,
         message: SUCCESS_MESSAGES.AUTH_SUCCESS,
       });
     } catch (error) {

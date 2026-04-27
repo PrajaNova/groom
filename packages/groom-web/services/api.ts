@@ -34,6 +34,14 @@ export async function fetchAPI<T>(
     ...((fetchOptions.headers as Record<string, string>) || {}),
   };
 
+  // Add Authorization header if token exists in localStorage (client-side only)
+  if (!isServer) {
+    const token = localStorage.getItem("auth_token");
+    if (token && !headers["Authorization"]) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
   // Only set Content-Type: application/json if there's a body and it's not already set
   if (fetchOptions.body && !headers["Content-Type"]) {
     headers["Content-Type"] = "application/json";

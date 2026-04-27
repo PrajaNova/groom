@@ -54,7 +54,7 @@ export default function LoginContent() {
       }
 
       if (response.success) {
-        login(response.user);
+        login(response.user, (response as any).token);
         toast.success(
           isLogin ? "Login successful!" : "Registration successful!",
         );
@@ -76,9 +76,7 @@ export default function LoginContent() {
 
   const handleGoogleLogin = () => {
     const redirectPath = searchParams.get("redirect") || "/my-bookings";
-    // Point to backend start URL, pass redirect path as state
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
-    window.location.href = `${apiUrl}/api/auth/google/start?state=${encodeURIComponent(redirectPath)}`;
+    window.location.href = userService.getGoogleAuthUrl(redirectPath);
   };
 
   const currentContent = isLogin ? loginContent.login : loginContent.register;

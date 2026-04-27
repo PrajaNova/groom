@@ -3,10 +3,12 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { toast } from "react-toastify";
+import { useAuth } from "@/context/AuthContext";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -19,18 +21,24 @@ function LoginForm() {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email: username, password }), // Backend expects email
       });
 
       const data = await response.json();
 
       if (response.ok) {
         toast.success("Login successful!");
+        if (data.token) {
+          localStorage.setItem("auth_token", data.token);
+        }
+        if (data.user) {
+          login(data.user, data.token);
+        }
         const redirect = searchParams.get("redirect") || "/admin";
         router.push(redirect);
         router.refresh();
       } else {
-        toast.error(data.error || "Login failed");
+        toast.error(data.error || data.message || "Login failed");
       }
     } catch (error) {
       console.error("Login error:", error);
