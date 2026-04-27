@@ -77,27 +77,4 @@ export default async function authRoutes(fastify: FastifyInstance) {
       authController.handleGoogleCallback(request, reply),
   );
 
-  fastify.get<{ Querystring: OAuthCallbackQuery }>(
-    ROUTES.GITHUB_CALLBACK,
-    async (request, reply) =>
-      authController.handleGithubCallback(request, reply),
-  );
-
-  fastify.get<{ Querystring: OAuthCallbackQuery }>(
-    ROUTES.FACEBOOK_CALLBACK,
-    async (request, reply) =>
-      authController.handleFacebookCallback(request, reply),
-  );
-
-  fastify.get<{ Querystring: OAuthCallbackQuery }>(
-    ROUTES.DISCORD_CALLBACK,
-    async (request, reply) =>
-      authController.handleDiscordCallback(request, reply),
-  );
-
-  fastify.get<{ Querystring: OAuthCallbackQuery }>(
-    ROUTES.LINKEDIN_CALLBACK,
-    async (request, reply) =>
-      authController.handleLinkedinCallback(request, reply),
-  );
 }

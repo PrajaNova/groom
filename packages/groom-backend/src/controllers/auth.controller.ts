@@ -221,7 +221,7 @@ export class AuthController {
           },
           LOG_MESSAGES.REDIRECTING_TO_FRONTEND,
         );
-        return reply.code(201).redirect(`${frontendUrl}${state}`);
+        return reply.redirect(`${frontendUrl}${state}`);
       }
 
       this.fastify.log.info(
@@ -232,7 +232,7 @@ export class AuthController {
         LOG_MESSAGES.REDIRECTING_TO_FRONTEND,
       );
 
-      return reply.code(201).redirect(`${frontendUrl}/?auth=success`);
+      return reply.redirect(`${frontendUrl}/?auth=success`);
     } catch (error: any) {
       this.fastify.log.error(
         {
@@ -287,108 +287,7 @@ export class AuthController {
       },
     );
   }
-
-  async handleGithubCallback(request: FastifyRequest, reply: FastifyReply) {
-    return this.handleOAuthCallback(
-      PROVIDERS.GITHUB,
-      request,
-      reply,
-      this.fastify.githubOAuth2,
-      async (token) => {
-        const data = await this.fetchOAuthUserInfo(
-          API_ENDPOINTS.GITHUB_USER,
-          token.token.access_token,
-          { [HTTP_HEADERS.USER_AGENT]: USER_AGENT.GITHUB },
-        );
-
-        let email = data.email;
-        if (!email) {
-          const emails = (await this.fetchOAuthUserInfo(
-            API_ENDPOINTS.GITHUB_USER_EMAILS,
-            token.token.access_token,
-            { [HTTP_HEADERS.USER_AGENT]: USER_AGENT.GITHUB },
-          )) as unknown as ProviderEmail[];
-          const primaryEmail = emails.find((e) => e.primary);
-          email = primaryEmail?.email || emails[0]?.email;
-        }
-
-        return {
-          id: String(data.id),
-          email: email || MISC.EMPTY_STRING,
-          name: data.name || data.login || MISC.EMPTY_STRING,
-          avatar: data.avatar_url || MISC.EMPTY_STRING,
-        };
-      },
-    );
-  }
-
-  async handleFacebookCallback(request: FastifyRequest, reply: FastifyReply) {
-    return this.handleOAuthCallback(
-      PROVIDERS.FACEBOOK,
-      request,
-      reply,
-      this.fastify.facebookOAuth2,
-      async (token) => {
-        const data = await this.fetchOAuthUserInfo(
-          `${API_ENDPOINTS.FACEBOOK_ME}?fields=${API_ENDPOINTS.FACEBOOK_FIELDS}&access_token=${token.token.access_token}`,
-          MISC.EMPTY_STRING,
-        );
-        return {
-          id: data.id,
-          email: data.email,
-          name: data.name || MISC.EMPTY_STRING,
-          avatar:
-            (typeof data.picture === "object" && data.picture?.data?.url) ||
-            MISC.EMPTY_STRING,
-        };
-      },
-    );
-  }
-
-  async handleDiscordCallback(request: FastifyRequest, reply: FastifyReply) {
-    return this.handleOAuthCallback(
-      PROVIDERS.DISCORD,
-      request,
-      reply,
-      this.fastify.discordOAuth2,
-      async (token) => {
-        const data = await this.fetchOAuthUserInfo(
-          API_ENDPOINTS.DISCORD_USER,
-          token.token.access_token,
-        );
-        return {
-          id: data.id,
-          email: data.email,
-          name: data.username || MISC.EMPTY_STRING,
-          avatar: data.avatar
-            ? `${API_ENDPOINTS.DISCORD_CDN_AVATAR}/${data.id}/${data.avatar}.png`
-            : MISC.EMPTY_STRING,
-        };
-      },
-    );
-  }
-
-  async handleLinkedinCallback(request: FastifyRequest, reply: FastifyReply) {
-    return this.handleOAuthCallback(
-      PROVIDERS.LINKEDIN,
-      request,
-      reply,
-      this.fastify.linkedinOAuth2,
-      async (token) => {
-        const data = (await this.fetchOAuthUserInfo(
-          API_ENDPOINTS.LINKEDIN_USERINFO,
-          token.token.access_token,
-        )) as any;
-        return {
-          id: data.sub,
-          email: data.email,
-          name: data.name || MISC.EMPTY_STRING,
-          avatar: data.picture || MISC.EMPTY_STRING,
-        };
-      },
-    );
-  }
-
+  
   // POST /auth/register
   async handleRegister(request: FastifyRequest, reply: FastifyReply) {
     const { email, password, name, avatar } = request.body as {
