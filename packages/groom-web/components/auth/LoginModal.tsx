@@ -61,7 +61,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = userService.getGoogleAuthUrl();
+    window.location.href = userService.getGoogleAuthUrl(window.location.pathname);
   };
 
   const toggleMode = () => {

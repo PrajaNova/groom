@@ -118,16 +118,16 @@ export class AuthController {
     oauthClient: OAuth2Namespace | undefined,
     getUserInfo: (token: OAuthToken) => Promise<ProviderUserInfo>,
   ) {
-    const { code, error, error_description } =
-      request.query as OAuthCallbackQuery;
-
     const query = request.query as any;
+    const { code, error, error_description, state: receivedState } = query;
+
     this.fastify.log.info(
       {
         provider,
         hasCode: !!code,
-        hasState: !!query.state,
-        receivedState: query.state,
+        hasState: !!receivedState,
+        receivedState,
+        callbackUrl: this.fastify.config.providers[provider as keyof typeof this.fastify.config.providers]?.callbackUrl,
         cookies: Object.keys(request.cookies),
       },
       LOG_MESSAGES.OAUTH_CALLBACK_RECEIVED,
