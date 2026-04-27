@@ -22,6 +22,8 @@ export default fp(async (fastify) => {
     return;
   }
 
+  fastify.log.info({ callbackUrl: config.callbackUrl }, "Registering Google OAuth with callback URL");
+
   await fastify.register(oauthPlugin, {
     name: OAUTH_PLUGIN_NAMES.GOOGLE,
     scope: config.scopes,
