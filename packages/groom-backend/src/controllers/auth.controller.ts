@@ -145,9 +145,14 @@ export class AuthController {
       return reply.badRequest(ERROR_MESSAGES.MISSING_CODE);
     }
 
+    if (!oauthClient) {
+      this.fastify.log.error({ provider }, "OAuth client not found on fastify instance. Is the plugin registered correctly?");
+      return reply.internalServerError("OAuth configuration error");
+    }
+
     try {
       const token =
-        await oauthClient?.getAccessTokenFromAuthorizationCodeFlow(request);
+        await oauthClient.getAccessTokenFromAuthorizationCodeFlow(request);
 
       if (!token) {
         this.fastify.log.error({ provider }, "OAuth token exchange returned null");
@@ -215,6 +220,8 @@ export class AuthController {
         isProdLike ? `/?auth=success&token=${jwt}` : "/?auth=success"
       }`;
 
+      this.fastify.log.info({ frontendUrl, authSuccessUrl, state }, "Redirecting after OAuth success");
+
       // Security check: only allow relative paths or paths starting with /
       // to prevent open redirect vulnerabilities
       if (
@@ -226,7 +233,9 @@ export class AuthController {
         const redirectPath = isProdLike
           ? `${state}${state.includes("?") ? "&" : "?"}token=${jwt}`
           : state;
-        return reply.redirect(`${frontendUrl}${redirectPath}`);
+        const finalRedirectUrl = `${frontendUrl}${redirectPath}`;
+        this.fastify.log.info({ finalRedirectUrl }, "Redirecting to specific path");
+        return reply.redirect(finalRedirectUrl);
       }
 
       return reply.redirect(authSuccessUrl);
